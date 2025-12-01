@@ -18,10 +18,321 @@
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
     <link rel="canonical" href="https://nude.cosmeticaclean.com" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="min-h-screen bg-background">
+      <!-- Header -->
+      <header class="fixed top-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-md border-b border-border/50">
+        <div class="container">
+          <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <a href="/" class="font-heading text-2xl text-foreground">
+              nude
+            </a>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center gap-8">
+              <a 
+                href="#nosotros" 
+                class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Nosotros
+              </a>
+              <a 
+                href="#productos" 
+                class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Productos
+              </a>
+            </nav>
+
+            <!-- Cart button -->
+            <button 
+              id="cart-toggle"
+              class="btn btn-nude-ghost btn-icon relative"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <span id="cart-badge" class="cart-badge hidden">0</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <!-- Hero -->
+        <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+          <!-- Background image -->
+          <div 
+            class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style="background-image: url('img/hero-bg.jpg')"
+          ></div>
+          <div class="absolute inset-0 bg-background/40"></div>
+          
+          <!-- Content -->
+          <div class="container relative z-10 text-center px-6">
+            <div class="animate-fade-in">
+              <h1 class="font-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-foreground mb-4">
+                nude
+              </h1>
+              <p class="font-body text-lg sm:text-xl md:text-2xl text-muted-foreground tracking-widest uppercase mb-12">
+                Cosmética clean hecha a mano
+              </p>
+              
+              <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button 
+                  id="scroll-to-products"
+                  class="btn btn-nude btn-lg min-w-[200px]"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  Ver productos
+                </button>
+                <a 
+                  href="https://wa.me/34600000000?text=Hola,%20me%20gustaría%20saber%20más%20sobre%20sus%20productos" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="btn btn-nude-outline btn-lg min-w-[200px]"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  Hablar por WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decorative elements -->
+          <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent"></div>
+        </section>
+
+        <!-- About -->
+        <section id="nosotros" class="py-24 bg-background">
+          <div class="container">
+            <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+              <!-- Text content -->
+              <div class="animate-slide-up" style="animation-delay: 0.1s">
+                <h2 class="font-heading text-4xl md:text-5xl text-foreground mb-6">
+                  Belleza natural, hecha con amor
+                </h2>
+                <div class="space-y-4 text-muted-foreground leading-relaxed">
+                  <p>
+                    En <span class="text-foreground font-medium">nude</span>, creemos que la verdadera belleza viene de lo natural. 
+                    Cada producto está elaborado a mano en pequeños lotes, utilizando únicamente ingredientes de origen vegetal 
+                    y orgánico que nutren tu piel sin comprometer tu salud ni el medio ambiente.
+                  </p>
+                  <p>
+                    Nos dedicamos a crear fórmulas simples pero efectivas, libres de químicos agresivos, 
+                    parabenos y fragancias sintéticas. Solo lo esencial, nada más.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Image placeholder -->
+              <div 
+                class="relative aspect-[4/5] rounded-sm overflow-hidden bg-nude-sand/30 animate-slide-up"
+                style="animation-delay: 0.2s"
+              >
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-center text-muted-foreground/60">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-nude-sand/50 flex items-center justify-center">
+                      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p class="text-sm">Imagen del taller</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- WhyClean -->
+        <section class="py-24 bg-nude-soft">
+          <div class="container">
+            <div class="text-center mb-16">
+              <h2 class="font-heading text-4xl md:text-5xl text-foreground mb-4">
+                ¿Por qué cosmética clean?
+              </h2>
+              <p class="text-muted-foreground max-w-xl mx-auto">
+                Tu piel merece lo mejor. Descubre los beneficios de elegir productos naturales y conscientes.
+              </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+              <div 
+                class="text-center p-8 rounded-sm bg-background/50 backdrop-blur-sm animate-slide-up"
+                style="animation-delay: 0.1s"
+              >
+                <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-nude-cream flex items-center justify-center">
+                  <svg class="w-7 h-7 text-nude-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232 1.232 3.228 0 4.46s-3.228 1.232-4.46 0L15.3 19.8m-3.3-3.3l-1.402 1.402c-1.232 1.232-3.228 1.232-4.46 0s-1.232-3.228 0-4.46L5 14.5" />
+                  </svg>
+                </div>
+                <h3 class="font-heading text-2xl text-foreground mb-3">
+                  Sin parabenos
+                </h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Fórmulas limpias sin conservantes sintéticos que puedan dañar tu piel
+                </p>
+              </div>
+
+              <div 
+                class="text-center p-8 rounded-sm bg-background/50 backdrop-blur-sm animate-slide-up"
+                style="animation-delay: 0.2s"
+              >
+                <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-nude-cream flex items-center justify-center">
+                  <svg class="w-7 h-7 text-nude-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                  </svg>
+                </div>
+                <h3 class="font-heading text-2xl text-foreground mb-3">
+                  Sin crueldad animal
+                </h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Nunca testamos en animales. 100% cruelty-free y vegano
+                </p>
+              </div>
+
+              <div 
+                class="text-center p-8 rounded-sm bg-background/50 backdrop-blur-sm animate-slide-up"
+                style="animation-delay: 0.3s"
+              >
+                <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-nude-cream flex items-center justify-center">
+                  <svg class="w-7 h-7 text-nude-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12H2.25m4.007 5.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M12 5.25V3m0 0V2.25M12 3v.75m0 16.5V21m0 0h.75M12 21H9m3 0h3m-3 0v-.75M15 21v.75m0 0h.75M15 21H18m0 0h.75M18 21v-.75m0 0V15M18 21h2.25M18 18.75v.75M18 18.75h2.25m-2.25 0h-2.25m2.25-2.25v-2.25m0 2.25h2.25m-2.25 0h-2.25" />
+                  </svg>
+                </div>
+                <h3 class="font-heading text-2xl text-foreground mb-3">
+                  Hecho en pequeños lotes
+                </h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Producción artesanal que garantiza frescura y calidad en cada producto
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ProductGrid -->
+        <section id="productos" class="py-24 bg-background">
+          <div class="container">
+            <div class="text-center mb-16">
+              <h2 class="font-heading text-4xl md:text-5xl text-foreground mb-4">
+                Nuestros productos
+              </h2>
+              <p class="text-muted-foreground max-w-xl mx-auto">
+                Descubre nuestra colección de productos artesanales, creados con ingredientes naturales y mucho cariño.
+              </p>
+            </div>
+
+            <div id="products-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              <!-- Products will be rendered here by JavaScript -->
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="py-12 bg-nude-soft border-t border-border">
+        <div class="container">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <!-- Logo -->
+            <div class="text-center md:text-left">
+              <span class="font-heading text-3xl text-foreground">nude</span>
+              <p class="text-muted-foreground text-sm mt-1">
+                Cosmética clean hecha a mano
+              </p>
+            </div>
+
+            <!-- Social links -->
+            <div class="flex items-center gap-4">
+              <a
+                href="https://wa.me/34600000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-background hover:bg-nude-cream transition-colors"
+                aria-label="WhatsApp"
+              >
+                <svg class="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </a>
+              <a
+                href="https://instagram.com/nude.cosmeticaclean"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-background hover:bg-nude-cream transition-colors"
+                aria-label="Instagram"
+              >
+                <svg class="w-5 h-5 text-foreground" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Copyright -->
+          <div class="mt-8 pt-8 border-t border-border/50 text-center">
+            <p class="text-muted-foreground text-sm">
+              © <span id="current-year"></span> nude.cosmeticaclean. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      <!-- Cart Sidebar -->
+      <div id="cart-overlay" class="cart-overlay hidden"></div>
+      <aside id="cart-sidebar" class="cart-sidebar hidden">
+        <div class="flex flex-col h-full">
+          <!-- Header -->
+          <header class="flex items-center justify-between p-6 border-b border-border">
+            <h2 class="font-heading text-2xl text-foreground">Tu carrito</h2>
+            <button 
+              id="cart-close"
+              class="btn btn-nude-ghost btn-icon"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </header>
+
+          <!-- Items -->
+          <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+            <div class="text-center py-12 text-muted-foreground">
+              <p>Tu carrito está vacío</p>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer id="cart-footer" class="p-6 border-t border-border space-y-4 hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-muted-foreground">Total</span>
+              <span id="cart-total" class="font-heading text-2xl text-foreground">
+                €0.00
+              </span>
+            </div>
+            <button 
+              id="whatsapp-checkout"
+              class="btn btn-nude btn-lg w-full"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Finalizar por WhatsApp
+            </button>
+          </footer>
+        </div>
+      </aside>
+    </div>
+
+    <script src="app.js"></script>
   </body>
 </html>

@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Sérum Facial Renovador",
+    "description": "Hidratación profunda con aceite de rosa mosqueta",
+    "price": 45.00,
+    "image": "/products/serum.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Crema Nutritiva de Noche",
+    "description": "Regeneración celular con manteca de karité",
+    "price": 38.00,
+    "image": "/products/cream.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Bálsamo Labial Natural",
+    "description": "Suavidad duradera con cera de abejas",
+    "price": 12.00,
+    "image": "/products/lip-balm.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Aceite Corporal Aromático",
+    "description": "Hidratación intensa con lavanda y jojoba",
+    "price": 32.00,
+    "image": "/products/body-oil.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Exfoliante Suave de Avena",
+    "description": "Limpieza delicada para pieles sensibles",
+    "price": 28.00,
+    "image": "/products/scrub.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Mascarilla de Arcilla Rosa",
+    "description": "Purificación y luminosidad natural",
+    "price": 25.00,
+    "image": "/products/mask.jpg"
+  }
+]

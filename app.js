@@ -1,26 +1,33 @@
+// WhatsApp number constant
+const WHATSAPP_NUMBER = "5493517033348";
+
 // Carousel state management (per product)
 const CarouselState = {
   states: new Map(), // productId -> currentIndex
 
   getIndex(productId) {
-    return this.states.get(productId) || 0;
+    const key = String(productId);
+    return this.states.get(key) || 0;
   },
 
   setIndex(productId, index) {
-    this.states.set(productId, index);
+    const key = String(productId);
+    this.states.set(key, index);
   },
 
   next(productId, maxIndex) {
-    const current = this.getIndex(productId);
+    const key = String(productId);
+    const current = this.getIndex(key);
     const next = current >= maxIndex ? 0 : current + 1;
-    this.setIndex(productId, next);
+    this.setIndex(key, next);
     return next;
   },
 
   prev(productId, maxIndex) {
-    const current = this.getIndex(productId);
+    const key = String(productId);
+    const current = this.getIndex(key);
     const prev = current <= 0 ? maxIndex : current - 1;
-    this.setIndex(productId, prev);
+    this.setIndex(key, prev);
     return prev;
   }
 };
@@ -35,7 +42,12 @@ const Cart = {
     const stored = localStorage.getItem('nude-cart');
     if (stored) {
       try {
-        this.items = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Ensure all IDs are strings for consistency
+        this.items = parsed.map(item => ({
+          ...item,
+          id: String(item.id)
+        }));
       } catch (e) {
         console.error('Error parsing cart from localStorage:', e);
         this.items = [];
@@ -50,18 +62,20 @@ const Cart = {
   },
 
   addItem(product) {
-    const existing = this.items.find(item => item.id === product.id);
+    const productId = String(product.id);
+    const existing = this.items.find(item => String(item.id) === productId);
     if (existing) {
       existing.quantity += 1;
     } else {
-      this.items.push({ ...product, quantity: 1 });
+      this.items.push({ ...product, id: productId, quantity: 1 });
     }
     this.save();
     this.showToast(`${product.name} añadido al carrito`);
   },
 
   removeItem(id) {
-    this.items = this.items.filter(item => item.id !== id);
+    const itemId = String(id);
+    this.items = this.items.filter(item => String(item.id) !== itemId);
     this.save();
   },
 
@@ -70,7 +84,8 @@ const Cart = {
       this.removeItem(id);
       return;
     }
-    const item = this.items.find(item => item.id === id);
+    const itemId = String(id);
+    const item = this.items.find(item => String(item.id) === itemId);
     if (item) {
       item.quantity = quantity;
       this.save();
@@ -354,7 +369,7 @@ const Products = {
     // Initialize carousel state for each product
     this.products.forEach(product => {
       if (product.images && product.images.length > 0) {
-        CarouselState.setIndex(product.id, 0);
+        CarouselState.setIndex(String(product.id), 0);
       }
     });
   },
@@ -366,7 +381,7 @@ const Products = {
   },
 
   updateCarouselImage(productId, imageIndex) {
-    const product = this.products.find(p => p.id == productId);
+    const product = this.products.find(p => String(p.id) === String(productId));
     if (!product) return;
 
     const images = product.images || [];
@@ -405,7 +420,7 @@ function handleCarouselClick(e) {
   const productId = btn.dataset.productId;
   if (!productId) return;
 
-  const product = Products.products.find(p => p.id == productId);
+  const product = Products.products.find(p => String(p.id) === String(productId));
   if (!product) return;
 
   const images = product.images || [];
@@ -434,13 +449,15 @@ function handleCartAction(e) {
   if (!btn || !btn.dataset.action) return;
 
   const action = btn.dataset.action;
-  const id = parseInt(btn.dataset.id, 10);
+  const id = btn.dataset.id || btn.dataset.productId;
 
-  if (isNaN(id)) return;
+  if (!id) return;
+
+  const itemId = String(id);
 
   switch (action) {
     case 'add-to-cart':
-      const product = Products.products.find(p => p.id == id);
+      const product = Products.products.find(p => String(p.id) === itemId);
       if (product) {
         Cart.addItem({
           id: product.id,
@@ -450,19 +467,19 @@ function handleCartAction(e) {
       }
       break;
     case 'increase':
-      const itemInc = Cart.items.find(item => item.id === id);
+      const itemInc = Cart.items.find(item => String(item.id) === itemId);
       if (itemInc) {
-        Cart.updateQuantity(id, itemInc.quantity + 1);
+        Cart.updateQuantity(itemId, itemInc.quantity + 1);
       }
       break;
     case 'decrease':
-      const itemDec = Cart.items.find(item => item.id === id);
+      const itemDec = Cart.items.find(item => String(item.id) === itemId);
       if (itemDec) {
-        Cart.updateQuantity(id, itemDec.quantity - 1);
+        Cart.updateQuantity(itemId, itemDec.quantity - 1);
       }
       break;
     case 'remove':
-      Cart.removeItem(id);
+      Cart.removeItem(itemId);
       break;
   }
 }
@@ -529,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const message = Cart.buildWhatsAppMessage();
-      window.open(`https://wa.me/5493517033348?text=${message}`, '_blank');
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
     });
   }
 

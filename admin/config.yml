@@ -13,6 +13,8 @@ collections:
     format: "json"
     extension: "json"
     slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — ${{price}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }

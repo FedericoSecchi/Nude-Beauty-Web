@@ -54,6 +54,10 @@ This static site can be deployed to any static hosting service:
 - **GitHub Pages**: Enable in repository settings
 - **Any web server**: Upload all files to your server
 
+Note for GitHub Pages: set the Pages source to `main` and `/ (root)` so the
+`/admin/` route is served directly. If Pages is configured to serve from `/docs`
+or a different branch, `/admin/` will 404.
+
 ## Technologies
 
 - HTML5

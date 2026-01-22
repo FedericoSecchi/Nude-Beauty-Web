@@ -1,0 +1,27 @@
+backend:
+  name: github
+  repo: FedericoSecchi/nude-beauty-landing
+  branch: main
+  auth_scope: repo
+  base_url: https://decap-oauth-proxy.netlify.app
+  auth_endpoint: /auth
+
+media_folder: "img/products"
+public_folder: "/img/products"
+
+collections:
+  - name: "products"
+    label: "Products"
+    folder: "products"
+    create: true
+    format: "json"
+    extension: "json"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Price", name: "price", widget: "number", value_type: "float" }
+      - label: "Images"
+        name: "images"
+        widget: "list"
+        field: { label: "Image", name: "image", widget: "image" }

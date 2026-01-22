@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: FedericoSecchi/nude-beauty-landing
+  repo: FedericoSecchi/Nude-Beauty-Web
   branch: main
   auth_scope: repo
   base_url: https://decap-oauth-proxy.netlify.app

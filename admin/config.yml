@@ -1,10 +1,6 @@
 backend:
-  name: github
-  repo: FedericoSecchi/Nude-Beauty-Web
+  name: git-gateway
   branch: main
-  auth_scope: repo
-  base_url: https://decap-oauth-proxy.netlify.app
-  auth_endpoint: /auth
 
 media_folder: "img/products"
 public_folder: "/img/products"

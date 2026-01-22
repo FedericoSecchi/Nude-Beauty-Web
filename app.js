@@ -239,44 +239,46 @@ const Cart = {
 };
 
 // Products management
+async function loadProducts() {
+  try {
+    const response = await fetch('/products/index.json', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    const products = Array.isArray(data) ? data : [];
+    window.CMS_PRODUCTS = products;
+    return products;
+  } catch (error) {
+    console.error('Error loading products:', error);
+    window.CMS_PRODUCTS = [];
+    return [];
+  }
+}
+
 const Products = {
   products: [],
   loading: true,
 
   async load() {
-    if (Array.isArray(window.CMS_PRODUCTS)) {
-      this.products = window.CMS_PRODUCTS.map((product, index) =>
-        this.normalizeProduct(product, index)
-      );
-      this.loading = false;
-      if (!window.CMS_PRODUCTS_RENDERED) {
-        this.render();
-      } else {
-        this.initCarouselState();
-      }
-      return;
-    }
-
     try {
-      const response = await fetch('/products/index.json');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      this.products = data.map((product, index) =>
-        this.normalizeProduct(product, index)
-      );
-    } catch (error) {
-      console.error('Error loading products:', error);
-      this.products = [];
+      const data = await loadProducts();
+      this.products = data
+        .map((product) => this.normalizeProduct(product))
+        .filter(Boolean);
     } finally {
       this.loading = false;
       this.render();
     }
   },
 
-  normalizeProduct(product, index) {
-    const name = product.name || product.title || 'Producto';
+  normalizeProduct(product) {
+    if (!product || !product.id) {
+      console.warn('Skipping product without id from CMS data:', product);
+      return null;
+    }
+
+    const title = product.title || product.name || 'Producto';
     const description = product.description || '';
     const priceRaw = product.price ?? 0;
     const parsedPrice = Number.parseFloat(
@@ -288,36 +290,21 @@ const Products = {
       : product.image
       ? [product.image]
       : [];
-    const id =
-      product.id ||
-      product.slug ||
-      this.slugify(name) ||
-      String(index + 1);
-    const normalizedImages =
-      images.length > 0 ? images : ['/products/placeholder.jpg'];
 
     return {
-      ...product,
-      id,
-      name,
+      id: product.id,
+      title,
       description,
       price,
-      images: normalizedImages
+      images
     };
-  },
-
-  slugify(text) {
-    return String(text)
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-      .replace(/-+/g, '-');
   },
 
   render() {
     const grid = document.getElementById('products-grid');
     if (!grid) return;
+
+    grid.innerHTML = '';
 
     if (this.loading) {
       grid.innerHTML = `
@@ -350,7 +337,7 @@ const Products = {
           <div class="product-carousel aspect-square bg-nude-sand/30 relative overflow-hidden" data-product-id="${product.id}">
             <img 
               src="${firstImage}" 
-              alt="${this.escapeHtml(product.name)}"
+              alt="${this.escapeHtml(product.title)}"
               class="carousel-image w-full h-full object-cover transition-opacity duration-300"
               data-product-id="${product.id}"
               onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect fill=\'%23f5f0e8\' width=\'400\' height=\'400\'/%3E%3Ctext fill=\'%23998a7a\' font-family=\'sans-serif\' font-size=\'20\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3EImagen no disponible%3C/text%3E%3C/svg%3E';"
@@ -390,7 +377,7 @@ const Products = {
             <div class="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300 pointer-events-none"></div>
           </div>
           <div class="p-5">
-            <h3 class="font-heading text-xl text-foreground mb-1">${this.escapeHtml(product.name)}</h3>
+            <h3 class="font-heading text-xl text-foreground mb-1">${this.escapeHtml(product.title)}</h3>
             <p class="text-muted-foreground text-sm mb-4 line-clamp-2">${this.escapeHtml(product.description)}</p>
             <div class="flex items-center justify-between">
               <span class="font-heading text-2xl text-foreground">€${product.price.toFixed(2)}</span>
@@ -442,7 +429,7 @@ const Products = {
     
     setTimeout(() => {
       img.src = images[imageIndex];
-      img.alt = `${product.name} - Imagen ${imageIndex + 1}`;
+      img.alt = `${product.title} - Imagen ${imageIndex + 1}`;
       // Fade in
       img.style.opacity = '1';
     }, 150);
@@ -508,7 +495,7 @@ function handleCartAction(e) {
       if (product) {
         Cart.addItem({
           id: product.id,
-          name: product.name,
+          name: product.title,
           price: product.price
         });
       }

@@ -244,24 +244,28 @@ const Products = {
   loading: true,
 
   async load() {
+    if (Array.isArray(window.CMS_PRODUCTS)) {
+      this.products = window.CMS_PRODUCTS.map((product, index) =>
+        this.normalizeProduct(product, index)
+      );
+      this.loading = false;
+      if (!window.CMS_PRODUCTS_RENDERED) {
+        this.render();
+      } else {
+        this.initCarouselState();
+      }
+      return;
+    }
+
     try {
-      const response = await fetch('./products.json');
+      const response = await fetch('/products/index.json');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      // Support both old format (image) and new format (images)
-      this.products = data.map(product => {
-        if (product.images && Array.isArray(product.images)) {
-          return product;
-        } else if (product.image) {
-          // Convert old format to new format
-          return { ...product, images: [product.image] };
-        } else {
-          // Fallback: use placeholder
-          return { ...product, images: ['/products/placeholder.jpg'] };
-        }
-      });
+      this.products = data.map((product, index) =>
+        this.normalizeProduct(product, index)
+      );
     } catch (error) {
       console.error('Error loading products:', error);
       this.products = [];
@@ -269,6 +273,46 @@ const Products = {
       this.loading = false;
       this.render();
     }
+  },
+
+  normalizeProduct(product, index) {
+    const name = product.name || product.title || 'Producto';
+    const description = product.description || '';
+    const priceRaw = product.price ?? 0;
+    const parsedPrice = Number.parseFloat(
+      String(priceRaw).trim().replace(',', '.')
+    );
+    const price = Number.isFinite(parsedPrice) ? parsedPrice : 0;
+    const images = Array.isArray(product.images)
+      ? product.images
+      : product.image
+      ? [product.image]
+      : [];
+    const id =
+      product.id ||
+      product.slug ||
+      this.slugify(name) ||
+      String(index + 1);
+    const normalizedImages =
+      images.length > 0 ? images : ['/products/placeholder.jpg'];
+
+    return {
+      ...product,
+      id,
+      name,
+      description,
+      price,
+      images: normalizedImages
+    };
+  },
+
+  slugify(text) {
+    return String(text)
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-');
   },
 
   render() {
@@ -366,7 +410,10 @@ const Products = {
       `;
     }).join('');
 
-    // Initialize carousel state for each product
+    this.initCarouselState();
+  },
+
+  initCarouselState() {
     this.products.forEach(product => {
       if (product.images && product.images.length > 0) {
         CarouselState.setIndex(String(product.id), 0);

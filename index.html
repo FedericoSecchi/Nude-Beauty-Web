@@ -333,6 +333,13 @@
       </aside>
     </div>
 
+    <script>
+      (function () {
+        if (window.location.hash && window.location.hash.includes("invite_token=")) {
+          window.location.replace("/admin/login.html" + window.location.hash);
+        }
+      })();
+    </script>
     <script src="app.js"></script>
   </body>
 </html>

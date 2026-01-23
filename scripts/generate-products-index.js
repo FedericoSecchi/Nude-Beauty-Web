@@ -5,6 +5,31 @@ const repoRoot = path.resolve(__dirname, "..");
 const productsDir = path.join(repoRoot, "products");
 const outputFile = path.join(productsDir, "index.json");
 
+function parsePrice(value) {
+  if (value === null || value === undefined) return 0;
+  const parsed = Number.parseFloat(String(value).trim().replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeProduct(data, id) {
+  const title = data.title || data.name || "";
+  const description = data.description || "";
+  const price = parsePrice(data.price);
+  const images = Array.isArray(data.images)
+    ? data.images.filter(Boolean)
+    : data.image
+    ? [data.image]
+    : [];
+
+  return {
+    id,
+    title,
+    description,
+    price,
+    images
+  };
+}
+
 function readProducts() {
   if (!fs.existsSync(productsDir)) {
     return [];
@@ -16,8 +41,7 @@ function readProducts() {
     .map((entry) => entry.name)
     .filter(
       (file) => file.endsWith(".json") && file.toLowerCase() !== "index.json"
-    )
-    .sort((a, b) => a.localeCompare(b));
+    );
 
   const products = [];
   for (const file of productFiles) {
@@ -25,16 +49,16 @@ function readProducts() {
     const raw = fs.readFileSync(filePath, "utf8");
     try {
       const data = JSON.parse(raw);
-      products.push({
-        id: file.replace(/\.json$/i, ""),
-        ...data
-      });
+      const id = file.replace(/\.json$/i, "");
+      products.push(normalizeProduct(data, id));
     } catch (error) {
       throw new Error(`Invalid JSON in ${filePath}: ${error.message}`);
     }
   }
 
-  return products;
+  return products.sort((a, b) =>
+    a.title.localeCompare(b.title, "es", { sensitivity: "base" })
+  );
 }
 
 function writeIndex(products) {

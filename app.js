@@ -240,41 +240,9 @@ const Cart = {
 
 // Products management
 async function loadProducts() {
-  try {
-    const response = await fetch('/products/index.json', { cache: 'no-store' });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    const products = Array.isArray(data) ? data : [];
-    window.CMS_PRODUCTS = products;
-    return products;
-  } catch (error) {
-    console.error('Error loading products:', error);
-    window.CMS_PRODUCTS = [];
-    return [];
-  }
-}
-
-const Products = {
-  products: [],
-  loading: true,
-
-  async load() {
-    try {
-      const data = await loadProducts();
-      this.products = data
-        .map((product) => this.normalizeProduct(product))
-        .filter(Boolean);
-    } finally {
-      this.loading = false;
-      this.render();
-    }
-  },
-
-  normalizeProduct(product) {
+  const normalizeProduct = (product) => {
     if (!product || !product.id) {
-      console.warn('Skipping product without id from CMS data:', product);
+      console.warn('Skipping product without id from index.json:', product);
       return null;
     }
 
@@ -298,6 +266,38 @@ const Products = {
       price,
       images
     };
+  };
+
+  try {
+    const response = await fetch('/products/index.json', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    const products = Array.isArray(data)
+      ? data.map((product) => normalizeProduct(product)).filter(Boolean)
+      : [];
+    window.CMS_PRODUCTS = products;
+    return products;
+  } catch (error) {
+    console.error('Error loading products:', error);
+    window.CMS_PRODUCTS = [];
+    return [];
+  }
+}
+
+const Products = {
+  products: [],
+  loading: true,
+
+  async load() {
+    try {
+      const data = await loadProducts();
+      this.products = data;
+    } finally {
+      this.loading = false;
+      this.render();
+    }
   },
 
   render() {

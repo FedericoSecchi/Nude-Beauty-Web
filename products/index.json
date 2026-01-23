@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "hola-1",
+    "title": "Hola",
+    "description": "lorem",
+    "price": 20,
+    "images": [
+      "/img/products/barco-papa-con-sus-amigos.jpg"
+    ]
+  },
+  {
+    "id": "hola",
+    "title": "Hola",
+    "description": "lorem",
+    "price": 20,
+    "images": [
+      "/img/products/barco-papa-con-sus-amigos.jpg"
+    ]
+  }
+]

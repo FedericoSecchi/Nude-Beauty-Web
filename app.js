@@ -1,6 +1,3 @@
-// WhatsApp number constant
-const WHATSAPP_NUMBER = "5493517033348";
-
 // Carousel state management (per product)
 const CarouselState = {
   states: new Map(), // productId -> currentIndex
@@ -36,6 +33,7 @@ const CarouselState = {
 const Cart = {
   items: [],
   isOpen: false,
+  email: '',
 
   init() {
     // Load from localStorage
@@ -46,12 +44,17 @@ const Cart = {
         // Ensure all IDs are strings for consistency
         this.items = parsed.map(item => ({
           ...item,
-          id: String(item.id)
+          id: String(item.id),
+          title: item.title || item.name || 'Producto'
         }));
       } catch (e) {
         console.error('Error parsing cart from localStorage:', e);
         this.items = [];
       }
+    }
+    const storedEmail = localStorage.getItem('nude-cart-email');
+    if (storedEmail) {
+      this.email = storedEmail;
     }
     this.updateUI();
   },
@@ -59,6 +62,11 @@ const Cart = {
   save() {
     localStorage.setItem('nude-cart', JSON.stringify(this.items));
     this.updateUI();
+  },
+
+  setEmail(value) {
+    this.email = value;
+    localStorage.setItem('nude-cart-email', value);
   },
 
   addItem(product) {
@@ -70,7 +78,7 @@ const Cart = {
       this.items.push({ ...product, id: productId, quantity: 1 });
     }
     this.save();
-    this.showToast(`${product.name} añadido al carrito`);
+    this.showToast(`${product.title} añadido al carrito`);
   },
 
   removeItem(id) {
@@ -100,13 +108,52 @@ const Cart = {
     return this.items.reduce((sum, item) => sum + item.quantity, 0);
   },
 
-  buildWhatsAppMessage() {
-    let message = '¡Hola! Me gustaría hacer un pedido:\n\n';
-    this.items.forEach((item) => {
-      message += `• ${item.name} x${item.quantity} - €${(item.price * item.quantity).toFixed(2)}\n`;
-    });
-    message += `\nTotal: €${this.total.toFixed(2)}`;
-    return encodeURIComponent(message);
+  async checkout() {
+    if (this.items.length === 0) {
+      this.showToast('Tu carrito está vacío');
+      return;
+    }
+
+    let email = this.email;
+    if (!email) {
+      email = window.prompt('Ingresa tu email para enviar la confirmación:');
+      if (!email) {
+        this.showToast('Necesitamos un email para continuar.');
+        return;
+      }
+      this.setEmail(email);
+    }
+
+    try {
+      const response = await fetch('/.netlify/functions/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: this.items.map(item => ({
+            id: String(item.id),
+            title: item.title,
+            price: item.price,
+            quantity: item.quantity
+          })),
+          customer: { email }
+        })
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        throw new Error(errorBody.message || 'No se pudo iniciar el pago.');
+      }
+
+      const data = await response.json();
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        throw new Error('No se recibió el enlace de pago.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      this.showToast(error.message || 'No se pudo iniciar el pago.');
+    }
   },
 
   open() {
@@ -173,7 +220,7 @@ const Cart = {
             <li class="flex gap-4 p-4 bg-card rounded-sm">
               <div class="w-16 h-16 bg-nude-sand/30 rounded-sm flex-shrink-0"></div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-heading text-foreground truncate">${this.escapeHtml(item.name)}</h3>
+                <h3 class="font-heading text-foreground truncate">${this.escapeHtml(item.title)}</h3>
                 <p class="text-muted-foreground text-sm">€${item.price.toFixed(2)}</p>
                 <div class="flex items-center gap-2 mt-2">
                   <button
@@ -515,7 +562,7 @@ function handleCartAction(e) {
       if (product) {
         Cart.addItem({
           id: product.id,
-          name: product.title,
+          title: product.title,
           price: product.price
         });
       }
@@ -591,16 +638,17 @@ document.addEventListener('DOMContentLoaded', () => {
     productsGrid.addEventListener('click', handleCarouselClick);
   }
 
-  // WhatsApp checkout
-  const whatsappCheckout = document.getElementById('whatsapp-checkout');
-  if (whatsappCheckout) {
-    whatsappCheckout.addEventListener('click', () => {
-      if (Cart.items.length === 0) {
-        Cart.showToast('Tu carrito está vacío');
-        return;
-      }
-      const message = Cart.buildWhatsAppMessage();
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+  // Checkout
+  const checkoutButton = document.getElementById('checkout-button');
+  if (checkoutButton) {
+    checkoutButton.addEventListener('click', () => Cart.checkout());
+  }
+
+  const checkoutEmail = document.getElementById('checkout-email');
+  if (checkoutEmail) {
+    checkoutEmail.value = Cart.email || '';
+    checkoutEmail.addEventListener('input', (event) => {
+      Cart.setEmail(event.target.value.trim());
     });
   }
 

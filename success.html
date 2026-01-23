@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pago confirmado | nude</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-background">
+    <main class="min-h-screen flex items-center justify-center px-6">
+      <div class="max-w-lg text-center bg-card border border-border rounded-sm p-10">
+        <h1 class="font-heading text-3xl text-foreground mb-4">
+          ¡Pago confirmado!
+        </h1>
+        <p class="text-muted-foreground mb-6">
+          Gracias por tu compra. Te enviaremos un email con los detalles del pedido.
+        </p>
+        <a href="/" class="btn btn-nude btn-lg">
+          Volver al inicio
+        </a>
+      </div>
+    </main>
+
+    <script>
+      localStorage.removeItem('nude-cart');
+      localStorage.removeItem('nude-cart-email');
+    </script>
+  </body>
+</html>

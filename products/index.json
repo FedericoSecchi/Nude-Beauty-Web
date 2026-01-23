@@ -1,0 +1,32 @@
+[
+  {
+    "id": "hey",
+    "title": "Hey",
+    "description": "Lorem",
+    "price": 900,
+    "mp_link": "",
+    "images": [
+      "/img/products/barco-papa-con-sus-amigos.jpg"
+    ]
+  },
+  {
+    "id": "hola",
+    "title": "Hola",
+    "description": "lorem",
+    "price": 20,
+    "mp_link": "",
+    "images": [
+      "/img/products/barco-papa-con-sus-amigos.jpg"
+    ]
+  },
+  {
+    "id": "test1",
+    "title": "test1",
+    "description": "Lorem ",
+    "price": 10,
+    "mp_link": "",
+    "images": [
+      "/img/products/barco-papa-con-sus-amigos.jpg"
+    ]
+  }
+]

@@ -34,6 +34,7 @@ const Cart = {
   items: [],
   isOpen: false,
   email: '',
+  emailTouched: false,
 
   init() {
     // Load from localStorage
@@ -67,6 +68,7 @@ const Cart = {
   setEmail(value) {
     this.email = value;
     localStorage.setItem('nude-cart-email', value);
+    this.updateCheckoutState();
   },
 
   addItem(product) {
@@ -108,6 +110,35 @@ const Cart = {
     return this.items.reduce((sum, item) => sum + item.quantity, 0);
   },
 
+  isEmailValid(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  },
+
+  showEmailError(message) {
+    const errorEl = document.getElementById('checkout-email-error');
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.remove('hidden');
+    errorEl.classList.add('checkout-error--visible');
+  },
+
+  clearEmailError() {
+    const errorEl = document.getElementById('checkout-email-error');
+    if (!errorEl) return;
+    errorEl.textContent = '';
+    errorEl.classList.add('hidden');
+    errorEl.classList.remove('checkout-error--visible');
+  },
+
+  updateCheckoutState() {
+    const checkoutButton = document.getElementById('checkout-button');
+    if (!checkoutButton) return;
+
+    const hasItems = this.items.length > 0;
+    const hasValidEmail = this.isEmailValid(this.email);
+    checkoutButton.disabled = !hasItems || !hasValidEmail;
+  },
+
   async checkout() {
     if (this.items.length === 0) {
       this.showToast('Tu carrito está vacío');
@@ -115,14 +146,13 @@ const Cart = {
     }
 
     let email = this.email;
-    if (!email) {
-      email = window.prompt('Ingresa tu email para enviar la confirmación:');
-      if (!email) {
-        this.showToast('Necesitamos un email para continuar.');
-        return;
-      }
-      this.setEmail(email);
+    if (!this.isEmailValid(email)) {
+      this.emailTouched = true;
+      this.showEmailError('Ingresa un email válido para continuar.');
+      this.updateCheckoutState();
+      return;
     }
+    this.clearEmailError();
 
     try {
       const response = await fetch('/.netlify/functions/create-order', {
@@ -194,6 +224,8 @@ const Cart = {
     const itemsContainer = document.getElementById('cart-items');
     const footer = document.getElementById('cart-footer');
     const totalElement = document.getElementById('cart-total');
+    const checkoutEmail = document.getElementById('checkout-email');
+    const checkoutError = document.getElementById('checkout-email-error');
 
     if (!overlay || !sidebar || !itemsContainer) return;
 
@@ -264,6 +296,19 @@ const Cart = {
         }
       }
     }
+
+    if (checkoutEmail) {
+      if (checkoutEmail.value !== this.email) {
+        checkoutEmail.value = this.email;
+      }
+      if (!this.emailTouched || this.isEmailValid(this.email)) {
+        this.clearEmailError();
+      } else if (checkoutError && checkoutError.classList.contains('hidden')) {
+        this.showEmailError('Ingresa un email válido para continuar.');
+      }
+    }
+
+    this.updateCheckoutState();
   },
 
   escapeHtml(text) {
@@ -648,7 +693,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (checkoutEmail) {
     checkoutEmail.value = Cart.email || '';
     checkoutEmail.addEventListener('input', (event) => {
+      Cart.emailTouched = true;
       Cart.setEmail(event.target.value.trim());
+      if (!Cart.isEmailValid(Cart.email)) {
+        Cart.showEmailError('Ingresa un email válido para continuar.');
+      } else {
+        Cart.clearEmailError();
+      }
     });
   }
 

@@ -15,6 +15,10 @@ function normalizeProduct(data, id) {
   const title = data.title || data.name || "";
   const description = data.description || "";
   const price = parsePrice(data.price);
+  const mpLink =
+    typeof data.mp_link === "string" && data.mp_link.trim()
+      ? data.mp_link.trim()
+      : "";
   const images = Array.isArray(data.images)
     ? data.images.filter(Boolean)
     : data.image
@@ -26,6 +30,7 @@ function normalizeProduct(data, id) {
     title,
     description,
     price,
+    mp_link: mpLink,
     images
   };
 }

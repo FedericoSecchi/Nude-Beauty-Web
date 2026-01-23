@@ -258,13 +258,18 @@ async function loadProducts() {
       : product.image
       ? [product.image]
       : [];
+    const mpLink =
+      typeof product.mp_link === 'string' && product.mp_link.trim()
+        ? product.mp_link.trim()
+        : '';
 
     return {
       id: product.id,
       title,
       description,
       price,
-      images
+      images,
+      mp_link: mpLink
     };
   };
 
@@ -379,18 +384,33 @@ const Products = {
           <div class="p-5">
             <h3 class="font-heading text-xl text-foreground mb-1">${this.escapeHtml(product.title)}</h3>
             <p class="text-muted-foreground text-sm mb-4 line-clamp-2">${this.escapeHtml(product.description)}</p>
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <span class="font-heading text-2xl text-foreground">€${product.price.toFixed(2)}</span>
-              <button 
-                data-action="add-to-cart"
-                data-product-id="${product.id}"
-                class="btn btn-nude btn-sm"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                Agregar
-              </button>
+              ${
+                product.mp_link
+                  ? `
+                    <a
+                      href="${this.escapeHtml(product.mp_link)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn btn-nude btn-sm text-center"
+                    >
+                      Comprar con Mercado Pago
+                    </a>
+                  `
+                  : `
+                    <button 
+                      data-action="add-to-cart"
+                      data-product-id="${product.id}"
+                      class="btn btn-nude btn-sm"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      Agregar
+                    </button>
+                  `
+              }
             </div>
           </div>
         </article>

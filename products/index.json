@@ -1,6 +1,6 @@
 [
   {
-    "id": "hola-1",
+    "id": "hola",
     "title": "Hola",
     "description": "lorem",
     "price": 20,
@@ -9,10 +9,10 @@
     ]
   },
   {
-    "id": "hola",
-    "title": "Hola",
-    "description": "lorem",
-    "price": 20,
+    "id": "test1",
+    "title": "test1",
+    "description": "Lorem ",
+    "price": 10,
     "images": [
       "/img/products/barco-papa-con-sus-amigos.jpg"
     ]

@@ -435,6 +435,7 @@ const Products = {
             <img 
               src="${firstImage}" 
               alt="${this.escapeHtml(product.title)}"
+              loading="lazy"
               class="carousel-image w-full h-full object-cover transition-opacity duration-300"
               data-product-id="${product.id}"
               onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect fill=\'%23f5f0e8\' width=\'400\' height=\'400\'/%3E%3Ctext fill=\'%23998a7a\' font-family=\'sans-serif\' font-size=\'20\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3EImagen no disponible%3C/text%3E%3C/svg%3E';"

@@ -1,0 +1,104 @@
+{
+  "name": "Sync Nude Products to GitHub",
+  "nodes": [
+    {
+      "id": "googleSheets_get_rows",
+      "name": "Get Products Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [300, 300],
+      "credentials": {
+        "googleApi": {
+          "id": "GOOGLE_CREDENTIAL_ID",
+          "name": "Google API"
+        }
+      },
+      "parameters": {
+        "operation": "lookup",
+        "sheetId": "",
+        "range": "Productos",
+        "options": {
+          "returnAllMatches": true
+        }
+      }
+    },
+    {
+      "id": "function_process_products",
+      "name": "Process Products",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [600, 300],
+      "parameters": {
+        "functionCode": "const rows = items.map(i => i.json);\n\n// Convert Google Drive URL to direct image link\nfunction toDirectURL(url) {\n  const match = url.match(/\\/d\\/([^/]+)\\//);\n  if (!match) return url.trim();\n  const id = match[1];\n  return `https://drive.google.com/uc?export=view&id=${id}`;\n}\n\nconst products = rows\n  .filter(r => String(r.activo || '').trim().toLowerCase() === 'sí')\n  .map(r => ({\n    id: String(r.id).trim(),\n    name: String(r.nombre).trim(),\n    description: String(r.descripcion).trim(),\n    price: Number(r.precio),\n    images: String(r.imagenes || '')\n      .split(',')\n      .map(url => toDirectURL(url.trim())),\n    category: String(r.categoria || '').trim()\n  }));\n\nreturn [{ json: { products } }];"
+      }
+    },
+    {
+      "id": "function_prepare_file",
+      "name": "Prepare products.json",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "parameters": {
+        "functionCode": "const products = items[0].json.products;\nreturn [{\n  json: {\n    filePath: \"products.json\",\n    fileContent: JSON.stringify(products, null, 2)\n  }\n}];"
+      }
+    },
+    {
+      "id": "github_update_file",
+      "name": "Update File in GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 2,
+      "position": [1200, 300],
+      "credentials": {
+        "githubApi": {
+          "id": "GITHUB_CREDENTIAL_ID",
+          "name": "GitHub API"
+        }
+      },
+      "parameters": {
+        "resource": "file",
+        "operation": "upsert",
+        "owner": "FedericoSecchi",
+        "repository": "nude-beauty-landing",
+        "filePath": "={{$json.filePath}}",
+        "fileContent": "={{$json.fileContent}}",
+        "branch": "main",
+        "commitMessage": "update: sync products.json from Google Sheets"
+      }
+    }
+  ],
+  "connections": {
+    "googleSheets_get_rows": {
+      "main": [
+        [
+          {
+            "node": "function_process_products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "function_process_products": {
+      "main": [
+        [
+          {
+            "node": "function_prepare_file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "function_prepare_file": {
+      "main": [
+        [
+          {
+            "node": "github_update_file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

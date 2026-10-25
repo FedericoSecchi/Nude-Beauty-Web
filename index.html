@@ -13,15 +13,15 @@
     <meta property="og:description" content="Cosmética natural limpia hecha en Argentina" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://nudecosmetica.com" />
-    <meta property="og:image" content="https://nudecosmetica.com/og-image.jpg" />
+    <meta property="og:image" content="https://nudecosmetica.com/img/hero-bg.jpg" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@nudecosmetica" />
-    <meta name="twitter:image" content="https://nudecosmetica.com/og-image.jpg" />
+    <meta name="twitter:image" content="https://nudecosmetica.com/img/hero-bg.jpg" />
 
     <link rel="canonical" href="https://nudecosmetica.com" />
     <script type="application/ld+json">
-      { "@context": "https://schema.org", "@type": "Organization", "name": "Nude Cosmética", "url": "https://nudecosmetica.com", "logo": "https://nudecosmetica.com/logo.png", "sameAs": [] }
+      { "@context": "https://schema.org", "@type": "Organization", "name": "Nude Cosmética", "url": "https://nudecosmetica.com", "sameAs": ["https://instagram.com/nude.cosmeticaclean", "https://nudecosmeticaclean.mitiendanube.com"] }
     </script>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -46,23 +46,12 @@
                 Nosotros
               </a>
               <a 
-                href="#productos" 
+                href="https://nudecosmeticaclean.mitiendanube.com/productos/" 
                 class="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Productos
+                Tienda
               </a>
             </nav>
-
-            <!-- Cart button -->
-            <button 
-              id="cart-toggle"
-              class="btn btn-nude-ghost btn-icon relative"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              <span id="cart-badge" class="cart-badge hidden">0</span>
-            </button>
           </div>
         </div>
       </header>
@@ -88,15 +77,15 @@
               </p>
               
               <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button 
-                  id="scroll-to-products"
+                <a 
+                  href="https://nudecosmeticaclean.mitiendanube.com/productos/"
                   class="btn btn-nude btn-lg min-w-[200px]"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                   Ver productos
-                </button>
+                </a>
                 <a 
                   href="https://wa.me/5493517033348?text=Hola,%20me%20gustaría%20saber%20más%20sobre%20sus%20productos" 
                   target="_blank" 
@@ -225,20 +214,17 @@
           </div>
         </section>
 
-        <!-- ProductGrid -->
+        <!-- Tienda (interino: la venta sigue en Tiendanube) -->
         <section id="productos" class="py-24 bg-background">
           <div class="container">
-            <div class="text-center mb-16">
+            <div class="text-center">
               <h2 class="font-heading text-4xl md:text-5xl text-foreground mb-4">
                 Nuestros productos
               </h2>
-              <p class="text-muted-foreground max-w-xl mx-auto">
-                Descubre nuestra colección de productos artesanales, creados con ingredientes naturales y mucho cariño.
+              <p class="text-muted-foreground max-w-xl mx-auto mb-10">
+                Todo el catálogo, con precios y envíos a todo el país, está en nuestra tienda online.
               </p>
-            </div>
-
-            <div id="products-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              <!-- Products will be rendered here by JavaScript -->
+              <a href="https://nudecosmeticaclean.mitiendanube.com/productos/" class="btn btn-nude btn-lg min-w-[200px]">Ir a la tienda</a>
             </div>
           </div>
         </section>
@@ -294,62 +280,6 @@
           </div>
         </div>
       </footer>
-
-      <!-- Cart Sidebar -->
-      <div id="cart-overlay" class="cart-overlay hidden"></div>
-      <aside id="cart-sidebar" class="cart-sidebar hidden">
-        <div class="flex flex-col h-full">
-          <!-- Header -->
-          <header class="flex items-center justify-between p-6 border-b border-border">
-            <h2 class="font-heading text-2xl text-foreground">Tu carrito</h2>
-            <button 
-              id="cart-close"
-              class="btn btn-nude-ghost btn-icon"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </header>
-
-          <!-- Items -->
-          <div id="cart-items" class="flex-1 overflow-y-auto p-6">
-            <div class="text-center py-12 text-muted-foreground">
-              <p>Tu carrito está vacío</p>
-            </div>
-          </div>
-
-          <!-- Footer -->
-          <footer id="cart-footer" class="p-6 border-t border-border space-y-4 hidden">
-            <div class="flex items-center justify-between">
-              <span class="text-muted-foreground">Total</span>
-              <span id="cart-total" class="font-heading text-2xl text-foreground">
-                €0.00
-              </span>
-            </div>
-            <label class="flex flex-col gap-2 text-sm text-muted-foreground">
-              Email para recibir la confirmación
-              <input
-                id="checkout-email"
-                type="email"
-                placeholder="tucorreo@email.com"
-                class="w-full rounded-sm border border-border bg-background px-3 py-2 text-foreground"
-              />
-              <span id="checkout-email-error" class="checkout-error hidden" aria-live="polite"></span>
-            </label>
-            <button 
-              id="checkout-button"
-              class="btn btn-nude btn-lg w-full"
-              disabled
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.343-3 3v7h6v-7c0-1.657-1.343-3-3-3zm0 0V6a2 2 0 10-4 0v2m8 0V6a2 2 0 10-4 0v2" />
-              </svg>
-              Pagar con Mercado Pago
-            </button>
-          </footer>
-        </div>
-      </aside>
     </div>
 
     <script>

@@ -19,3 +19,19 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.netlify/
+.env*.local
+coverage/
+playwright-report/
+test-results/
+
+# Build artifacts
+netlify/functions/_data/
+tsconfig.tsbuildinfo
+verify-results.txt
+.env.production.local

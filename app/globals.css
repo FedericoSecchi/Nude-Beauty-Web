@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 40 30% 96%;
+  --foreground: 25 25% 18%;
+  --card: 35 35% 94%;
+  --card-foreground: 25 25% 18%;
+  --primary: 28 30% 50%;
+  --primary-foreground: 40 30% 96%;
+  --secondary: 35 25% 88%;
+  --secondary-foreground: 25 25% 25%;
+  --muted: 30 20% 90%;
+  --muted-foreground: 25 15% 45%;
+  --accent: 20 35% 42%;
+  --accent-foreground: 40 30% 96%;
+  --border: 30 20% 85%;
+  --input: 30 20% 85%;
+  --ring: 28 30% 50%;
+  --radius: 0.25rem;
+
+  --nude-cream: 38 40% 94%;
+  --nude-sand: 32 30% 78%;
+  --nude-terracotta: 18 35% 48%;
+  --nude-charcoal: 25 20% 22%;
+  --nude-soft: 35 25% 92%;
+
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg text-ink font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading text-charcoal;
+  }
+  h1 { @apply text-3xl md:text-4xl leading-tight; }
+  h2 { @apply text-2xl md:text-3xl leading-tight; }
+  h3 { @apply text-xl md:text-2xl leading-snug; }
+  a { @apply underline-offset-4; }
+  a:hover { @apply underline; }
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded px-5 py-3 font-medium transition;
+  }
+  .btn-primary {
+    @apply btn bg-charcoal text-cream hover:bg-terracotta no-underline;
+  }
+  .btn-outline {
+    @apply btn border border-charcoal text-charcoal hover:bg-charcoal hover:text-cream no-underline;
+  }
+  .link-ghost {
+    @apply text-charcoal underline underline-offset-4 hover:text-terracotta;
+  }
+  .card {
+    @apply bg-card rounded-md shadow-card p-6;
+  }
+}

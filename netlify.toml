@@ -1,17 +1,21 @@
 [build]
-publish = "."
+command = "npm run build"
+publish = "out"
+functions = "netlify/functions"
 
+[build.environment]
+NODE_VERSION = "20"
+NPM_FLAGS = "--legacy-peer-deps"
+
+# Netlify Identity deja /#invite_token=... llegar al login de Decap.
 [[redirects]]
-from = "/sitemap.xml"
-to = "/sitemap.xml"
-status = 200
+from = "/admin"
+to = "/admin/"
+status = 301
+force = true
 
-[[redirects]]
-from = "/robots.txt"
-to = "/robots.txt"
-status = 200
-
+# 404 real para rutas que no existen (Next export genera 404.html).
 [[redirects]]
 from = "/*"
-to = "/index.html"
-status = 200
+to = "/404.html"
+status = 404

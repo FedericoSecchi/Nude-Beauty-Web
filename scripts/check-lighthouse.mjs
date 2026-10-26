@@ -2,6 +2,9 @@
 // Lighthouse mobile (perfil por defecto: Moto G Power, 4G lenta simulada) sobre una URL.
 // Falla si LCP > 2,5 s o CLS > 0,1. Corre 3 veces y usa la mediana del LCP para no depender de un
 // pico de la máquina. Usa el Chromium de Playwright.
+// En los deploy previews Netlify inyecta /.netlify/scripts/cdp (el "Netlify Drawer" de comentarios:
+// ~300 KB de JS de app.netlify.com, Segment y Bugsnag). Producción no lo tiene, así que se bloquea
+// para medir el sitio tal como lo va a ver la clienta. Contra out/ local no cambia nada.
 //   node scripts/check-lighthouse.mjs <url> [salida.json]
 import { chromium } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
@@ -30,6 +33,8 @@ for (let i = 0; i < RUNS; i++) {
       '--only-categories=performance', '--form-factor=mobile',
       '--output=json', `--output-path=${out}`, '--quiet',
       '--chrome-flags=--headless=new --no-sandbox',
+      '--blocked-url-patterns=*/.netlify/scripts/cdp*',
+      '--blocked-url-patterns=*app.netlify.com/*',
     ],
     { stdio: ['ignore', 'ignore', 'inherit'], env: { ...process.env, CHROME_PATH: chromium.executablePath() } },
   );

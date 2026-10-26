@@ -27,6 +27,8 @@ for (const vp of viewports) {
     hasTouch: vp.mobile,
   });
   const page = await ctx.newPage();
+  // Sin el "Netlify Drawer" que Netlify inyecta en los deploy previews (no existe en producción).
+  await page.route('**/.netlify/scripts/cdp*', (route) => route.abort());
   for (const ruta of paginas) {
     await page.goto(new URL(ruta, base).toString(), { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);

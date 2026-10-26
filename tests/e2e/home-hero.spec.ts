@@ -3,6 +3,12 @@ import { test, expect } from '@playwright/test';
 // Hero de la home: marca, H1, subtítulo, CTAs y la línea de 20% off / cuotas / envíos visibles sin
 // scroll en 390×844 (mobile) y 1366×850 (desktop). La foto es el LCP: prioridad alta y sin lazy-load.
 
+// En los deploy previews Netlify inyecta el "Netlify Drawer" (iframe fijo abajo que tapa la barra de
+// compra). No existe en producción: se bloquea su script para probar el sitio real.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/.netlify/scripts/cdp*', (route) => route.abort());
+});
+
 for (const vp of [
   { nombre: 'mobile 390×844', width: 390, height: 844 },
   { nombre: 'desktop 1366×850', width: 1366, height: 850 },

@@ -1,0 +1,28 @@
+{
+  "url": "https://deploy-preview-2--nude-beauty-web.netlify.app/productos/serum-multi-active/",
+  "fecha": "2026-10-26T20:26:48.871Z",
+  "lcpMedianaMs": 2309,
+  "fcpMs": 1018,
+  "clsMax": 0,
+  "performance": 0.98,
+  "corridas": [
+    {
+      "performance": 1,
+      "lcp": 1604.6385,
+      "cls": 0,
+      "fcp": 1004.6385
+    },
+    {
+      "performance": 0.98,
+      "lcp": 2308.9195,
+      "cls": 0,
+      "fcp": 1017.9195
+    },
+    {
+      "performance": 0.95,
+      "lcp": 2621.767,
+      "cls": 0,
+      "fcp": 984.2669999999999
+    }
+  ]
+}

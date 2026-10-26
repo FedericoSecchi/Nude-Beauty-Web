@@ -16,6 +16,13 @@ const slugs = readdirSync(join(process.cwd(), 'content', 'productos'))
 
 test.use({ viewport: VIEWPORT, isMobile: true, hasTouch: true });
 
+// En los deploy previews Netlify inyecta el "Netlify Drawer" (iframe fijo abajo que tapa la barra de
+// compra). No existe en producción: se bloquea su script para probar el sitio real.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/.netlify/scripts/cdp*', (route) => route.abort());
+});
+
+
 async function abrir(page: Page, url: string) {
   await page.goto(url);
   await page.evaluate(() => document.fonts.ready);

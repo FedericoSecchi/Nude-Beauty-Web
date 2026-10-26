@@ -25,6 +25,63 @@
 
 Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 
+## Identidad visual de NUDE (2026-10-26)
+| Bloque | Estado | Fecha | Evidencia |
+|---|---|---|---|
+| Rebase sobre `origin/main` (PR #1 mergeado) | ✅ | 2026-10-26 | el hotfix de la landing interina quedó en `legacy/index.html`; productos de prueba borrados también de `legacy/` |
+| Hero con foto, terracota, secciones del sitio viejo, fichas y catálogo | ✅ | 2026-10-26 | preview build-id `cc53bdff6821` · 20/20 URLs en 200 · capturas en `docs/capturas/diseno/` |
+
+### Reporte · identidad visual
+
+#### 1. Checks con evidencia
+| Check | Resultado | Evidencia |
+|---|---|---|
+| `verify.sh` | ✅ PASS=17 FAIL=0 SKIP=1 | SKIP = e2e remoto (falta `E2E_TOKEN`), igual que antes |
+| Contraste AA del botón principal | ✅ 4,58:1 normal · 5,49:1 hover | `scripts/check-contraste.mjs` mide en el navegador: blanco `rgb(255,255,255)` sobre `rgb(162,103,78)` (hover `rgb(145,92,70)`) en home, ficha y carrito (la barra fija mobile usa la misma clase) |
+| Lighthouse mobile home · local (`serve` con gzip) | ✅ LCP 2,41 s · CLS 0 · perf 98 | mediana de 3, dentro de `verify.sh` |
+| Lighthouse mobile home · preview | ✅ LCP 2,25 s · CLS 0 · FCP 0,97 s · perf 96 | `docs/capturas/diseno/lighthouse-preview-home.json` (sin el Netlify Drawer, ver decisiones) |
+| Lighthouse mobile ficha · preview | ✅ LCP 2,31 s · CLS 0 · perf 98 | `docs/capturas/diseno/lighthouse-preview-ficha.json` |
+| Antes (preview del PR #2 previo a este cambio) | LCP 6,79 s · CLS 0,033 · perf 68 | medido con el Drawer incluido: no es una comparación 1 a 1, pero el `@import` de Google Fonts sí bloqueaba el render (FCP 3,1 s) |
+| Hero visible sin scroll en 390×844 y 1366×850 | ✅ | `tests/e2e/home-hero.spec.ts` (marca, H1, subtítulo, 2 CTAs, línea de 20% off; foto con `fetchpriority=high` y `loading=eager`), local y contra el preview |
+| CTA visible en 360×740 en las 14 fichas (con y sin stock) + barra fija | ✅ | `tests/e2e/ficha-mobile.spec.ts`, local y contra el preview |
+| H1, title y meta description | ✅ sin cambios | comparación de las 20 URLs del sitemap: build nuevo vs preview anterior, 20/20 iguales |
+| kw_coverage / copy_lint de la home | ✅ | 100% cobertura · 100/100 humano (`seo/paginas/home/contenido.md` actualizado) |
+| Preview: build-id del commit pusheado + sitemap | ✅ | `scripts/preview-check.sh` |
+
+#### 2. Capturas antes / después (`docs/capturas/diseno/`)
+- Sitio viejo: `antes-legacy-home-{desktop-1366x850,mobile-390x844}.png` (servido localmente desde `legacy/`).
+- PR #2 antes de este cambio: `antes-pr2-{home,serum-multi-active}-{desktop,mobile}.png`.
+- Después (preview): `despues-preview-{home,serum-multi-active}-{desktop,mobile}.png`.
+- Se regeneran con `node scripts/capturas.mjs <url> <prefijo> docs/capturas/diseno / /productos/serum-multi-active/`.
+
+#### 3. Qué cambió (producto)
+- La home abre con la foto de las hojas a pantalla completa, "nude" grande en Cormorant y el H1 debajo, botón terracota "Ver productos" y "Escribinos por WhatsApp" con borde. En el celular se ven las hojas arriba y el texto abajo, todo sin scrollear.
+- Debajo: la presentación de NUDE, "¿Por qué cosmética clean?" en 3 tarjetas sobre fondo nude suave y "Por dónde empezar" con las fotos reales.
+- Todos los botones de compra son terracota (incluidos "Agregá al carrito" y la barra fija del celular).
+- Catálogo y fichas con tarjetas de radio y sombra suave como el sitio viejo; el detalle de la ficha va en una tarjeta. Mismo orden de bloques.
+- La rama de hojas aparece como detalle en el pie (desde tablet).
+
+#### 4. Decisiones de diseño y técnicas (tomadas sin consultar)
+- 2026-10-26 · Terracota oscurecido 1 punto de luminosidad: `18 35% 48%` → `18 35% 47%`. El original daba 4,42:1 con texto blanco (no llega a AA); 47% da 4,58:1. Hover a 42% (5,49:1) en vez de bajar la opacidad como el sitio viejo, que aclaraba y bajaba el contraste. El contador del carrito pasa a texto blanco por lo mismo.
+- 2026-10-26 · Hero mobile: recorte vertical de la izquierda de la foto (hojas + sombras + lino) en vez de solo `object-position`, contenido abajo y velo crema en degradé desde abajo: con el velo parejo las hojas quedaban detrás del texto. Desktop: foto entera con velo parejo (`bg/40`, como el sitio viejo).
+- 2026-10-26 · La foto del hero va con `<picture>` + `<img>` nativo (WebP 960/1440/1920 y 480/640 para mobile), no con `next/image`: con `output: export` e `images.unoptimized`, `next/image` no genera `srcset`. Calidad 60 en mobile (fondo bajo un velo; el lino no gana nada con más).
+- 2026-10-26 · Fuentes con `next/font` en vez del `@import` de Google Fonts: era una cadena bloqueante HTML → CSS → otro origen y el 92% del LCP era "render delay". Cormorant solo en peso 400 (el único que usan encabezados y marca; antes también se cargaban 500/600 sin usarse): el archivo estático pesa 23 KB contra 38 KB del variable. Se probó no precargar DM Sans: no movía el LCP y empeoraba el FCP, se descartó.
+- 2026-10-26 · Miniaturas de producto 480/768 px generadas en cada build (`scripts/miniaturas.mjs`, ignoradas por git): las fotos de 1024 px pesaban hasta 240 KB y en una tarjeta se ven a ~360 px (la del Serum Multi Active pasa de 81 KB a 7 KB). Cubre también lo que Soledad suba desde el panel. Si `sharp` no estuviera, copia la original (nunca rompe una imagen). `sharp` queda fijado en `devDependencies` (ya venía con Next).
+- 2026-10-26 · Lighthouse en `verify.sh` corre contra `out/` servido con `serve` (gzip, como Netlify con brotli), 3 corridas, mediana del LCP y CLS máximo. Lo que fija el piso del LCP simulado es el JS base de Next/React (~100 KB gzip): sin él la home da 1,66 s. No hay margen para sumar JS en la home sin pasarse de 2,5 s.
+- 2026-10-26 · En los deploy previews Netlify inyecta `/.netlify/scripts/cdp` (Netlify Drawer: ~300 KB de JS de app.netlify.com + Segment + Bugsnag) con un iframe fijo abajo. No existe en producción. Lighthouse, las capturas y los e2e remotos lo bloquean para medir el sitio real; con él el LCP del preview da 5,8 s y el iframe tapa la barra fija de compra (el test de la barra fallaba por eso). No se tocó la configuración de Netlify (fuera de alcance).
+- 2026-10-26 · "¿Por qué cosmética clean?": "Sin parabenos", "Cada activo con su nombre" y "Hecho a mano, en pequeños lotes", con textos que ya estaban en la home (fuente: `seo/00-contexto.md` líneas 35, 36 y 38). No va "Sin crueldad animal / cruelty-free y vegano" del sitio viejo: está en `[CONFIRMAR]`.
+- 2026-10-26 · Textos: solo lo que pide el punto 1 (CTAs "Ver productos" y "Escribinos por WhatsApp", antes "Mirá la rutina completa" y "Kit con los básicos"; el H2 "Qué quiere decir cosmética clean" → "¿Por qué cosmética clean?"). El párrafo largo del hero pasó intacto a la sección siguiente. Se sacó la "Y" inicial de "Y una rutina armada en orden…" porque ahora va sola debajo de las tarjetas.
+- 2026-10-26 · No se recuperó "Belleza natural, hecha con amor" del sitio viejo: el texto no tiene fuente y la foto del taller no existe (era un recuadro vacío).
+- 2026-10-26 · Rama de hojas del pie: recorte de `hero-bg.jpg` con `mix-blend-multiply` y máscara radial; oculta en mobile, donde pisaba los links legales.
+- 2026-10-26 · Rebase: `legacy/products/{hey,hola,test1}.json` y su imagen, que main borró en el PR #1, también se borran en `legacy/`. Respaldo de la rama previa al rebase en la rama local `backup/pre-rebase-diseno` (no se pushea).
+
+#### 5. Pendiente
+- e2e remoto completo: sigue sin `E2E_TOKEN` en Netlify (los specs de hero y ficha se corrieron a mano contra el preview y pasan).
+- El check "no hay placeholders ni productos viejos" de `verify.sh` usa `\|` dentro de `grep -E` (donde es un `|` literal), así que hoy no detecta nada. Viene de antes; no se tocó porque al arreglarlo saltaría con "Hola" del texto de WhatsApp y hay que ajustar la lista. Conviene corregirlo aparte.
+- Fotos de producto en mejor resolución y una foto del taller para recuperar la sección "Nosotros" (ya estaba en la lista de pedidos a Soledad).
+- Revisión visual de Soledad: que el hero nuevo se reconozca como NUDE (es la misma foto y tipografía de redes).
+
+
 ### Reporte · revisión post-E6 (bloques A–E)
 
 #### 1. Checks con evidencia

@@ -48,13 +48,19 @@ export default function ProductosPage() {
           Productos de cosmética natural y clean, hechos a mano
         </h1>
         <p className="mt-4 text-ink/80 max-w-prose">
-          Catorce fórmulas pensadas en orden: la rutina facial completa (micelar, contorno, serum,
-          crema), cuidado corporal, kits para empezar o regalar y los accesorios que acompañan la
-          rutina.
+          Todos los productos de skincare natural y cosmética natural de NUDE en un solo lugar.
+          Catorce fórmulas pensadas en orden —agua micelar, contorno, sérum, crema— más cuidado
+          corporal, kits y accesorios. Comprar cosmética natural online tiene que ser fácil:
+          elegís, pagás y te llega a casa.
         </p>
         <p className="mt-3 text-sm text-muted-ink">
           Precios en pesos argentinos. 20% off pagando con transferencia · 3 cuotas sin interés con
-          tarjeta · envíos a todo el país.
+          tarjeta · cosmética natural envíos a todo el país.
+        </p>
+        <p className="mt-3 text-ink/80 max-w-prose text-sm">
+          <strong>Qué es skincare clean:</strong> fórmulas sin ingredientes que hoy se evitan en
+          cosmética (parabenos, fragancias sintéticas, conservantes agresivos) y con activos
+          nombrados — niacinamida, bakuchiol, ácido hialurónico, péptidos.
         </p>
       </section>
 

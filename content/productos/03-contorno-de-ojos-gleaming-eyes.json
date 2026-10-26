@@ -8,8 +8,8 @@
     "/img/productos/contorno-de-ojos-gleaming-eyes/01.webp"
   ],
   "tamano": null,
-  "h1": "Contorno de ojos Gleaming Eyes · para ojeras, bolsas y líneas finas",
-  "resumen": "Contorno de ojos con pH específico para la piel delicada del contorno. Péptidos Regu-Age PF, ácido hialurónico, liposomas de cafeína-carnitina, alantoína y centella asiática. También va en el contorno de los labios.",
+  "h1": "Contorno de ojos Gleaming Eyes · para ojeras y bolsas, con ácido hialurónico y cafeína",
+  "resumen": "Es un contorno de ojos natural pensado para ojeras y bolsas: con pH específico para la piel delicada del contorno, péptidos Regu-Age PF, ácido hialurónico de alto y bajo peso molecular, liposomas de cafeína, alantoína y centella asiática. Es un contorno de ojos con cafeína (descongestiona) y con ácido hialurónico (hidrata), y también va en el contorno de los labios para líneas finas. Textura ligera, se absorbe rápido.",
   "activos": [
     { "nombre": "Regu-Age PF", "queHace": "Péptidos pensados para bolsas y ojeras." },
     { "nombre": "Liposomas de cafeína-carnitina", "queHace": "Descongestionan y aportan efecto tensor." },
@@ -26,9 +26,11 @@
     "Textura ligera, se absorbe rápido"
   ],
   "faq": [
-    { "q": "¿Cuánto producto uso?", "a": "Una sola gota, no más. Es muy concentrado." },
-    { "q": "¿Lo puedo usar en los labios?", "a": "Sí: también va en el contorno de los labios para líneas finas." },
-    { "q": "¿En qué paso de la rutina va?", "a": "Después del agua micelar y antes del serum." }
+    { "q": "¿Sirve para ojeras y bolsas?", "a": "Está pensado para eso: la mezcla de péptidos Regu-Age PF, liposomas de cafeína (descongestiona) y ácido hialurónico trabaja sobre la apariencia de ojeras y bolsas, aunque los resultados dependen de cada piel." },
+    { "q": "¿Es una crema para ojeras más que un contorno de ojos tradicional?", "a": "Es un contorno de ojos natural: una fórmula líquida, muy concentrada, con pH específico para la piel del contorno. Se absorbe rápido, no deja sensación grasa." },
+    { "q": "¿Cuánto producto uso?", "a": "Una sola gota, no más. Es muy concentrado y rinde." },
+    { "q": "¿Lo puedo usar en el contorno de labios?", "a": "Sí: también va en el contorno de los labios para líneas finas, por el ácido hialurónico y los péptidos." },
+    { "q": "¿En qué paso de la rutina va?", "a": "Después del agua micelar y antes del serum. Día y noche." }
   ],
   "relacionados": [
     "agua-micelar-bifasica",

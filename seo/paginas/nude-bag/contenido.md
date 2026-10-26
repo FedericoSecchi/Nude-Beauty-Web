@@ -1,23 +1,49 @@
 ---
-title: 
-description: 
-slug: nude-bag   # para la home/landing, en el content file el slug es ''
-locale: 
-og_image: 
-whatsapp_text: 
-updatedAt: 2026-10-25
+title: "Nude Bag · set de regalo de skincare con accesorios | NUDE"
+description: "Rutina clean completa + accesorios en un solo kit: agua micelar, contorno, cremas, serums, pads, vincha y toalla. Pensado para regalo."
+slug: nude-bag
+updatedAt: 2026-10-26
 ---
 
-<!-- Un bloque por sección del brief, en orden. Encabezados con # reales (un solo H1).
-     Notas para implementación entre comentarios HTML. -->
+# Nude Bag · set de regalo de skincare con accesorios
 
-# 
+Es un set de regalo de skincare completo: la rutina facial más los accesorios para hacerla cómoda. Un regalo de skincare pensado para alguien que quiere empezar a cuidarse: incluye agua micelar bifásica, crema facial, contorno de ojos, serum transformación, serum multi active, pads desmaquillantes, vincha con velcro y toalla microfibra. Es un kit de skincare con accesorios y, para quienes buscan un regalo cosmética natural que no quede en el fondo del cajón, viene listo para entregar.
 
-## 
+## Cómo se usa
+
+La rutina de skincare completa: agua micelar → contorno → serum → crema. Los pads reutilizables para desmaquillar, la vincha para sujetar el pelo durante la rutina y la toalla de microfibra para secar la cara sin frotar.
+
+## Beneficios
+
+- Rutina completa + accesorios
+- Pensado para regalo
+- Más conveniente que comprar todo por separado
+
+## Qué incluye
+
+- agua-micelar-bifasica
+- contorno-de-ojos-gleaming-eyes
+- crema-facial-porcelain
+- serum-multi-active
+- serum-transformacion
+- pads-desmaquillantes
+- vincha-con-velcro
+- toalla-microfibra
+
+## Ingredientes
+
+Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).
 
 ## Preguntas frecuentes
 
-### 
+### ¿Lo puedo enviar directo a quien lo recibe?
 
-<!-- IMÁGENES: archivo · alt · fuente (real / [CONFIRMAR]) -->
-<!-- ENLACES INTERNOS: entrantes (desde → ancla) · salientes (hacia → ancla) -->
+Sí: avisanos por WhatsApp y lo mandamos directo. Si querés, le podemos sumar una tarjeta.
+
+### ¿Qué pasa si no sé qué tipo de piel tiene?
+
+Casi todo el kit es apto para todo tipo de piel. Si tenés dudas puntuales, escribinos por WhatsApp.
+
+### ¿Qué contiene el agua micelar: 200 o 300 cc?
+
+[CONFIRMAR presentación del agua micelar incluida en la Nude Bag]

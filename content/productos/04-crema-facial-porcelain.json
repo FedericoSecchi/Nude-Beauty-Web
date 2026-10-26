@@ -8,8 +8,8 @@
     "/img/productos/crema-facial-porcelain/01.webp"
   ],
   "tamano": null,
-  "h1": "Crema Facial Porcelain · hidratación y reparación clean",
-  "resumen": "Crema facial de día y noche con células madre vegetales Green Cell (Camellia sinensis), alantoína, proteína de trigo hidrolizada, liposomas de colágeno y elastina. Textura ligera, apta para todo tipo de piel. Aroma a azahar, palmarosa y vainilla.",
+  "h1": "Crema Facial Porcelain · crema facial natural hidratante y antiage",
+  "resumen": "Crema facial natural hidratante y antiage, apta para todo tipo de piel. Lleva células madre vegetales Green Cell (Camellia sinensis), alantoína, proteína de trigo hidrolizada, liposomas de colágeno y elastina, y aceites de rosa mosqueta, argán y jojoba. Es una crema facial con células madre y colágeno pensada para día y noche, con textura ligera y aroma a azahar, palmarosa y vainilla.",
   "activos": [
     { "nombre": "Células madre vegetales Green Cell (Camellia sinensis)", "queHace": "Antioxidante que ayuda a que la piel se vea más tersa." },
     { "nombre": "Proteína de trigo hidrolizada (fitoqueratina)", "queHace": "Da firmeza y ayuda a retener la humedad." },
@@ -26,7 +26,8 @@
     "Aroma a azahar, palmarosa y vainilla"
   ],
   "faq": [
-    { "q": "¿Es apta para piel grasa?", "a": "Sí, la textura es ligera. Está formulada para todo tipo de piel." },
+    { "q": "¿Es una crema facial natural para todo tipo de piel?", "a": "Sí. La textura es ligera y la fórmula está pensada para todo tipo de piel, incluida la sensible. Si tenés piel muy grasa, usala en capa fina." },
+    { "q": "¿Trabaja como crema facial antiage natural?", "a": "Sí: las células madre vegetales, los péptidos del colágeno y la elastina en liposomas son los activos antiage de la fórmula. Es una crema facial con colágeno de origen vegetal." },
     { "q": "¿Lleva protector solar?", "a": "No. De día, aplicá después un protector solar." },
     { "q": "¿Tiene trigo?", "a": "Sí, contiene proteína de trigo hidrolizada. Si tenés celiaquía o intolerancia, consultanos antes de usarla. [CONFIRMAR con Soledad cómo comunicarlo]" }
   ],
@@ -38,7 +39,7 @@
     "kit-facial-new-skin"
   ],
   "seo": {
-    "title": "Crema Facial Porcelain natural, humectante y antiage | NUDE",
+    "title": "Crema facial natural hidratante Porcelain · antiage | NUDE",
     "description": "Crema facial clean con células madre vegetales, péptidos y liposomas de colágeno. Textura ligera, apta para todo tipo de piel. 20% off por transferencia y envíos a todo el país."
   },
   "avisoPatch": true,

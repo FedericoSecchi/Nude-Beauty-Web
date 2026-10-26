@@ -1,23 +1,55 @@
 ---
-title: 
-description: 
-slug: serum-multi-active   # para la home/landing, en el content file el slug es ''
-locale: 
-og_image: 
-whatsapp_text: 
-updatedAt: 2026-10-25
+title: "Serum Multi Active con niacinamida 5% y vitamina C | NUDE"
+description: "Serum clean con niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico y péptidos. Para rostro, cuello y escote. 20% off por transferencia y envíos a todo el país."
+slug: serum-multi-active
+updatedAt: 2026-10-26
 ---
 
-<!-- Un bloque por sección del brief, en orden. Encabezados con # reales (un solo H1).
-     Notas para implementación entre comentarios HTML. -->
+# Serum Multi Active · serum con niacinamida y vitamina C para piel sensible
 
-# 
+Serum 5 en 1 que trabaja sobre manchas, poros, hidratación y luminosidad. Lleva niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico de alto y bajo peso molecular, péptidos Matrixil-Syn Coll y pro-vitamina B5. Es un serum con niacinamida y vitamina C formulado para que no irrite: apto para piel sensible. Textura ligera, aroma a azahar y palmarosa. Día y noche.
 
-## 
+## Activos principales
+
+- **Niacinamida al 5%**: Ayuda a emparejar el tono y a que los poros se vean más chicos. Se ven cambios de a poco.
+- **Vitamina C estable (en liposomas)**: Antioxidante que da luminosidad sin irritar. Pensada para piel sensible.
+- **Ácido hialurónico de alto y bajo peso molecular**: Hidrata en superficie y en capas más profundas de la piel.
+- **Matrixil-Syn Coll (palmitoyl tripeptide-5)**: Péptido que trabaja sobre líneas finas y la elasticidad de la piel.
+- **Centella asiática, aloe vera, hamamelis**: Calman rojeces y suavizan la piel.
+
+## Cómo se usa
+
+Después de limpiar la piel con el agua micelar, ponete 3 gotas en el rostro (frente y mejillas), dejá secar unos segundos y seguí con la crema facial y el protector solar. También va en cuello y escote. Día y noche.
+
+## Beneficios
+
+- Textura ligera, se absorbe rápido
+- Aroma a azahar y palmarosa
+- Pensada para piel sensible
+- Hidrata, da luminosidad y empareja el tono
+
+## Ingredientes
+
+Niacinamida (vit B3), liposomas de vitamina C estable (sodium ascorbate), Matrixil-Syn Coll (palmitoyl tripeptide-5), elastina, ácido hialurónico de alto y bajo peso molecular, pro-vitamina B5, centella asiática, aloe vera, hamamelis, aceites esenciales de neroli (azahar) y palmarosa.
 
 ## Preguntas frecuentes
 
-### 
+### ¿Es un serum con niacinamida y vitamina C apto para piel sensible?
 
-<!-- IMÁGENES: archivo · alt · fuente (real / [CONFIRMAR]) -->
-<!-- ENLACES INTERNOS: entrantes (desde → ancla) · salientes (hacia → ancla) -->
+Sí. La vitamina C está estabilizada en liposomas de sodium ascorbate, que es la forma menos irritante. La niacinamida al 5% es la dosis que suele tolerarse bien en piel sensible.
+
+### ¿Ayuda con manchas y poros?
+
+La niacinamida al 5% y la vitamina C son activos que trabajan sobre el tono y la apariencia de los poros. Se ven cambios de a poco: en general, Soledad habla de 3 a 4 semanas de uso constante.
+
+### ¿Por qué le dicen serum 5 en 1?
+
+Hidrata, da luminosidad, trabaja sobre manchas y poros, calma rojeces y aporta antioxidantes. Son los cinco frentes de los activos de la fórmula.
+
+### ¿Lo puedo usar de día y de noche?
+
+Sí. De día, siempre con protector solar después. De noche va solo o antes de la crema.
+
+### ¿En qué paso de la rutina va?
+
+Después del agua micelar y el contorno de ojos, antes de la crema facial. Si usás protector solar, va al final.

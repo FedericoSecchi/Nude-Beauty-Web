@@ -9,10 +9,10 @@ import { urls } from '@/lib/urls';
 import { site } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: `${site.name} · ${site.tagline}`,
+  title: `${site.name} · cosmética clean hecha a mano en Córdoba`,
   description: site.description,
   openGraph: {
-    title: `${site.name} · ${site.tagline}`,
+    title: `${site.name} · cosmética clean hecha a mano en Córdoba`,
     description: site.description,
   },
 };
@@ -40,10 +40,10 @@ export default function HomePage() {
             Tu piel no necesita veinte productos: necesita los correctos, en orden.
           </h1>
           <p className="mt-5 text-ink/80 text-lg">
-            NUDE es la línea de cosmética clean de Soledad: fórmulas con activos nombrados —
-            niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos — hechas a mano en
-            Mendiolaza. Sin parabenos ni fragancias sintéticas, y con todo lo que necesita una
-            rutina que funcione.
+            NUDE es una marca de cosmética clean nacida en Mendiolaza, Córdoba. Soledad formula y
+            envasa a mano: cosmética natural hecha a mano con activos que vienen con nombre y
+            porcentaje — niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. Sin parabenos
+            ni fragancias sintéticas.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link href={urls.productos} className="btn-primary">
@@ -55,6 +55,25 @@ export default function HomePage() {
           </div>
           <p className="mt-4 text-sm text-muted-ink">
             20% off pagando con transferencia · 3 cuotas sin interés · envíos a todo el país.
+          </p>
+        </div>
+      </section>
+
+      <section className="container pb-16">
+        <div className="max-w-prose">
+          <h2 className="font-heading text-2xl mb-4">
+            Qué quiere decir cosmética clean argentina
+          </h2>
+          <p className="text-ink/80">
+            Fórmulas sin ingredientes que hoy se evitan en skincare —parabenos, fragancias
+            sintéticas, conservantes agresivos— y con activos nombrados, no genéricos. Es skincare
+            natural argentina pensado para funcionar en rutina: agua micelar → contorno de ojos →
+            sérum → crema → protector solar.
+          </p>
+          <p className="mt-3 text-ink/80">
+            Nude cosmética (nude cosmética clean, como figura en Instagram) arrancó siendo
+            cosmética natural córdoba para las amigas de Soledad y hoy es cosmética clean córdoba
+            con clientas de todo el país. Lo seguís siendo: hecho a mano, en pequeños lotes.
           </p>
         </div>
       </section>

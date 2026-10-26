@@ -8,7 +8,7 @@
 |---|---|---|---|
 | E0 Preparación | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `9a82323e7348` |
 | E1 Base del sitio | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `3d8833598110` · 20 URLs sitemap OK |
-| E2 Catálogo y fichas | ⬜ | — | — |
+| E2 Catálogo y fichas | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `184f5665f151` · 16/16 páginas kw ✅ copy ✅ |
 | E3 Carrito, checkout, envíos, pedidos | ⬜ | — | — |
 | E4 Panel Decap | ⬜ | — | — |
 | E5 Legal (AR) | ⬜ | — | — |
@@ -30,8 +30,8 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 | 20 URLs indexables en sitemap | ✅ | `scripts/preview-check.sh $PREVIEW` → `OK 20/20` |
 | 404 real para URL inexistente | ✅ | `curl -sI $PREVIEW/nope-9999/` → 404 |
 | JSON-LD Organization + Product + FAQ + Breadcrumb | ✅ | `components/JsonLd` en layout y fichas |
-| kw_coverage.py por página | ⏭️ SKIP | aún sin contenido real (E2) |
-| copy_lint.py por página | ⏭️ SKIP | aún sin contenido real (E2) |
+| kw_coverage.py por página | ✅ | 16/16 ≥ 80% (menor: 83% en `serum-transformacion`) |
+| copy_lint.py por página | ✅ | 16/16, 0 señales fuertes |
 | unit tests | ⏭️ SKIP | aún sin tests (E3) |
 | e2e local y remoto | ⏭️ SKIP | aún sin Playwright / `E2E_TOKEN` (E3) |
 
@@ -48,9 +48,24 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · E1 · Imágenes de productos: una por producto, descargada del CDN de Tiendanube (WebP 1024). Fotos adicionales y mejores quedan pendientes del cliente.
 - 2026-10-26 · E1 · Página `/pedido/` y `/carrito/` noindex pero fuera del sitemap: la validez de las 20 URLs del sitemap se mantiene estricta.
 - 2026-10-26 · E1 · `scripts/preview-check.sh` verifica preview sin depender del shell del harness (usa `/usr/bin/curl` por si el PATH no lo tiene).
+- 2026-10-26 · E2 · Los `contenido.md` por página son snapshots generados por `scripts/snapshot-content.mjs` a partir del JSON. Lo verifica `verify.sh` para medir cobertura y copy-lint sin duplicar la fuente de verdad.
+- 2026-10-26 · E2 · Las keywords del cluster se integran en H1, resumen, FAQ y modo de uso en voseo. Nada de rellenar: cada mención suena a Soledad.
+- 2026-10-26 · E2 · "Apto para niños" en el gloss queda en condicional dentro de la FAQ, con un `[CONFIRMAR]` para pedirle a Soledad el respaldo (política de claims cosméticos).
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->
+- Tamaños (ml / g) de cada producto; presentaciones del agua micelar (200/300) y cuál lleva la Nude Bag.
+- Serum Transformación: lista final de ingredientes (en la ficha original hay dos versiones).
+- Óleo autobronceante: lista completa de ingredientes.
+- Creamy Gloss & Blush: variantes de color disponibles y respaldo del claim "apto para niños".
+- Crema Facial Porcelain: cómo quiere comunicar el ingrediente con trigo (celiaquía / intolerancia).
+- Crema corporal Velvet: uso en embarazo.
+- Tienda: alias, CBU y titular de la cuenta para transferencia; si siguen las 3 cuotas sin interés y las condiciones del descuento por 2+ unidades (actual: 5% no acumulable con 20% transferencia).
+- Envíos: costos y plazos por zona (hoy están en modo "coordinar por WhatsApp").
+- Legales: razón social, condición de IVA y domicilio exacto; registro ANMAT si lo tiene.
+- Google Business Profile: si existe, con qué categoría.
+- Material visual: fotos de los productos en mejor resolución que las de Tiendanube; foto de Soledad o del taller para "Nosotros".
+- Reseñas / consultas reales por WhatsApp (sin datos personales) para capa social.
 
 ## Variables de entorno faltantes
 <!-- qué check quedó SKIP por cada variable que no esté en Netlify -->

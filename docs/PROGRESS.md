@@ -25,6 +25,65 @@
 
 Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 
+### Reporte · revisión post-E6 (bloques A–E)
+
+#### 1. Checks con evidencia
+| Check | Resultado | Evidencia |
+|---|---|---|
+| `verify.sh` | ✅ PASS=16 FAIL=0 SKIP=1 | `bash scripts/verify.sh` (SKIP = e2e remoto, falta `E2E_TOKEN`) |
+| CTA mobile 360×740 en las 14 fichas (con stock) | ✅ | `tests/e2e/ficha-mobile.spec.ts`: borde inferior del CTA ≤ 740 y precio visible sin scroll. En el preview: CTA en y=587 / 551 / 555 px (serum-multi-active / nude-bag / vincha); antes ≈1090 |
+| Ídem sin stock ("Sin stock" + WhatsApp) | ✅ | mismo spec contra el build de prueba `out-sinstock/` (14 fichas con `disponible: false`) |
+| Barra fija mobile | ✅ | aparece al scrollear y agrega al carrito (mismo spec) |
+| Reintento de avisos | ✅ | `tests/unit/avisos.test.mjs` (9): falla→éxito = 1 aviso; 2 notificaciones de MP (seguidas y simultáneas) = 1 aviso; arrepentimiento con webhook caído se guarda y se reintenta; stores `*-preview` fuera de producción |
+| Preferencia de MP sin precios ≤ 0 | ✅ | `tests/unit/mp-checkout.test.mjs`: 500 carritos al azar, suma de ítems = total y todos los `unit_price` > 0 |
+| Monto/moneda verificados | ✅ | mismo archivo: monto ±$1 o moneda ≠ ARS → `revisar` + aviso `pedido_revisar` |
+| Base URL por contexto | ✅ | mismo archivo: producción → `URL`, resto → `DEPLOY_PRIME_URL` |
+| Cantidad 1–20 / notas ≤ 500 | ✅ | unit tests + en vivo: `crear-pedido` con `cantidad: 21` → 400 en el preview |
+| Puerta de publicación simulada | ✅ | `verify.sh`: `CONTEXT=production` con `[CONFIRMAR`/`[REVISAR` falla y lista `archivo:línea`; preview solo avisa; limpio pasa |
+| Widget de Identity solo en /admin/ | ✅ | `curl $PREVIEW/ \| grep -c netlify-identity-widget` → 0 · `/admin/` → 1 |
+| `returnFees` | ✅ | `ReturnFeesCustomerResponsibility` en las fichas del preview |
+| kw_coverage / copy_lint | ✅ 16/16 | `verify.sh` |
+| Preview: build-id del último commit | ✅ | `scripts/preview-check.sh` → build-id = commit pusheado (ver abajo) |
+| Preview: URLs del sitemap | ✅ 20/20 en 200 + 404 real | `scripts/preview-check.sh` |
+| Función programada desplegada | ✅ | `reintentar-avisos` en `available_functions` del deploy |
+| e2e remoto | ⏭️ SKIP | `E2E_TOKEN` no está cargado en Netlify |
+
+Capturas 360×740 del preview: serum-multi-active, nude-bag, vincha-con-velcro (abajo).
+
+#### 2. Qué cambió (producto)
+- En el celular, quien entra desde Instagram ve nombre, precio, precio con transferencia, "Agregá al carrito" y WhatsApp sin scrollear; al bajar aparece una barra fija con precio y botón de compra.
+- Ninguna venta cobrada ni arrepentimiento queda sin aviso a Soledad: todo se guarda primero y, si n8n no responde, se reintenta cada 10 minutos hasta que salga (una sola vez).
+- Comprar 2 o más productos con Mercado Pago ya no arma una preferencia con precios negativos; si MP cobra un monto distinto, el pedido queda "a revisar" en lugar de "pagado"; la clienta vuelve siempre a nudecosmetica.com.
+- Los textos dicen solo lo que está en las fuentes (fuera la historia inventada, los cuidados de lavado, el ángulo para niñas, las 48 h, el retiro sin confirmar).
+- Un merge con datos pendientes ya no puede reemplazar al sitio en vivo: el build de producción falla y dice qué falta.
+
+#### 3. Decisiones técnicas
+Detalle con fecha en `docs/PROGRESS.md` › Decisiones (A–E). Resumen:
+- Escrituras condicionales (ETag de Blobs) + lease de 2 min: nunca dos avisos en paralelo. Entrega "al menos una vez": PLAN §6 pide a n8n deduplicar por `id` + `tipo`.
+- Backoff 10→20→40… min con techo de 6 h y sin límite de intentos (el arrepentimiento es obligación legal).
+- Contexto desde `context.deploy.context` de la función; ante la duda, nunca producción.
+- Descuentos repartidos en el precio unitario; si la última línea tiene varias unidades, el resto del redondeo va en una unidad separada para que la suma sea exacta.
+- Faltante de `transaction_amount` → `revisar` (lo más seguro).
+- Caso "sin stock" probado con un build de prueba (`NUDE_CONTENT_DIR`), sin tocar el contenido real.
+- Pie legal con marca + CUIT (como Tiendanube); nombre de Soledad fuera del texto público; retiro deshabilitado hasta confirmar; H1 de la home = keyword principal, mismo aspecto.
+
+#### 4. `[CONFIRMAR]`: qué cambió respecto del reporte anterior
+- **Sale** "apto para niños" del Creamy Gloss: ya no se publica, no hace falta confirmarlo para salir.
+- **Deja de bloquear** la razón social: el pie muestra "NUDE Cosmética Clean · CUIT". Sigue pendiente para completar el pie.
+- **Nuevos** (no bloquean, hoy no se muestran): si hay retiro en Mendiolaza (deshabilitado), si Soledad quiere aparecer con su nombre, si hay plazo de reserva por transferencia, cómo elige el color del gloss quien compra (no hay selector), ingredientes completos del Óleo, que las 3 cuotas sin interés estén configuradas en Mercado Pago.
+- **Siguen bloqueando producción** (12 marcas en `out/`): alias/CBU/titular, ingredientes finales del Serum Transformación y el aviso `[REVISAR LEGAL]` de términos y privacidad.
+- Mensaje listo para Soledad: `seo/auditoria-hechos.md` › "Mensaje listo para Soledad".
+
+#### 5. Qué no se pudo verificar y por qué
+- **Mercado Pago en la práctica**: `MP_ACCESS_TOKEN` está cargado pero es secreto (Netlify no devuelve el valor) y no hay credenciales de prueba a mano. La doc oficial solo lista el error `invalid_items` ("unit_price invalid") sin precisar valores; no hay mecanismo documentado de ítem negativo. El arreglo elimina el riesgo igual. Falta probar una preferencia real con credenciales de prueba.
+- **e2e remoto**: sin `E2E_TOKEN` en Netlify.
+- **Aviso real a n8n**: sin `ORDER_WEBHOOK_URL` / `ORDER_WEBHOOK_SECRET`. Probado con unit tests contra los handlers reales.
+- **Función programada en vivo**: Netlify solo la ejecuta en el deploy de producción; en el preview está desplegada pero no corre.
+- **Stores `*-preview` en vivo**: probado en unit tests con el contexto de la función; no se escribió un pedido real en el preview para no generar datos.
+- **Producción**: con las 12 marcas pendientes, el build de producción va a fallar a propósito al mergear hasta que se completen.
+
+Capturas: `docs/capturas/revision-post-e6/`.
+
 ## Checks (lo que ya pasa en `verify.sh`)
 <!-- cada etapa agrega las filas del §9 del PLAN que ya cubre -->
 

@@ -174,7 +174,7 @@ Capturas: `docs/capturas/revision-post-e6/`.
 <!-- qué check quedó SKIP por cada variable que no esté en Netlify -->
 - `E2E_TOKEN` → bloquea e2e remoto contra el preview (SKIP en `verify.sh`). Se cargan en E3.
 - `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET` → bloquean el flujo real de MP (se usa `CHECKOUT_MODE=tiendanube` como plan B hasta cargar).
-- `ORDER_WEBHOOK_URL`, `ORDER_WEBHOOK_SECRET` → bloquean el aviso a n8n (el pedido igual se guarda; se reintenta en la próxima notificación).
+- `ORDER_WEBHOOK_URL`, `ORDER_WEBHOOK_SECRET` → bloquean el aviso a n8n (el pedido igual se guarda; se reintenta en la próxima notificación). El flujo de n8n ya está armado y probado con datos de prueba, pero todavía sin publicar ni con las cuentas conectadas: ver `seo/05-n8n-pedidos.md` › Pendiente.
 - `NEXT_PUBLIC_GA_ID` → sin GA no se cargan los scripts, el sitio funciona igual.
 
 ## Revisiones manuales para Fede (al cerrar E6)

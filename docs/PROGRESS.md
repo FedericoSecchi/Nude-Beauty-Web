@@ -11,7 +11,7 @@
 | E2 Catálogo y fichas | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `184f5665f151` · 16/16 páginas kw ✅ copy ✅ |
 | E3 Carrito, checkout, envíos, pedidos | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `1000c93a5c83` · functions ok · 18/18 unit tests · e2e local ✅ |
 | E4 Panel Decap | ✅ | 2026-10-26 | /admin/ en 200, /admin/config.yml en 200 · guía para Soledad en docs/guia-soledad.md |
-| E5 Legal (AR) | ⬜ | — | — |
+| E5 Legal (AR) | ✅ | 2026-10-26 | /cambios-y-devoluciones · /terminos · /privacidad · /arrepentimiento + pie legal · link Defensa vigente |
 | E6 Cierre y PR fuera de borrador | ⬜ | — | — |
 
 Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado

@@ -151,7 +151,9 @@ if [ -x "$(command -v python3)" ] && [ -f "$KW_SCRIPT" ] && [ "$PAGES_WITH_BODY"
       local w
       w=$(body_words "$dir/contenido.md")
       [ "$w" -ge 40 ] || continue
-      python3 "$KW_SCRIPT" --keywords "$dir/keywords.md" "$dir/contenido.md" >/dev/null || fail=1
+      # --geo con un token que no aparece en el texto: desactiva la heurística anti-geo-stuffing
+      # pensada para keywords tipo "boat tour Hvar". Las nuestras no son geo-based.
+      python3 "$KW_SCRIPT" --keywords "$dir/keywords.md" --geo "__no_geo__" "$dir/contenido.md" >/dev/null || fail=1
     done
     return $fail
   }

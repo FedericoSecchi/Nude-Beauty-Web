@@ -5,11 +5,11 @@ slug: ""
 updatedAt: 2026-10-26
 ---
 
-# Cosmética clean · hecha a mano en Córdoba
+# Cosmética clean, hecha a mano en Córdoba
 
-NUDE es una marca de **cosmética clean** nacida en Mendiolaza, Córdoba. Soledad formula y envasa a mano, en pequeños lotes: es cosmética natural hecha a mano con activos que vienen con nombre y porcentaje. Niacinamida al 5%, bakuchiol, ácido hialurónico de alto y bajo peso molecular, péptidos.
+NUDE es una marca de **cosmética clean** nacida en Mendiolaza. Soledad formula y envasa a mano, en pequeños lotes: cosmética natural hecha a mano con activos que vienen con nombre y porcentaje. Niacinamida al 5%, bakuchiol, ácido hialurónico de alto y bajo peso molecular, péptidos.
 
-Nude cosmética clean (o nude cosmética, como figura en Instagram) nace para resolver algo que hoy nadie resuelve bien: cosmética clean argentina de verdad, con precios en pesos y envíos a todo el país. No es "natural" como etiqueta: es skincare natural argentina pensado para que tenga sentido como rutina, y pasa por activos concretos.
+Nude cosmética (o nude cosmética clean, como figura en Instagram) nace para resolver algo que hoy nadie resuelve bien en el país: skincare natural argentina de verdad, con precios en pesos y envíos a todo el país. No es "natural" como etiqueta de marketing: es cosmética clean argentina pensada para funcionar en rutina.
 
 Tu piel no necesita veinte productos: necesita los correctos, en orden. Agua micelar → contorno de ojos → sérum → crema → protector solar. Esa es la rutina que arma NUDE.
 
@@ -19,7 +19,7 @@ Catorce productos pensados para funcionar juntos: dos sérums (uno con niacinami
 
 ## Córdoba, hecho a mano
 
-NUDE arranca en Córdoba y lo que empezó siendo cosmética natural córdoba para las amigas de Soledad se convirtió en cosmética clean córdoba con clientas de todo el país. Lo seguís siendo: hecho a mano, en pequeños lotes, con fórmulas que Soledad ajusta en el taller.
+NUDE arranca en Córdoba. Lo que empezó siendo cosmética natural córdoba para las amigas de Soledad hoy es cosmética clean córdoba con clientas de todo el país. Lo seguís siendo: hecho a mano, en pequeños lotes, con fórmulas que Soledad ajusta en el taller.
 
 ## Preguntas frecuentes
 

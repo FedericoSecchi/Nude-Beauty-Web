@@ -64,6 +64,17 @@ export default function ProductosPage() {
         </p>
       </section>
 
+      <section className="container pb-10">
+        <h2 className="font-heading text-2xl mb-4">La rutina clean, en orden</h2>
+        <ol className="list-decimal list-inside space-y-1 text-ink/80 max-w-prose">
+          <li><Link href={urls.producto('agua-micelar-bifasica')} className="link-ghost">Agua Micelar Bifásica</Link> · limpia y desmaquilla.</li>
+          <li><Link href={urls.producto('contorno-de-ojos-gleaming-eyes')} className="link-ghost">Contorno de ojos Gleaming Eyes</Link> · ojeras y bolsas.</li>
+          <li>Sérum: <Link href={urls.producto('serum-multi-active')} className="link-ghost">Multi Active</Link> de día · <Link href={urls.producto('serum-transformacion')} className="link-ghost">Transformación</Link> de noche.</li>
+          <li><Link href={urls.producto('crema-facial-porcelain')} className="link-ghost">Crema Facial Porcelain</Link> · hidrata y sella.</li>
+          <li>Durante el día, siempre protector solar (no está en NUDE: compralo donde quieras).</li>
+        </ol>
+      </section>
+
       <CategoryFilter grupos={grupos.map((g) => ({ id: g.id, nombre: g.nombre }))} />
 
       <section className="container pb-24 space-y-14">

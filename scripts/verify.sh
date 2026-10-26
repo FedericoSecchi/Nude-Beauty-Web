@@ -307,7 +307,9 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
   if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && command -v npx >/dev/null 2>&1; then
     serve_dir() {  # serve_dir <dir> <port> → deja el pid en SERVE_PID
       pkill -f "serve.*$1.*$2" >/dev/null 2>&1 || true
-      npx --yes serve "$1" -l "$2" >"/tmp/nude-serve-$2.log" 2>&1 &
+      # serve fijo en devDependencies: con `npx --yes serve` sin instalar, npx resolvía el paquete
+      # contra el registro en cada arranque y a veces no levantaba dentro de la espera de abajo.
+      ./node_modules/.bin/serve "$1" -l "$2" >"/tmp/nude-serve-$2.log" 2>&1 &
       SERVE_PID=$!
       local n=0
       while [ $n -lt 30 ]; do

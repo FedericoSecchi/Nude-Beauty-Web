@@ -303,6 +303,7 @@ Capturas: `docs/capturas/revision-post-e6/`.
 - 2026-10-26 · El WhatsApp del panel ahora sí cambia el sitio (antes `lib/site.ts` lo tenía fijo).
 - 2026-10-26 · `x-e2e-token` ya no va como header global de Playwright (se mandaba también a otros orígenes): el e2e lo agrega solo a `/.netlify/functions/` del preview. El token no aparece en archivos ni en logs.
 - 2026-10-26 · En `verify.sh` «placeholder» se busca solo en contenido (HTML/JSON/TXT/XML): Next trae esa palabra en su JS. Las marcas `[CONFIRMAR`/`[REVISAR` se buscan también en JS. «Hola» salió de la lista (es el saludo de WhatsApp).
+- 2026-10-26 · `serve` quedó fijo en devDependencies (14.2.6). En una corrida de `verify.sh`, el servidor de `out-sinstock/` no levantó a tiempo porque `npx --yes serve` resolvía el paquete contra el registro en cada arranque, y el e2e local falló sin correr tests. Se arregló la causa, no se alargó la espera.
 - 2026-10-26 · Cuando Decap no puede publicar porque falta un dato obligatorio, deja en la consola «Uncaught (in promise) undefined». Es interno de Decap y no aparece al cargar el panel.
 
 #### 6. Checklist de salida para Fede

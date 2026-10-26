@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/prebuild.mjs && next build",
+    "build": "node scripts/prebuild.mjs && next build && node scripts/puerta-publicacion.mjs",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",

@@ -21,7 +21,7 @@
 | B Ningún pedido sin aviso | ✅ | 2026-10-26 | 9 unit tests en `tests/unit/avisos.test.mjs` (falla→éxito = 1 aviso, 2 notificaciones MP = 1 aviso, arrepentimiento con webhook caído se reintenta, stores por contexto) |
 | C Cobro con Mercado Pago | ✅ | 2026-10-26 | 10 unit tests en `tests/unit/mp-checkout.test.mjs` (500 carritos al azar: suma = total y precios > 0; monto/moneda → `revisar`; base URL por contexto; cantidad 1–20; notas ≤ 500) |
 | D Textos con fuente | ✅ | 2026-10-26 | `seo/auditoria-hechos.md` · kw_coverage ✅ y copy_lint ✅ en 16/16 · grep en `out/` sin "parte interna del brazo", "lavarropas", "niñ", "más eligen", "\| NUDE" |
-| E Schema y puerta de publicación | ⬜ | | |
+| E Schema y puerta de publicación | ✅ | 2026-10-26 | `returnFees` = ReturnFeesCustomerResponsibility · puerta simulada en verify.sh (producción bloquea, preview avisa, limpio pasa) · widget de Identity solo en /admin/ |
 
 Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 
@@ -92,6 +92,9 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · D · Home: el H1 pasa a ser el kicker "Cosmética clean hecha a mano en Córdoba" (keyword principal) y el eslogan queda como párrafo con el mismo estilo; visualmente igual.
 - 2026-10-26 · D · Keywords que solo entraban con frases forzadas → "Descartadas" en cada `keywords.md` con una línea de justificación (p. ej. "serum de bakuchiol y retinol": el producto lleva retinoides, no retinol).
 - 2026-10-26 · D · Títulos: la marca aparece una sola vez (la pone el template del layout); se sacó "| NUDE" de los `seo.title`.
+- 2026-10-26 · E · Puerta de publicación (`scripts/puerta-publicacion.mjs`, al final de `npm run build`): busca `[CONFIRMAR` y `[REVISAR` en HTML, TXT (payload RSC), JSON, XML y JS de `out/`; con `CONTEXT=production` el build falla y lista archivo:línea y fragmento; en otros contextos solo avisa. Hoy quedan 12 marcas (alias/CBU, ingredientes del Transformación, aviso legal): **un merge hoy no reemplaza al sitio en vivo** hasta completarlas.
+- 2026-10-26 · E · Netlify Identity: las páginas públicas ya no cargan el widget; un script inline mínimo manda los links con `#invite_token` / `#recovery_token` / `#confirmation_token` a `/admin/`, donde el widget los procesa.
+- 2026-10-26 · E · JSON-LD Organization sin `logo` (apuntaba a `/img/logo.png`, que no existe). Se agrega cuando haya logo.
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

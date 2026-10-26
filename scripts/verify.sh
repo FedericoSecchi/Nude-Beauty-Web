@@ -117,8 +117,53 @@ if [ -d out ]; then
     return 0
   }
   step "sitemap.xml coherente (si existe)" check_sitemap_coherence
+
+  check_identity_solo_admin() {
+    # El widget de Netlify Identity solo en /admin/; las páginas públicas no lo cargan.
+    local hits
+    hits=$(grep -rl --include='*.html' 'netlify-identity-widget' out | grep -v '^out/admin/' || true)
+    if [ -n "$hits" ]; then echo "widget de Identity fuera de /admin/:"; echo "$hits"; return 1; fi
+    grep -q 'netlify-identity-widget' out/admin/index.html
+  }
+  step "widget de Identity solo en /admin/" check_identity_solo_admin
+
+  check_return_fees() {
+    # Política: el envío del cambio por decisión propia lo paga quien compra.
+    local f=out/productos/serum-multi-active/index.html
+    grep -q 'ReturnFeesCustomerResponsibility' "$f" && ! grep -rq --include='*.html' 'schema.org/FreeReturn' out
+  }
+  step "JSON-LD returnFees = ReturnFeesCustomerResponsibility" check_return_fees
 else
   skip "chequeos sobre out/" "out/ no generado"
+fi
+
+# --- Puerta de publicación (scripts/puerta-publicacion.mjs, corre al final de `npm run build`) ---
+check_puerta_simulada() {
+  local tmp sucio limpio out rc
+  tmp="$(mktemp -d)"; sucio="$tmp/sucio"; limpio="$tmp/limpio"
+  mkdir -p "$sucio/productos/x" "$limpio"
+  printf '<html><body>\n<p>Tamaño: [CONFIRMAR: ml]</p>\n</body></html>\n' > "$sucio/productos/x/index.html"
+  printf '{"nota":"[REVISAR LEGAL]"}' > "$sucio/data.json"
+  printf '<html><body>ok</body></html>' > "$limpio/index.html"
+  # Producción con pendientes → falla y lista archivo:línea.
+  rc=0; out=$(CONTEXT=production node scripts/puerta-publicacion.mjs "$sucio" 2>&1) || rc=$?
+  [ "$rc" -ne 0 ] || { echo "producción con [CONFIRMAR] no falló"; return 1; }
+  echo "$out" | grep -q 'productos/x/index.html:2' || { echo "no lista archivo:línea"; echo "$out"; return 1; }
+  echo "$out" | grep -q 'data.json:1  \[REVISAR LEGAL\]' || { echo "no detecta [REVISAR"; echo "$out"; return 1; }
+  # Deploy preview con pendientes → solo avisa.
+  CONTEXT=deploy-preview node scripts/puerta-publicacion.mjs "$sucio" >/dev/null 2>&1 || { echo "preview no debería fallar"; return 1; }
+  # Producción sin pendientes → pasa.
+  CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" >/dev/null 2>&1 || { echo "producción limpia falló"; return 1; }
+  rm -rf "$tmp"
+}
+step "puerta de publicación simulada (CONTEXT=production bloquea, preview avisa)" check_puerta_simulada
+
+if [ -d out ]; then
+  PENDIENTES=$(node scripts/puerta-publicacion.mjs out 2>&1 | grep -c '^  out/' || true)
+  if [ "$PENDIENTES" -gt 0 ]; then
+    echo "INFO · puerta: out/ tiene $PENDIENTES marcas [CONFIRMAR]/[REVISAR] → hoy un build de producción fallaría (esperado hasta que Soledad confirme)"
+    echo "INFO · puerta: $PENDIENTES marcas pendientes en out/ (producción bloqueada)" >> "$RESULTS_FILE"
+  fi
 fi
 
 # --- Cobertura de keywords y copy-lint por página (kosmos-web) ---

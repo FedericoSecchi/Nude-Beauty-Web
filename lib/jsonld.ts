@@ -9,7 +9,6 @@ export function organizationJsonLd() {
     '@type': 'Organization',
     name: site.name,
     url: site.url,
-    logo: absolute('/img/logo.png'),
     description: site.description,
     sameAs: [site.contact.instagramUrl],
     contactPoint: [
@@ -90,7 +89,8 @@ export function productJsonLd(p: Producto, tienda: AjustesTienda) {
       returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
       merchantReturnDays: 10,
       returnMethod: 'https://schema.org/ReturnByMail',
-      returnFees: 'https://schema.org/FreeReturn',
+      // Política de Soledad: el envío del cambio lo paga quien compra si es decisión propia.
+      returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
       itemCondition: 'https://schema.org/UnopenedCondition',
     },
   };

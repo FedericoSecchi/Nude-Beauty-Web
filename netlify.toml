@@ -11,13 +11,6 @@ NPM_FLAGS = "--legacy-peer-deps"
 node_bundler = "esbuild"
 included_files = ["netlify/functions/_data/**", "content/**"]
 
-# Netlify Identity deja /#invite_token=... llegar al login de Decap.
-[[redirects]]
-from = "/admin"
-to = "/admin/"
-status = 301
-force = true
-
 # 404 real para rutas que no existen (Next export genera 404.html).
 [[redirects]]
 from = "/*"

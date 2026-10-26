@@ -11,7 +11,7 @@ Fuente de verdad del avance. Claude Code (modo ejecución de kosmos-web) retoma 
 | 1 · Hipótesis de arquitectura | ✅ | 2026-10-25 | |
 | 1 · Keywords con datos (`keywords/`) | 🟡 | 2026-10-25 | sin Keyword Planner: volumen s/d, hipótesis por página |
 | 1 · Mapa final y realismo (`02-arquitectura.md`) | ✅ | 2026-10-25 | |
-| Plan aprobado en el intake (`PLAN.md`) | 🟡 | 2026-10-25 | falta OK final de Fede |
+| Plan aprobado en el intake (`PLAN.md`) | ✅ | 2026-10-26 | v2: tienda propia, Tiendanube se apaga |
 | Google Business Profile (`gbp.md`) | ⬜ | | |
 | 4 · Medición configurada (`medicion.md`) | ⬜ | | |
 
@@ -37,6 +37,20 @@ Modo: multipágina (sitio nuevo, tipo D)
 | toalla-microfibra | 15 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | vincha-con-velcro | 16 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | cambios-y-devoluciones | 17 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| terminos-y-condiciones | 18 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| privacidad | 19 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| arrepentimiento | 20 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+
+## Etapas de la tienda (PLAN §4)
+| Etapa | Estado |
+|---|---|
+| E0 Preparación | ⬜ |
+| E1 Base | ⬜ |
+| E2 Catálogo y fichas | ⬜ |
+| E3 Carrito, checkout, envíos, pedidos | ⬜ |
+| E4 Panel Decap | ⬜ |
+| E5 Legal | ⬜ |
+| E6 Cierre y PR | ⬜ |
 
 Estados: ⬜ pendiente · 🟡 en curso · ✅ aprobado/hecho · ⛔ bloqueado
 
@@ -51,5 +65,7 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ aprobado/hecho · ⛔ bloqueado
 <!-- fecha · URL vieja → URL nueva · cómo se resolvió (301 / meta refresh + canonical) -->
 
 ## Decisiones de riesgo asumidas por el cliente
-- 2026-10-25 · Fede elige terminar el sitio propio en lugar de apuntar el dominio a Tiendanube. Implica que Kosmos mantiene checkout, envíos y CMS en la etapa 2.
+- 2026-10-25 · Fede elige terminar el sitio propio en lugar de apuntar el dominio a Tiendanube.
+- 2026-10-26 · Fede confirma: la web propia reemplaza a Tiendanube (checkout, envíos, panel). Kosmos queda a cargo de mantenerlos.
+- 2026-10-26 · Fede acepta Decap + Netlify Identity pese a que Identity solo recibe parches de seguridad.
 <!-- ej. keyword en nombre de GBP pese a la política. Fecha y quién decidió. -->

@@ -15,7 +15,7 @@
 - WhatsApp: +5493517033348 (TN y web actual) · Email: nudecosmeticaclean@gmail.com (TN) · Instagram: @nude.cosmeticaclean
 - CUIT: 23265636934 (TN). Condición frente a IVA y razón social para el pie legal: [CONFIRMAR]
 - Idioma y mercado: español de Argentina, voseo (TN).
-- Conversión en la etapa 1: compra en Tiendanube desde la ficha propia (decisión 25-10-2026). Secundario: WhatsApp.
+- Conversión: compra en la web propia (carrito + Mercado Pago o transferencia). Tiendanube se apaga después (Fede, 26-10-2026). Secundario: WhatsApp.
 - Google Business Profile: [CONFIRMAR si existe y con qué categoría]
 
 ## Qué vende

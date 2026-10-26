@@ -1,6 +1,6 @@
 # Arquitectura y mapa de keywords — NUDE Cosmética Clean
 
-## Árbol de URLs (etapa 1)
+## Árbol de URLs
 ```
 /                                   home
 ├── productos/                      catálogo (14 productos, filtro por categoría en la misma página)
@@ -19,7 +19,11 @@
 │   ├── toalla-microfibra/
 │   └── vincha-con-velcro/
 ├── cambios-y-devoluciones/         legal (texto de su política actual)
-└── (etapa 2) nosotros/, carrito, checkout, botón de arrepentimiento propio
+├── terminos-y-condiciones/
+├── privacidad/
+├── arrepentimiento/                botón de arrepentimiento (Res. 424/2020)
+├── carrito/                        noindex
+└── pedido/                         noindex (estado del pedido)
 ```
 Sin páginas de categoría: con 2–6 productos por categoría serían páginas finas; el filtro vive en `/productos/`.
 

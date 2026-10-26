@@ -43,7 +43,7 @@ step "typecheck (tsc --noEmit)" npx tsc --noEmit
 step "build (next build + export)" npm run build
 
 # --- Unit tests (si existe el dir y tiene archivos) ---
-if ls tests/unit/*.{mjs,js,ts} >/dev/null 2>&1; then
+if [ -d tests/unit ] && [ -n "$(find tests/unit -maxdepth 1 -name '*.test.mjs' -print -quit)" ]; then
   step "unit tests (node --test)" npm test --silent
 else
   skip "unit tests" "sin tests aún"
@@ -177,9 +177,34 @@ else
   skip "copy_lint.py" "sin contenido real todavía"
 fi
 
-# --- E2E local (Playwright) ---
+# --- E2E local (Playwright contra out/ servido estáticamente) ---
 if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
-  step "e2e local (Playwright)" npx playwright test
+  if [ -d out ] && command -v npx >/dev/null 2>&1; then
+    run_e2e_local() {
+      local port=4123
+      local url="http://127.0.0.1:$port"
+      pkill -f "serve.*out.*$port" >/dev/null 2>&1 || true
+      npx --yes serve out -l "$port" >/tmp/nude-serve.log 2>&1 &
+      local pid=$!
+      # Esperamos a que el server responda
+      local n=0
+      while [ $n -lt 20 ]; do
+        if /usr/bin/curl -sI "$url/" >/dev/null 2>&1; then break; fi
+        sleep 0.3
+        n=$((n+1))
+      done
+      local rc=0
+      E2E_BASE_URL="$url" npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
+      kill $pid >/dev/null 2>&1 || true
+      wait $pid >/dev/null 2>&1 || true
+      return $rc
+    }
+    # Instala browsers si no están.
+    npx playwright install chromium --with-deps >/dev/null 2>&1 || true
+    step "e2e local (Playwright sobre out/)" run_e2e_local
+  else
+    skip "e2e local" "falta out/ o npx"
+  fi
 else
   skip "e2e local" "sin playwright config aún"
 fi

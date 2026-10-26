@@ -7,6 +7,10 @@ functions = "netlify/functions"
 NODE_VERSION = "20"
 NPM_FLAGS = "--legacy-peer-deps"
 
+[functions]
+node_bundler = "esbuild"
+included_files = ["netlify/functions/_data/**", "content/**"]
+
 # Netlify Identity deja /#invite_token=... llegar al login de Decap.
 [[redirects]]
 from = "/admin"

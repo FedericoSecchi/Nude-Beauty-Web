@@ -238,3 +238,79 @@ Capturas: `docs/capturas/revision-post-e6/`.
 - [ ] Mobile 360×740: hero + CTA sin scroll, carrito con contador.
 - [ ] Tono: el sitio suena como Soledad (voseo, cálido, sin claims médicos).
 - [ ] Compra real después del merge: 1 producto barato, pago, aviso, Sheet, Telegram, email, reintegro.
+
+## Salida a producción (2026-10-26)
+| Bloque | Estado | Fecha | Evidencia |
+|---|---|---|---|
+| Medio de pago para producción | ⛔ bloqueado: faltan ALIAS y CBU | 2026-10-26 | la puerta frena el build de producción con «sin medio de pago» |
+| MP por flag, puerta, panel, legales, Serum, e2e remoto | ✅ | 2026-10-26 | preview build-id `163a872bd43d` · verify.sh PASS=22 FAIL=0 SKIP=0 |
+
+### Reporte · salida a producción
+
+**Estado: ⛔ no se puede vender todavía.** Los DATOS llegaron vacíos. Sin ALIAS ni CBU la transferencia no se puede ofrecer y Mercado Pago está apagado: no hay ningún medio de pago. Como pide la tarea 1, no se inventó nada y el PR lo explica. El resto quedó listo. La puerta de publicación protege el merge: si se mergea así, el build de producción falla con «sin medio de pago» y nudecosmetica.com sigue mostrando lo que muestra hoy. Para destrabarlo alcanza con cargar el alias o el CBU en el panel (Ajustes → Pagos y WhatsApp) o en `content/ajustes/tienda.json`.
+
+#### 1. Checks con evidencia
+| Check | Resultado | Evidencia |
+|---|---|---|
+| `verify.sh` | ✅ PASS=22 FAIL=0 SKIP=0 | con el preview sirviendo `163a872bd43d`; e2e remoto incluido |
+| Check de placeholders arreglado | ✅ | Antes: `\|` dentro de `grep -E` es un "\|" literal y no detectaba nada. Ahora: paso «detecta [CONFIRMAR: x] y [REVISAR LEGAL] (archivo de prueba)», con un archivo de prueba que **falla** (rc=1), más un `.js` con `[CONFIRMAR` y un archivo limpio que pasa |
+| Puerta del build de producción | ✅ ya detectaba bien (`indexOf`, no grep) | prueba simulada: producción con [CONFIRMAR]/[REVISAR] falla; sin medio de pago falla; con alias pasa; con MP encendido pasa |
+| `CONTEXT=production npm run build` con el contenido real | ⛔ falla **solo** por «sin medio de pago» | 0 [CONFIRMAR] y 0 [REVISAR] en `out/` |
+| Mismo build con un alias de prueba (fixture, no commiteado) | ✅ rc=0 | `[puerta] sin [CONFIRMAR] ni [REVISAR] en el sitio generado y con medio de pago` |
+| MP apagado: sin «cuotas», «tarjeta», «Mercado Pago» | ✅ | grep sobre todo `out/` (HTML, RSC .txt, JS, JSON, XML; sin `out/admin/`): 0 coincidencias. En el preview: e2e `medios-pago.spec.ts` recorre las 20 URLs del sitemap + /carrito/ + /pedido/ |
+| Carrito con un solo medio | ✅ | e2e: 1 radio `medio`, valor `transferencia`, marcado (local y preview) |
+| MP encendido: todo vuelve | ✅ | build con `MP_ACCESS_TOKEN` de mentira (`out-mp/`): 2 medios en el carrito, «cuotas» en la home, «Mercado Pago» en términos |
+| Sin cambios no pedidos | ✅ | diff de texto y JSON-LD de todas las páginas contra el build anterior: solo cambian los textos de MP/cuotas, los avisos de borrador y el [CONFIRMAR] del Serum |
+| Preview: build-id + sitemap | ✅ `163a872bd43d` · 20/20 en 200 · 404 real | `scripts/preview-check.sh` |
+| E2E remoto (sin reintentos) | ✅ | ficha → carrito → zona Gran Córdoba → transferencia → /pedido/ con monto y total = cálculo de `lib/pricing` sobre el mismo contenido. Pedido `NUDE-20261026-b57a4f` creado en `pedidos-e2e` y borrado solo (`finally`). Alias: vacío en el contenido, así que el test verifica que /pedido/ **no** muestra alias inventado. Cuando se cargue, el mismo test compara el alias exacto |
+| `/admin/` en el preview | ✅ | 200, `config.yml` 200, «Iniciar sesión con Netlify Identity», 0 errores de consola |
+| Panel probado de punta a punta (local, `decap-server` sobre una copia del repo) | ✅ | precio vacío → «no ha rellenado un campo obligatorio», no guarda; sin fotos → «debe tener entre 1 y 10 elementos», no guarda; cambio de precio y stock se guardan; producto nuevo con foto → `balsamo-de-prueba.json`, slug `balsamo-de-prueba`, el build lo publica en «Más productos» |
+| Variables viejas | ✅ no se usan | `git grep -E "GITHUB_TOKEN\|GITHUB_OWNER\|GITHUB_REPO\|GITHUB_BRANCH\|STORE_EMAIL" -- . ':!legacy'` → sin resultados |
+| Conflictos con main | ✅ | `origin/main` (`bfd9000`) ya está en la rama; no hizo falta rebase. GitHub: MERGEABLE |
+
+#### 2. Datos cargados y «a coordinar»
+| Dato | Estado |
+|---|---|
+| ALIAS, TITULAR, CBU | ⛔ vacíos. /pedido/ ya no muestra `[CONFIRMAR con Soledad]`: muestra solo los datos cargados. Sin alias ni CBU, producción no se publica |
+| Envío Gran Córdoba / Resto de Córdoba / Resto del país | a coordinar por WhatsApp (sin monto). Con monto, la zona pasa sola a «fijo» |
+| PLAZO_ENVIO | vacío → sin plazo en zonas con monto |
+| Retiro en Mendiolaza | deshabilitado (RETIRO_MENDIOLAZA no es «sí») |
+| Serum Transformación | sin INGREDIENTES_SERUM_TRANSFORMACION: se publica la lista bajo «Ingredientes:» de `seo/catalogo-tiendanube.md` (la que Tiendanube muestra primero; ya era la del JSON) y se sacó el [CONFIRMAR] |
+| Términos y privacidad | publicados sin el aviso de borrador. Nota interna en `seo/ESTADO.md`: pendiente revisión de abogado |
+
+#### 3. Cómo prender Mercado Pago
+1. En Netlify → Site configuration → Environment variables, cargar `MP_ACCESS_TOKEN` (de producción en el contexto Production, de prueba en Deploy previews) y `MP_WEBHOOK_SECRET`. El scope tiene que incluir **Builds** además de Functions: el flag se calcula en el build.
+2. **Redeployar** (Deploys → Trigger deploy → Deploy site). Sin redeploy el sitio sigue sin MP: el flag `NEXT_PUBLIC_MP_HABILITADO` se fija al buildear.
+3. No hay que tocar código: vuelven el radio de Mercado Pago, «3 cuotas sin interés» (texto en Ajustes → Avanzado → «Texto de cuotas») y las menciones en términos y privacidad. Con MP encendido la puerta ya no exige alias (MP alcanza como medio de pago).
+
+#### 4. Cómo quedó el panel
+- **Productos, arriba:** Nombre · Precio (en pesos, sin puntos ni decimales) · ¿Hay stock? · Fotos (la primera es la principal; entre 1 y 10) · Tamaño · Descripción corta · Ingredientes · Cómo se usa.
+- **Productos, «Avanzado: no tocar (lo maneja Kosmos)»** (plegado): slug (oculto, no editable), categoría, H1, paso en la rutina, activos, beneficios, preguntas frecuentes, relacionados, incluye, SEO, aviso de parche, ficha corta, URL de Tiendanube.
+- **Ajustes → Pagos y WhatsApp:** Alias · Titular · CBU · WhatsApp. Avanzado: descuentos, texto de cuotas, horas de reserva, email.
+- **Ajustes → Costos de envío:** cada zona abierta con Nombre visible · Costo · Plazo de entrega. Avanzado por zona: ID interno, provincias, códigos postales. Avanzado general: retiro y envío gratis.
+- Guía para Soledad actualizada: `docs/guia-soledad.md` (5 tareas, 3 a 5 pasos cada una, con los textos reales de los botones).
+
+#### 5. Decisiones tomadas sin consultar
+- 2026-10-26 · Con ALIAS y CBU vacíos se frenó la salida a producción (tarea 1), pero se hicieron igual las tareas que no dependen de ese dato. Así, cuando llegue el alias, alcanza con cargarlo en el panel. El PR no se pasó a borrador: la puerta ya impide que un merge sin medio de pago llegue al sitio en vivo.
+- 2026-10-26 · La puerta suma la regla «sin medio de pago» (MP apagado y sin alias ni CBU → producción bloqueada). Es la forma de «no ofrecer transferencia sin el dato» sin dejar un `[CONFIRMAR]` visible.
+- 2026-10-26 · Flag de MP: `next.config.mjs` define `NEXT_PUBLIC_MP_HABILITADO` según `MP_ACCESS_TOKEN`. Se declara como constante local en cada archivo (no importada): importada, el minificador no borraba los textos de MP del JS. El nombre del campo `cuotasTexto` tampoco viaja al navegador con MP apagado. Se respetó el pedido: el flag sale del token y nada más (en modo `CHECKOUT_MODE=tiendanube` sin token, el carrito tampoco muestra MP).
+- 2026-10-26 · Panel: Decap no tiene grupos sin anidar datos, así que los campos avanzados se guardan dentro de `avanzado` en cada JSON. `lib/contenido.mjs` los aplana (sitio, snapshot de las functions, tests). Se migraron los 14 productos y los ajustes: el contenido normalizado es idéntico al anterior.
+- 2026-10-26 · `decap-cms@3.3.5` no existe en npm (el panel no cargaba: 404 en unpkg). Se fijó `3.16.3` (2026-09-22). Pantalla de login de Identity en español (`setLocale('es')`).
+- 2026-10-26 · Decap no valida `min` en una lista vacía; con `min: 1` y `max: 10` sí. Probado.
+- 2026-10-26 · El build valida el contenido (precio entero > 0, al menos una foto, slug único). Si Soledad guarda algo roto, el deploy falla y la web sigue como estaba.
+- 2026-10-26 · Productos nuevos: slug a partir del nombre de archivo que arma Decap con el nombre. Sin categoría se muestran en el catálogo bajo «Más productos» (2 palabras nuevas, solo aparecen si hay un producto sin categoría) hasta que Kosmos la asigne. Borrar productos desde el panel quedó deshabilitado (se usa «¿Hay stock?»). Las zonas de envío no se agregan ni borran desde el panel.
+- 2026-10-26 · Zona con costo > 0 = «fijo»; sin costo = «a coordinar». El modo ya no se elige a mano.
+- 2026-10-26 · El WhatsApp del panel ahora sí cambia el sitio (antes `lib/site.ts` lo tenía fijo).
+- 2026-10-26 · `x-e2e-token` ya no va como header global de Playwright (se mandaba también a otros orígenes): el e2e lo agrega solo a `/.netlify/functions/` del preview. El token no aparece en archivos ni en logs.
+- 2026-10-26 · En `verify.sh` «placeholder» se busca solo en contenido (HTML/JSON/TXT/XML): Next trae esa palabra en su JS. Las marcas `[CONFIRMAR`/`[REVISAR` se buscan también en JS. «Hola» salió de la lista (es el saludo de WhatsApp).
+- 2026-10-26 · Cuando Decap no puede publicar porque falta un dato obligatorio, deja en la consola «Uncaught (in promise) undefined». Es interno de Decap y no aparece al cargar el panel.
+
+#### 6. Checklist de salida para Fede
+1. ⬜ Pasar ALIAS, TITULAR y CBU (o cargarlos en el panel después del merge). Sin eso producción no se publica.
+2. ⬜ Mergear el PR #2. Confirmar en Netlify que el deploy de producción pasó la puerta (log: «[puerta] sin [CONFIRMAR] ni [REVISAR] … y con medio de pago»).
+3. ⬜ Compra real de prueba en nudecosmetica.com: un producto, transferencia, ver alias y total en /pedido/, que llegue el aviso a n8n, y después cancelarla.
+4. ⬜ Acceso de Soledad: que entre a /admin/ con nudecosmeticaclean@gmail.com, cambie un precio y lo vea publicado. Si no recuerda la contraseña: «¿Olvidaste tu contraseña?».
+5. ⬜ Instagram: link de la bio a nudecosmetica.com/productos/.
+6. ⬜ Tiendanube: banner «Nos mudamos» con link a la web nueva. Apagarla cuando la web venda sin problemas.
+7. ⬜ (Opcional) Costos y plazos de envío por zona en el panel; Mercado Pago según §3.
+8. ⬜ (Pendiente) Revisión de abogado de términos y privacidad.

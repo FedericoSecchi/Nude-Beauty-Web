@@ -6,7 +6,7 @@
 ## Resumen por etapa
 | Etapa | Estado | Fecha | Deploy preview |
 |---|---|---|---|
-| E0 Preparación | 🟡 | 2026-10-26 | — |
+| E0 Preparación | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `9a82323e7348` |
 | E1 Base del sitio | ⬜ | — | — |
 | E2 Catálogo y fichas | ⬜ | — | — |
 | E3 Carrito, checkout, envíos, pedidos | ⬜ | — | — |
@@ -21,16 +21,34 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 
 | Check | Resultado | Evidencia |
 |---|---|---|
-| (pendiente E0) | — | — |
+| typecheck estricto | ✅ | `npm run typecheck` |
+| build + export | ✅ | `out/index.html` |
+| build-id visible en HTML | ✅ | `curl -sL $PREVIEW/ \| grep build-id` → `9a82323e7348` (coincide con el commit pusheado) |
+| 404 real | ✅ | `curl -sI $PREVIEW/nope-404/` → `HTTP/2 404` |
+| sin tuteo (voseo rioplatense) | ✅ | lista mínima de PLAN §9 |
+| sin `€` ni placeholders viejos | ✅ | grep en `out/` |
+| kw_coverage.py por página | ⏭️ SKIP | aún sin contenido real (E2) |
+| copy_lint.py por página | ⏭️ SKIP | aún sin contenido real (E2) |
+| unit tests | ⏭️ SKIP | aún sin tests (E3) |
+| e2e local y remoto | ⏭️ SKIP | aún sin Playwright / `E2E_TOKEN` (E3) |
 
 ## Decisiones técnicas tomadas sin consultar
 <!-- fecha · etapa · decisión · porqué -->
+- 2026-10-26 · E0 · Next.js 15.5.28 (último parche de 15.x) en vez de 15.0.3 (CVE-2025-66478). Subir a 16 sería breaking.
+- 2026-10-26 · E0 · Vulnerabilidades moderadas residuales de postcss/tailwindcss se dejan — el fix pide `tailwind@4` (breaking). Issue a resolver aparte si Fede lo decide.
+- 2026-10-26 · E0 · Sitio viejo íntegro a `legacy/` (incluye funciones Netlify originales) como referencia. Nada de `legacy/` se publica.
+- 2026-10-26 · E0 · `scripts/prebuild.mjs` escribe `.env.production.local` con `NEXT_PUBLIC_BUILD_ID` para que el meta aparezca en el HTML sin hidratación.
+- 2026-10-26 · E0 · `verify.sh` corre e2e y kw/copy sólo cuando hay contenido real / credenciales; si no, SKIP (nunca simula PASS).
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->
 
 ## Variables de entorno faltantes
 <!-- qué check quedó SKIP por cada variable que no esté en Netlify -->
+- `E2E_TOKEN` → bloquea e2e remoto contra el preview (SKIP en `verify.sh`). Se cargan en E3.
+- `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET` → bloquean el flujo real de MP (se usa `CHECKOUT_MODE=tiendanube` como plan B hasta cargar).
+- `ORDER_WEBHOOK_URL`, `ORDER_WEBHOOK_SECRET` → bloquean el aviso a n8n (el pedido igual se guarda; se reintenta en la próxima notificación).
+- `NEXT_PUBLIC_GA_ID` → sin GA no se cargan los scripts, el sitio funciona igual.
 
 ## Revisiones manuales para Fede (al cerrar E6)
 - [ ] Mobile 360×740: hero + CTA sin scroll, carrito con contador.

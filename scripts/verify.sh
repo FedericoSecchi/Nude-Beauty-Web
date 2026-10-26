@@ -82,10 +82,17 @@ if [ -d out ]; then
   # "Hola" salió de la lista: es el saludo del mensaje de WhatsApp; los productos de prueba viejos
   # se detectan por hola.json / hey.json / test1.
   sin_sucios() {  # sin_sucios <dir> → falla y lista archivo:línea si encuentra algo
-    local bad='Lorem|lorem|test1|barco|placeholder|hola\.json|hey\.json|Sérum Facial Renovador|\[CONFIRMAR|\[REVISAR'
+    # Texto de relleno y productos viejos: en el contenido (HTML, JSON, payload RSC). En el JS no,
+    # porque Next trae la palabra "placeholder" (prop de next/image).
+    local bad='Lorem|lorem|test1|barco|placeholder|hola\.json|hey\.json|Sérum Facial Renovador'
+    # Marcas de dato pendiente: en todo lo que se publica, JS incluido (ahí estaban las de /pedido/).
+    local marcas='\[CONFIRMAR|\[REVISAR'
     local hits
-    hits=$(grep -r --include='*.html' --include='*.json' --include='*.txt' --include='*.js' --include='*.xml' \
-      -E -o -n "$bad" "$1" 2>/dev/null || true)
+    hits=$( {
+      grep -r --include='*.html' --include='*.json' --include='*.txt' --include='*.xml' -E -o -n "$bad" "$1" 2>/dev/null
+      grep -r --include='*.html' --include='*.json' --include='*.txt' --include='*.js' --include='*.xml' \
+        -E -o -n "$marcas" "$1" 2>/dev/null
+    } || true)
     if [ -n "$hits" ]; then echo "sucios en $1:"; echo "$hits" | head -20; return 1; fi
     return 0
   }
@@ -96,6 +103,10 @@ if [ -d out ]; then
     if sin_sucios "$tmp" >/dev/null; then echo "no detectó [CONFIRMAR: x] / [REVISAR LEGAL]"; rm -rf "$tmp"; return 1; fi
     rm "$tmp/a.html"
     if sin_sucios "$tmp" >/dev/null; then echo "no detectó [REVISAR LEGAL] solo"; rm -rf "$tmp"; return 1; fi
+    rm "$tmp/b.json"; printf 'x="[CONFIRMAR con Soledad]"' > "$tmp/c.js"
+    if sin_sucios "$tmp" >/dev/null; then echo "no detectó [CONFIRMAR en un .js"; rm -rf "$tmp"; return 1; fi
+    rm "$tmp/c.js"; printf '<p>ok</p>' > "$tmp/d.html"
+    sin_sucios "$tmp" >/dev/null || { echo "falso positivo con un archivo limpio"; rm -rf "$tmp"; return 1; }
     rm -rf "$tmp"
   }
   step "check de placeholders detecta [CONFIRMAR: x] y [REVISAR LEGAL] (archivo de prueba)" check_sucios_detecta

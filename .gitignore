@@ -35,3 +35,4 @@ netlify/functions/_data/
 tsconfig.tsbuildinfo
 verify-results.txt
 .env.production.local
+out-sinstock/

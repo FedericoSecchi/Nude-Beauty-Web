@@ -2,7 +2,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { AjustesEnvios, AjustesTienda, Producto } from './types';
 
-const CONTENT_DIR = join(process.cwd(), 'content');
+// NUDE_CONTENT_DIR solo lo usa verify.sh para el build de prueba "sin stock" (scripts/fixture-sin-stock.mjs).
+const CONTENT_DIR = process.env.NUDE_CONTENT_DIR || join(process.cwd(), 'content');
 
 let _productos: Producto[] | null = null;
 let _tienda: AjustesTienda | null = null;

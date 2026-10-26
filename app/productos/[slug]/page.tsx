@@ -59,6 +59,9 @@ export default async function ProductoPage({
     .filter((x): x is NonNullable<typeof x> => Boolean(x));
 
   const precioTransfer = precioConTransferencia(p.precio, tienda);
+  // El H1 es "Nombre · qué es": en mobile el descriptor va más chico para que entre la compra sin scroll.
+  const [nombreH1, ...restoH1] = p.h1.split(' · ');
+  const descriptorH1 = restoH1.join(' · ');
 
   return (
     <>
@@ -74,8 +77,8 @@ export default async function ProductoPage({
         ]}
       />
 
-      <article className="container pt-10 pb-20">
-        <nav aria-label="Breadcrumb" className="text-sm text-muted-ink mb-4">
+      <article className="container pt-4 pb-24 md:pt-10 md:pb-20">
+        <nav aria-label="Breadcrumb" className="hidden md:block text-sm text-muted-ink mb-4">
           <Link href={urls.home} className="link-ghost">Inicio</Link>
           <span> · </span>
           <Link href={urls.productos} className="link-ghost">Productos</Link>
@@ -83,23 +86,38 @@ export default async function ProductoPage({
           <span>{p.nombre}</span>
         </nav>
 
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="relative aspect-[4/5] bg-soft rounded-lg overflow-hidden">
+        {/* Mobile (360×740): H1 → foto acotada → precio + CTA + WhatsApp → resumen, todo lo de compra
+            sin scroll. Desktop: foto a la izquierda y la columna de texto a la derecha, como siempre. */}
+        <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2 md:grid-rows-[auto_auto_auto_1fr]">
+          <h1 className="order-1 md:order-none md:col-start-2 md:row-start-1 text-2xl md:text-4xl">
+            <span className="block md:inline">{nombreH1}</span>
+            {descriptorH1 ? (
+              <>
+                <span className="hidden md:inline"> · </span>
+                <span className="block mt-1 font-body text-base text-muted-ink md:inline md:mt-0 md:font-heading md:text-4xl md:text-charcoal">
+                  {descriptorH1}
+                </span>
+              </>
+            ) : null}
+          </h1>
+
+          <div className="order-2 md:order-none md:col-start-1 md:row-start-1 md:row-span-4 md:self-start mt-3 md:mt-0 relative h-[30vh] md:h-auto md:aspect-[4/5] bg-soft rounded-lg overflow-hidden">
             <Image
               src={p.imagenes[0]}
               alt={p.nombre}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain md:object-cover"
               priority
             />
           </div>
 
-          <div>
-            <h1 className="font-heading text-3xl md:text-4xl">{p.h1}</h1>
-            <p className="mt-3 text-ink/80">{p.resumen}</p>
+          <p className="order-4 md:order-none md:col-start-2 md:row-start-2 mt-6 md:mt-3 text-ink/80">
+            {p.resumen}
+          </p>
 
-            <div className="mt-6 flex items-baseline gap-3">
+          <div className="order-3 md:order-none md:col-start-2 md:row-start-3">
+            <div data-testid="precio" className="mt-4 md:mt-6 flex items-baseline gap-3">
               <span className="font-heading text-3xl text-charcoal">
                 {formatARS(p.precio)}
               </span>
@@ -110,13 +128,14 @@ export default async function ProductoPage({
             </p>
 
             {p.disponible ? (
-              <div className="mt-6">
+              <div className="mt-3 md:mt-6">
                 <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} />
                 <p className="mt-2 text-xs text-muted-ink">
                   Elegís el envío o retiro en el paso siguiente.
                 </p>
-                <p className="mt-3 text-sm">
+                <p className="mt-2 md:mt-3 text-sm">
                   <a
+                    data-testid="wa-ficha"
                     href={waLink(waMessages.producto(p.nombre))}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -127,9 +146,10 @@ export default async function ProductoPage({
                 </p>
               </div>
             ) : (
-              <div className="mt-6">
-                <p className="font-medium text-charcoal">Sin stock por ahora.</p>
+              <div className="mt-3 md:mt-6">
+                <p data-testid="sin-stock" className="font-medium text-charcoal">Sin stock por ahora.</p>
                 <a
+                  data-testid="wa-ficha"
                   href={waLink(waMessages.sinStock(p.nombre))}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -139,22 +159,22 @@ export default async function ProductoPage({
                 </a>
               </div>
             )}
-
-            {incluidos.length ? (
-              <div className="mt-8">
-                <h2 className="font-heading text-xl mb-2">Qué incluye</h2>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  {incluidos.map((it) => (
-                    <li key={it.slug}>
-                      <Link href={urls.producto(it.slug)} className="link-ghost">
-                        {it.nombre}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
           </div>
+
+          {incluidos.length ? (
+            <div className="order-5 md:order-none md:col-start-2 md:row-start-4 mt-8">
+              <h2 className="font-heading text-xl mb-2">Qué incluye</h2>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                {incluidos.map((it) => (
+                  <li key={it.slug}>
+                    <Link href={urls.producto(it.slug)} className="link-ghost">
+                      {it.nombre}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
 
         {p.activos.length ? (

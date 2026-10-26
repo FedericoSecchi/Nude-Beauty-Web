@@ -55,7 +55,10 @@ async function readJsonFile(file) {
   return JSON.parse(await readFile(file, 'utf8'));
 }
 
-try {
+if (process.env.NUDE_CONTENT_DIR) {
+  // Build de prueba con contenido alternativo (fixture sin stock): no pisamos el snapshot real.
+  console.log('[prebuild] NUDE_CONTENT_DIR definido: snapshot omitido');
+} else try {
   await mkdir(outDir, { recursive: true });
   const productos = await readJsonDir(productsDir);
   const tienda = await readJsonFile(join(ajustesDir, 'tienda.json'));

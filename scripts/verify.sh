@@ -40,6 +40,16 @@ fi
 
 # --- Build + typecheck ---
 step "typecheck (tsc --noEmit)" npx tsc --noEmit
+# Build de prueba "sin stock" (todos los productos en disponible:false) para el e2e de la ficha mobile.
+# Va antes del build real: out/ y el snapshot de las functions quedan siempre del contenido real.
+build_sinstock() {
+  local dir
+  dir="$(mktemp -d)/content"
+  node scripts/fixture-sin-stock.mjs "$dir" &&
+    NUDE_CONTENT_DIR="$dir" npm run build >/tmp/nude-build-sinstock.log 2>&1 &&
+    rm -rf out-sinstock && mv out out-sinstock
+}
+step "build fixture sin stock (out-sinstock/)" build_sinstock
 step "build (next build + export)" npm run build
 
 # --- Unit tests (si existe el dir y tiene archivos) ---
@@ -181,24 +191,32 @@ fi
 
 # --- E2E local (Playwright contra out/ servido estáticamente) ---
 if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
-  if [ -d out ] && command -v npx >/dev/null 2>&1; then
-    run_e2e_local() {
-      local port=4123
-      local url="http://127.0.0.1:$port"
-      pkill -f "serve.*out.*$port" >/dev/null 2>&1 || true
-      npx --yes serve out -l "$port" >/tmp/nude-serve.log 2>&1 &
-      local pid=$!
-      # Esperamos a que el server responda
+  if [ -d out ] && [ -d out-sinstock ] && command -v npx >/dev/null 2>&1; then
+    serve_dir() {  # serve_dir <dir> <port> → deja el pid en SERVE_PID
+      pkill -f "serve.*$1.*$2" >/dev/null 2>&1 || true
+      npx --yes serve "$1" -l "$2" >"/tmp/nude-serve-$2.log" 2>&1 &
+      SERVE_PID=$!
       local n=0
-      while [ $n -lt 20 ]; do
-        if /usr/bin/curl -sI "$url/" >/dev/null 2>&1; then break; fi
+      while [ $n -lt 30 ]; do
+        if /usr/bin/curl -sI "http://127.0.0.1:$2/" >/dev/null 2>&1; then return 0; fi
         sleep 0.3
         n=$((n+1))
       done
-      local rc=0
-      E2E_BASE_URL="$url" npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
-      kill $pid >/dev/null 2>&1 || true
-      wait $pid >/dev/null 2>&1 || true
+      return 1
+    }
+    run_e2e_local() {
+      local rc=0 pid1 pid2
+      serve_dir out 4123 || rc=1; pid1=$SERVE_PID
+      serve_dir out-sinstock 4124 || rc=1; pid2=$SERVE_PID
+      if [ $rc -eq 0 ]; then
+        E2E_BASE_URL="http://127.0.0.1:4123" \
+          npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
+        # CTA mobile en 360×740 (14 fichas con stock + 14 sin stock + barra fija).
+        E2E_BASE_URL="http://127.0.0.1:4123" E2E_SINSTOCK_URL="http://127.0.0.1:4124" \
+          npx playwright test tests/e2e/ficha-mobile.spec.ts --project=mobile || rc=$?
+      fi
+      kill $pid1 $pid2 >/dev/null 2>&1 || true
+      wait $pid1 $pid2 >/dev/null 2>&1 || true
       return $rc
     }
     # Instala browsers si no están.

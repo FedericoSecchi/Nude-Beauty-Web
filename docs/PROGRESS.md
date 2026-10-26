@@ -14,6 +14,15 @@
 | E5 Legal (AR) | ✅ | 2026-10-26 | /cambios-y-devoluciones · /terminos · /privacidad · /arrepentimiento + pie legal · link Defensa vigente |
 | E6 Cierre y PR fuera de borrador | ✅ | 2026-10-26 | PR [#2](https://github.com/FedericoSecchi/Nude-Beauty-Web/pull/2) listo para revisión · build-id `0334e7df3191` |
 
+## Revisión post-E6 (correcciones de la revisión independiente)
+| Bloque | Estado | Fecha | Evidencia |
+|---|---|---|---|
+| A Compra en el celular | ✅ | 2026-10-26 | CTA en y≈551–575 px en 360×740 (antes ≈1090) · e2e `ficha-mobile.spec.ts` 14 fichas con y sin stock |
+| B Ningún pedido sin aviso | ⬜ | | |
+| C Cobro con Mercado Pago | ⬜ | | |
+| D Textos con fuente | ⬜ | | |
+| E Schema y puerta de publicación | ⬜ | | |
+
 Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 
 ## Checks (lo que ya pasa en `verify.sh`)
@@ -62,6 +71,11 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · E3 · GA4 opcional (`NEXT_PUBLIC_GA_ID`): sin ID no se cargan scripts; con ID, dispara `add_to_cart`, `begin_checkout` y `purchase` (una sola vez por id, flag en `sessionStorage`).
 - 2026-10-26 · E3 · Playwright: proyectos Chromium (Pixel 5 + Desktop Chrome) en lugar de iPhone 13 (webkit) para no depender de un browser extra; mobile/desktop cubre lo mismo del PLAN §9.
 - 2026-10-26 · E3 · Preview smoke contra las functions: `estado-pedido` sin id → 400, con id inexistente → 404, `crear-pedido` GET → 405, POST inválido → 400 "items vacío". Las functions están desplegadas y validando.
+
+- 2026-10-26 · A · Ficha mobile: grilla con `order` (H1 → foto a 30vh con `object-contain` → precio/CTA/WhatsApp → resumen); desktop conserva la grilla de 2 columnas con posiciones explícitas. El descriptor del H1 ("· qué es") va más chico en mobile; el texto del H1 no cambia.
+- 2026-10-26 · A · `StickyCta` pasa a ser un botón que agrega al carrito (antes era un link sin uso). Aparece cuando el CTA principal sale de pantalla (IntersectionObserver), solo en mobile.
+- 2026-10-26 · A · El caso "sin stock" se prueba con un build de prueba (`NUDE_CONTENT_DIR` + `scripts/fixture-sin-stock.mjs` → `out-sinstock/`) en vez de tocar el contenido real. No genera snapshot para las functions.
+- 2026-10-26 · A · Breadcrumb visible solo desde `md` (en mobile el JSON-LD BreadcrumbList sigue igual) para ganar alto en la primera pantalla.
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

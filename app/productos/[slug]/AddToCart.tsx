@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { urls } from '@/lib/urls';
+import { formatARS } from '@/lib/format';
+import { StickyCta } from '@/components/StickyCta';
 
 interface Props {
   slug: string;
@@ -45,6 +47,17 @@ function writeCart(items: CartItem[]) {
 export function AddToCart({ slug, nombre, precio }: Props) {
   const [cantidad, setCantidad] = useState(1);
   const [agregado, setAgregado] = useState(false);
+  const [ctaFuera, setCtaFuera] = useState(false);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  // La barra fija aparece cuando el CTA principal no se ve (scrolleaste más abajo o más arriba).
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(([entry]) => setCtaFuera(!entry.isIntersecting));
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const agregar = () => {
     const items = readCart();
@@ -75,7 +88,7 @@ export function AddToCart({ slug, nombre, precio }: Props) {
 
   return (
     <div>
-      <div className="flex items-center gap-3">
+      <div ref={ctaRef} data-testid="cta-principal" className="flex items-center gap-3">
         <label htmlFor="cantidad" className="sr-only">
           Cantidad
         </label>
@@ -83,9 +96,11 @@ export function AddToCart({ slug, nombre, precio }: Props) {
           id="cantidad"
           type="number"
           min={1}
-          max={10}
+          max={20}
           value={cantidad}
-          onChange={(e) => setCantidad(Math.max(1, Number(e.target.value) || 1))}
+          onChange={(e) =>
+            setCantidad(Math.min(20, Math.max(1, Math.floor(Number(e.target.value)) || 1)))
+          }
           className="w-16 rounded border border-border bg-card px-3 py-2 text-center"
         />
         <button type="button" onClick={agregar} className="btn-primary flex-1">
@@ -93,10 +108,17 @@ export function AddToCart({ slug, nombre, precio }: Props) {
         </button>
       </div>
       {agregado ? (
-        <p className="mt-3 text-sm">
+        <p className="mt-2 text-sm">
           Agregado al carrito. <Link href={urls.carrito} className="link-ghost">Ir al carrito →</Link>
         </p>
       ) : null}
+      <StickyCta
+        visible={ctaFuera}
+        precio={formatARS(precio)}
+        nombre={nombre}
+        agregado={agregado}
+        onAgregar={agregar}
+      />
     </div>
   );
 }

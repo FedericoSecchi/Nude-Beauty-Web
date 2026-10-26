@@ -1,5 +1,7 @@
 import type { Context } from '@netlify/functions';
 import { randomBytes } from 'node:crypto';
+import { entornoDe, storeArrepentimientos, type ArrepentimientoGuardado } from './_shared/blobs';
+import { procesarAviso } from './_shared/avisos';
 
 interface Payload {
   numeroOrden: string;
@@ -8,6 +10,15 @@ interface Payload {
   motivo?: string;
 }
 
+function json(body: unknown, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
+}
+
+// Botón de arrepentimiento (obligación legal): la solicitud se guarda primero en Blobs y después
+// se avisa a n8n. Si el aviso falla, queda pendiente y lo reintenta `reintentar-avisos`.
 export default async (req: Request, ctx: Context): Promise<Response> => {
   if (req.method !== 'POST') {
     return new Response('method not allowed', { status: 405 });
@@ -16,66 +27,55 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
   try {
     payload = (await req.json()) as Payload;
   } catch {
-    return new Response(JSON.stringify({ error: 'json inválido' }), {
-      status: 400,
-      headers: { 'content-type': 'application/json' },
-    });
+    return json({ error: 'json inválido' }, 400);
   }
 
   const problemas: string[] = [];
-  if (!payload.numeroOrden?.trim()) problemas.push('numeroOrden');
-  if (!payload.nombre?.trim()) problemas.push('nombre');
-  if (!payload.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email))
+  if (!payload.numeroOrden?.trim() || payload.numeroOrden.trim().length > 60) problemas.push('numeroOrden');
+  if (!payload.nombre?.trim() || payload.nombre.trim().length > 120) problemas.push('nombre');
+  if (
+    !payload.email?.trim() ||
+    payload.email.trim().length > 120 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email.trim())
+  )
     problemas.push('email');
+  if ((payload.motivo ?? '').length > 1000) problemas.push('motivo');
   if (problemas.length) {
-    return new Response(JSON.stringify({ error: 'campos', faltantes: problemas }), {
-      status: 400,
-      headers: { 'content-type': 'application/json' },
-    });
+    return json({ error: 'campos', faltantes: problemas }, 400);
   }
 
-  const codigo = 'NUDE-ARR-' + randomBytes(3).toString('hex').toUpperCase();
+  const e2eToken = req.headers.get('x-e2e-token');
+  const isE2E = Boolean(e2eToken && process.env.E2E_TOKEN && e2eToken === process.env.E2E_TOKEN);
 
-  const url = process.env.ORDER_WEBHOOK_URL;
-  if (!url) {
-    ctx.log('[arrepentimiento] ORDER_WEBHOOK_URL no configurado');
-    // Devolvemos código igual: el formulario tiene aviso para contactar por mail/WhatsApp.
-    return new Response(JSON.stringify({ codigo }), {
-      status: 200,
-      headers: { 'content-type': 'application/json' },
-    });
-  }
-
-  const body = {
+  const ahora = new Date().toISOString();
+  const registro: ArrepentimientoGuardado = {
+    id: 'NUDE-ARR-' + randomBytes(3).toString('hex').toUpperCase(),
     tipo: 'arrepentimiento',
-    id: codigo,
-    creado: new Date().toISOString(),
+    estado: 'arrepentimiento',
+    creado: ahora,
+    actualizado: ahora,
+    source: isE2E ? 'e2e' : 'web',
     numeroOrden: payload.numeroOrden.trim(),
     nombre: payload.nombre.trim(),
     email: payload.email.trim(),
     motivo: payload.motivo?.trim() ?? '',
+    avisoEnviado: false,
+    intentosAviso: 0,
   };
 
+  const store = storeArrepentimientos(entornoDe(ctx), isE2E);
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        ...(process.env.ORDER_WEBHOOK_SECRET
-          ? { 'x-nude-secret': process.env.ORDER_WEBHOOK_SECRET }
-          : {}),
-      },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await store.setJSON(registro.id, registro, { onlyIfNew: true });
+    if (!res.modified) throw new Error('código repetido');
   } catch (err) {
-    ctx.log(`[arrepentimiento ${codigo}] aviso falló: ${(err as Error).message}`);
+    ctx.log(`[arrepentimiento] no se pudo guardar: ${(err as Error).message}`);
+    // Sin registro no hay código válido: el formulario muestra los contactos alternativos.
+    return json({ error: 'no se pudo registrar la solicitud' }, 500);
   }
 
-  return new Response(JSON.stringify({ codigo }), {
-    status: 200,
-    headers: { 'content-type': 'application/json' },
-  });
+  await procesarAviso(store, registro.id, { respetarBackoff: false });
+
+  return json({ codigo: registro.id }, 200);
 };
 
 export const config = { path: '/.netlify/functions/arrepentimiento' };

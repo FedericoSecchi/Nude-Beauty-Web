@@ -197,6 +197,15 @@ POST JSON, header `x-nude-secret: <ORDER_WEBHOOK_SECRET>`:
 n8n hace: fila en la Google Sheet de pedidos, mensaje de Telegram a Soledad, email a Soledad y email de
 confirmación al comprador. Pedidos de prueba (`source: "e2e"`) nunca llegan acá (§9).
 
+Arrepentimiento (`tipo: "arrepentimiento"`): `{ "tipo", "id": "NUDE-ARR-XXXXXX", "creado", "estado": "arrepentimiento",
+"numeroOrden", "nombre", "email", "motivo" }`.
+
+Entrega "al menos una vez" (revisión post-E6): pedidos y arrepentimientos se guardan en Blobs antes de avisar
+(`pedidos`, `arrepentimientos`; fuera de producción `*-preview`). Si el POST falla, la función programada
+`reintentar-avisos` (cada 10 min, backoff 10→20→40… min, techo 6 h) reintenta todo registro `source: "web"`
+con `avisoEnviado: false` en estado `pagado`, `revisar`, `pendiente_transferencia` o `arrepentimiento`.
+Un caído justo después de un POST exitoso puede repetir el aviso: **n8n deduplica por `id` + `tipo`**.
+
 ## 7. Restricciones
 - URLs publicadas: solo `/`. No hay redirecciones que hacer. Las URLs de Tiendanube son de otro dominio.
 - Repo público: **ningún dato personal** en commits, fixtures ni logs. Fixtures con datos inventados y marcados.

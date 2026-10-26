@@ -1,8 +1,8 @@
 import type { Context } from '@netlify/functions';
-import { borrar } from './_shared/blobs';
+import { borrar, entornoDe, storeArrepentimientos } from './_shared/blobs';
 
-// Borra un pedido del store de e2e. Requiere x-e2e-token.
-export default async (req: Request, _ctx: Context): Promise<Response> => {
+// Borra un pedido (o arrepentimiento) de los stores de e2e. Requiere x-e2e-token.
+export default async (req: Request, ctx: Context): Promise<Response> => {
   if (req.method !== 'POST') {
     return new Response('method not allowed', { status: 405 });
   }
@@ -18,7 +18,9 @@ export default async (req: Request, _ctx: Context): Promise<Response> => {
     return new Response('json inválido', { status: 400 });
   }
   if (!body.id) return new Response('falta id', { status: 400 });
-  await borrar(body.id, true);
+  const entorno = entornoDe(ctx);
+  await borrar(body.id, entorno, true);
+  await storeArrepentimientos(entorno, true).delete(body.id);
   return new Response('ok', { status: 200 });
 };
 

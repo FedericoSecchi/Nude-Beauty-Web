@@ -1,6 +1,8 @@
 import type { Context } from '@netlify/functions';
 import { fetchPayment, verifyXSignature } from './_shared/mp';
-import { guardar, leer } from './_shared/blobs';
+import { actualizar, entornoDe, storePedidos, type PedidoGuardado } from './_shared/blobs';
+import { procesarAviso } from './_shared/avisos';
+import { aplicarPago } from './_shared/pagos';
 
 interface Notification {
   type?: string;
@@ -73,40 +75,27 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     return new Response('sin external_reference', { status: 200 });
   }
 
-  const pedido = await leer(pedidoId);
+  // El pedido puede estar en el store del entorno o, si lo creó un e2e, en el de pruebas.
+  const entorno = entornoDe(ctx);
+  let store = storePedidos(entorno);
+  const ahoraIso = new Date().toISOString();
+  let pedido = await actualizar<PedidoGuardado>(store, pedidoId, (p) => aplicarPago(p, payment, ahoraIso));
+  if (!pedido) {
+    store = storePedidos(entorno, true);
+    pedido = await actualizar<PedidoGuardado>(store, pedidoId, (p) => aplicarPago(p, payment, ahoraIso));
+  }
   if (!pedido) {
     ctx.log(`[mp-webhook] pedido ${pedidoId} no existe`);
     return new Response('pedido no encontrado', { status: 200 });
   }
 
-  const estadoMp = payment.status;
-  const yaEstabaPagado = pedido.estado === 'pagado';
-  const pagadoAhora = estadoMp === 'approved';
-
-  pedido.pago.mpPaymentId = String(payment.id);
-  pedido.pago.mpEstado = estadoMp;
-  pedido.actualizado = new Date().toISOString();
-
-  if (pagadoAhora && !yaEstabaPagado) {
-    pedido.estado = 'pagado';
-    pedido.tipo = 'pedido_pagado';
-  } else if (estadoMp === 'rejected' || estadoMp === 'cancelled') {
-    if (!yaEstabaPagado) pedido.estado = 'cancelado';
-  }
-
-  await guardar(pedido);
-
-  // Idempotencia: solo mandamos aviso si pasa de "no pagado" a "pagado" y no se mandó antes.
-  if (pagadoAhora && !yaEstabaPagado && !pedido.avisoEnviado) {
-    try {
-      await enviarAviso(pedido);
-      pedido.avisoEnviado = true;
-      await guardar(pedido);
-    } catch (err) {
-      ctx.log(`[mp-webhook ${pedidoId}] aviso falló: ${(err as Error).message}`);
-      // MP reintenta si devolvemos 5xx; en este caso el pedido ya está guardado como pagado,
-      // así que respondemos 200 y el aviso se reintentará desde el próximo webhook o manualmente.
-    }
+  // Aviso: cada vez que MP confirma el pago y el aviso todavía no salió (aunque el pedido ya
+  // estuviera pagado por una notificación anterior cuyo aviso falló). procesarAviso toma un lease
+  // con escritura condicional, así dos notificaciones simultáneas no mandan dos avisos.
+  // Si falla, queda registrado y lo reintenta la función programada `reintentar-avisos`.
+  const pagadoAhora = payment.status === 'approved';
+  if (pagadoAhora && !pedido.avisoEnviado) {
+    await procesarAviso(store, pedidoId, { respetarBackoff: false });
   }
 
   return new Response('ok', { status: 200 });
@@ -119,42 +108,6 @@ function resourceId(resource?: Notification['resource']): string {
     return m ? m[1] : '';
   }
   return resource.id ?? '';
-}
-
-async function enviarAviso(p: Awaited<ReturnType<typeof leer>>): Promise<void> {
-  if (!p || p.source === 'e2e') return;
-  const url = process.env.ORDER_WEBHOOK_URL;
-  if (!url) throw new Error('ORDER_WEBHOOK_URL no configurado');
-  const payload = {
-    tipo: p.tipo,
-    id: p.id,
-    creado: p.creado,
-    estado: p.estado,
-    comprador: p.comprador,
-    entrega: p.entrega,
-    items: p.items,
-    subtotal: p.subtotal,
-    descuentos: p.descuentos,
-    envio: p.envio,
-    total: p.total,
-    pago: {
-      medio: p.pago.medio,
-      mpPaymentId: p.pago.mpPaymentId,
-      mpEstado: p.pago.mpEstado,
-    },
-    notas: p.notas,
-  };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      ...(process.env.ORDER_WEBHOOK_SECRET
-        ? { 'x-nude-secret': process.env.ORDER_WEBHOOK_SECRET }
-        : {}),
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error(`aviso HTTP ${res.status}`);
 }
 
 export const config = { path: '/.netlify/functions/mp-webhook' };

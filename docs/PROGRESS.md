@@ -18,7 +18,7 @@
 | Bloque | Estado | Fecha | Evidencia |
 |---|---|---|---|
 | A Compra en el celular | ✅ | 2026-10-26 | CTA en y≈551–575 px en 360×740 (antes ≈1090) · e2e `ficha-mobile.spec.ts` 14 fichas con y sin stock |
-| B Ningún pedido sin aviso | ⬜ | | |
+| B Ningún pedido sin aviso | ✅ | 2026-10-26 | 9 unit tests en `tests/unit/avisos.test.mjs` (falla→éxito = 1 aviso, 2 notificaciones MP = 1 aviso, arrepentimiento con webhook caído se reintenta, stores por contexto) |
 | C Cobro con Mercado Pago | ⬜ | | |
 | D Textos con fuente | ⬜ | | |
 | E Schema y puerta de publicación | ⬜ | | |
@@ -76,6 +76,10 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · A · `StickyCta` pasa a ser un botón que agrega al carrito (antes era un link sin uso). Aparece cuando el CTA principal sale de pantalla (IntersectionObserver), solo en mobile.
 - 2026-10-26 · A · El caso "sin stock" se prueba con un build de prueba (`NUDE_CONTENT_DIR` + `scripts/fixture-sin-stock.mjs` → `out-sinstock/`) en vez de tocar el contenido real. No genera snapshot para las functions.
 - 2026-10-26 · A · Breadcrumb visible solo desde `md` (en mobile el JSON-LD BreadcrumbList sigue igual) para ganar alto en la primera pantalla.
+- 2026-10-26 · B · Escrituras de pedidos con control de concurrencia (ETag + `onlyIfMatch` de Netlify Blobs) y un lease de 2 min mientras se envía el aviso: dos notificaciones de MP simultáneas, o una notificación y la función programada, nunca mandan dos avisos. Entrega "al menos una vez": si la función se cae justo después del POST, el aviso puede repetirse → PLAN §6 pide a n8n deduplicar por `id` + `tipo`.
+- 2026-10-26 · B · `reintentar-avisos` (programada `*/10 * * * *` UTC): backoff 10, 20, 40… min con techo de 6 h, sin límite de intentos (el arrepentimiento es obligación legal: no se abandona). Corta a los 20 s para no pasar el límite de 30 s; lo que falte va en la corrida siguiente. Netlify solo la ejecuta en producción.
+- 2026-10-26 · B · Contexto de deploy desde `context.deploy.context` de la función (fallback `CONTEXT`, y si no hay, `dev`): solo `production` usa `pedidos` / `arrepentimientos`; el resto `*-preview`. Ante la duda, nunca producción.
+- 2026-10-26 · B · El arrepentimiento ahora se guarda antes de avisar; si no se puede guardar, responde 500 y el formulario muestra WhatsApp / mail (sin código no hay constancia).
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

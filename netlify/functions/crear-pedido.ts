@@ -1,7 +1,8 @@
 import type { Context } from '@netlify/functions';
 import { loadSnapshot } from './_shared/catalogo';
 import { generarIdPedido } from './_shared/ids';
-import { guardar, type PedidoGuardado } from './_shared/blobs';
+import { entornoDe, storePedidos, type PedidoGuardado } from './_shared/blobs';
+import { procesarAviso } from './_shared/avisos';
 import { createPreference } from './_shared/mp';
 import { calcularTotal, PricingError, type MedioPago } from '../../lib/pricing';
 import { calcularEnvio, ShippingError } from '../../lib/shipping';
@@ -231,21 +232,17 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     });
   }
 
+  const store = storePedidos(entornoDe(ctx), isE2E);
   try {
-    await guardar(pedido);
+    const res = await store.setJSON(pedido.id, pedido, { onlyIfNew: true });
+    if (!res.modified) throw new Error('id de pedido repetido');
   } catch (err) {
     return serverError(`no se pudo guardar el pedido: ${(err as Error).message}`);
   }
 
-  // Si es transferencia, disparamos el aviso ahora (idempotente desde el id).
+  // Transferencia: el aviso sale ya. Si falla queda guardado y lo reintenta `reintentar-avisos`.
   if (!esMp) {
-    try {
-      await enviarAviso(pedido);
-      pedido.avisoEnviado = true;
-      await guardar(pedido);
-    } catch (err) {
-      ctx.log(`[crear-pedido ${id}] aviso falló: ${(err as Error).message}`);
-    }
+    await procesarAviso(store, pedido.id, { respetarBackoff: false });
   }
 
   return new Response(
@@ -259,41 +256,5 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     { status: 201, headers: { 'content-type': 'application/json' } },
   );
 };
-
-async function enviarAviso(p: PedidoGuardado): Promise<void> {
-  if (p.source === 'e2e') return; // pedidos de prueba nunca disparan aviso real
-  const url = process.env.ORDER_WEBHOOK_URL;
-  if (!url) throw new Error('ORDER_WEBHOOK_URL no configurado');
-  const payload = {
-    tipo: p.tipo,
-    id: p.id,
-    creado: p.creado,
-    estado: p.estado,
-    comprador: p.comprador,
-    entrega: p.entrega,
-    items: p.items,
-    subtotal: p.subtotal,
-    descuentos: p.descuentos,
-    envio: p.envio,
-    total: p.total,
-    pago: {
-      medio: p.pago.medio,
-      mpPaymentId: p.pago.mpPaymentId,
-      mpEstado: p.pago.mpEstado,
-    },
-    notas: p.notas,
-  };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      ...(process.env.ORDER_WEBHOOK_SECRET
-        ? { 'x-nude-secret': process.env.ORDER_WEBHOOK_SECRET }
-        : {}),
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error(`aviso HTTP ${res.status}`);
-}
 
 export const config = { path: '/.netlify/functions/crear-pedido' };

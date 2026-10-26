@@ -1,7 +1,7 @@
 import type { Context } from '@netlify/functions';
-import { leer } from './_shared/blobs';
+import { entornoDe, leer } from './_shared/blobs';
 
-export default async (req: Request, _ctx: Context): Promise<Response> => {
+export default async (req: Request, ctx: Context): Promise<Response> => {
   const url = new URL(req.url);
   const id = url.searchParams.get('id');
   const e2eToken = req.headers.get('x-e2e-token');
@@ -15,7 +15,7 @@ export default async (req: Request, _ctx: Context): Promise<Response> => {
     });
   }
 
-  const pedido = await leer(id, isE2E);
+  const pedido = await leer(id, entornoDe(ctx), isE2E);
   if (!pedido) {
     return new Response(JSON.stringify({ error: 'pedido no encontrado' }), {
       status: 404,

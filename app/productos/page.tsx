@@ -48,18 +48,16 @@ export default function ProductosPage() {
           Productos de cosmética natural y clean, hechos a mano
         </h1>
         <p className="mt-4 text-ink/80 max-w-prose">
-          Todos los productos de skincare natural y cosmética natural de NUDE en un solo lugar.
-          Catorce fórmulas pensadas en orden —agua micelar, contorno, sérum, crema— más cuidado
-          corporal, kits y accesorios. Comprar cosmética natural online tiene que ser fácil:
-          elegís, pagás y te llega a casa.
+          Todo el skincare natural de NUDE, en catorce productos: la rutina facial en orden —agua
+          micelar, contorno, sérum, crema—, cuidado corporal, kits y accesorios. Elegís, pagás con
+          transferencia o Mercado Pago y te lo enviamos a cualquier punto del país.
         </p>
         <p className="mt-3 text-sm text-muted-ink">
           Precios en pesos argentinos. 20% off pagando con transferencia · 3 cuotas sin interés con
-          tarjeta · cosmética natural envíos a todo el país.
+          tarjeta · envíos a todo el país.
         </p>
         <p className="mt-3 text-ink/80 max-w-prose text-sm">
-          <strong>Qué es skincare clean:</strong> fórmulas sin ingredientes que hoy se evitan en
-          cosmética (parabenos, fragancias sintéticas, conservantes agresivos) y con activos
+          <strong>Qué es skincare clean para NUDE:</strong> fórmulas sin parabenos y con activos
           nombrados — niacinamida, bakuchiol, ácido hialurónico, péptidos.
         </p>
       </section>
@@ -69,8 +67,8 @@ export default function ProductosPage() {
         <ol className="list-decimal list-inside space-y-1 text-ink/80 max-w-prose">
           <li><Link href={urls.producto('agua-micelar-bifasica')} className="link-ghost">Agua Micelar Bifásica</Link> · limpia y desmaquilla.</li>
           <li><Link href={urls.producto('contorno-de-ojos-gleaming-eyes')} className="link-ghost">Contorno de ojos Gleaming Eyes</Link> · ojeras y bolsas.</li>
-          <li>Sérum: <Link href={urls.producto('serum-multi-active')} className="link-ghost">Multi Active</Link> de día · <Link href={urls.producto('serum-transformacion')} className="link-ghost">Transformación</Link> de noche.</li>
-          <li><Link href={urls.producto('crema-facial-porcelain')} className="link-ghost">Crema Facial Porcelain</Link> · hidrata y sella.</li>
+          <li>Sérum: <Link href={urls.producto('serum-multi-active')} className="link-ghost">Multi Active</Link> de día y de noche · <Link href={urls.producto('serum-transformacion')} className="link-ghost">Transformación</Link> solo de noche.</li>
+          <li><Link href={urls.producto('crema-facial-porcelain')} className="link-ghost">Crema Facial Porcelain</Link> · humecta y repara.</li>
           <li>Durante el día, siempre protector solar (no está en NUDE: compralo donde quieras).</li>
         </ol>
       </section>

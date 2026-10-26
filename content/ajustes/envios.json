@@ -53,7 +53,7 @@
     }
   ],
   "retiro": {
-    "habilitado": true,
+    "habilitado": false,
     "direccionTexto": "Retiro en Mendiolaza, Córdoba. Coordinamos el día por WhatsApp.",
     "costo": 0
   },

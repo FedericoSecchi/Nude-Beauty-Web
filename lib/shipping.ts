@@ -64,7 +64,7 @@ export function listarOpciones(envios: AjustesEnvios) {
   if (envios.retiro.habilitado) {
     items.push({
       id: 'retiro',
-      nombre: 'Retiro en el taller',
+      nombre: 'Retiro en Mendiolaza',
       costo: envios.retiro.costo || 0,
       plazoTexto: envios.retiro.direccionTexto,
       modo: 'retiro',

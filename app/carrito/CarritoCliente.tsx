@@ -372,7 +372,7 @@ export function CarritoCliente({ productos, tienda, envios }: Props) {
             <span>
               <span className="block font-medium">Transferencia (20% off)</span>
               <span className="block text-sm text-muted-ink">
-                Te mandamos alias y CBU; tenés {tienda.horasReservaTransferencia} h para transferir.
+                Al confirmar el pedido te mostramos alias y CBU.
               </span>
             </span>
           </label>

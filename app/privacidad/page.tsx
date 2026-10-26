@@ -27,7 +27,7 @@ export default function PrivacidadPage() {
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Qué datos recolectamos</h2>
       <ul className="list-disc list-inside space-y-1 text-ink/80">
-        <li>Datos de contacto que nos das al comprar: nombre, email, teléfono, dirección.</li>
+        <li>Datos que nos das al comprar: nombre, email, teléfono, dirección y, si querés, DNI.</li>
         <li>Información del pedido y del pago (manejada por Mercado Pago o por transferencia bancaria).</li>
         <li>Datos técnicos (navegador, dispositivo) para que el sitio funcione.</li>
       </ul>

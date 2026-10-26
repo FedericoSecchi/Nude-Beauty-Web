@@ -2,6 +2,6 @@
      a validar con SERP de Argentina en la Fase 2. -->
 vincha para skincare
 vincha con velcro
-vincha para lavarse la cara
 
 ## Descartadas
+- vincha para lavarse la cara — repetía el nombre; el uso ya está dicho ("te lavás la cara")

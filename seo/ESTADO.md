@@ -63,7 +63,7 @@ Ver `docs/PROGRESS.md` §[CONFIRMAR] pendientes: tamaños, ingredientes del Óle
 - 2026-10-26 · E1 · Zonas de envío en modo "coordinar" hasta que Soledad confirme costos/plazos.
 - 2026-10-26 · E1 · Descuento 20% transferencia **no acumulable** con 5% por 2+ unidades (reemplaza).
 - 2026-10-26 · E2 · `scripts/snapshot-content.mjs` genera `seo/paginas/<slug>/contenido.md` desde el JSON del producto. Una fuente de verdad, no duplicada.
-- 2026-10-26 · E2 · "Apto para niños" (gloss) → en condicional en la FAQ, con `[CONFIRMAR]`.
+- 2026-10-26 · E2 · ~~"Apto para niños" (gloss) → en condicional en la FAQ, con `[CONFIRMAR]`.~~ Reemplazado en la revisión post-E6 (bloque D): el ángulo niñas/niños se sacó por completo hasta que Soledad confirme el respaldo.
 - 2026-10-26 · E3 · GA4 opcional detrás de `NEXT_PUBLIC_GA_ID`; sin ID, no se cargan scripts.
 - 2026-10-26 · E3 · Playwright: Chromium Pixel 5 + Desktop Chrome (sin webkit).
 - 2026-10-26 · E3 · `CHECKOUT_MODE=tiendanube` como plan B: redirige al carrito de la tienda vieja cuando faltan credenciales de MP.

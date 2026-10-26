@@ -1,23 +1,22 @@
 ---
-title: "Kit Facial Experiencia Completa · kit de skincare completo | NUDE"
-description: "Rutina AM y PM completa con agua micelar, contorno de ojos, crema facial y los dos serums. 20% off por transferencia y envíos a todo el país."
+title: "Kit Facial Experiencia Completa · kit de skincare completo"
+description: "Los cinco productos de la rutina facial: agua micelar, contorno de ojos, crema facial y los dos serums. 20% off por transferencia y envíos a todo el país."
 slug: kit-facial-experiencia-completa
 updatedAt: 2026-10-26
 ---
 
-# Kit Facial Experiencia Completa · kit de skincare completo con rutina facial completa
+# Kit Facial Experiencia Completa · el kit de skincare completo de NUDE
 
-Es el kit de skincare completo de NUDE: la rutina facial completa en los cinco pasos (agua micelar bifásica, contorno de ojos, crema facial, serum multi active y serum transformación). Un kit skincare natural pensado para hacer la rutina AM/PM y sumar tratamiento antiage: el serum nocturno con bakuchiol trabaja como kit facial antiage sin pelearse con el serum de día de niacinamida y vitamina C.
+Los cinco productos faciales de NUDE en un kit: Agua Micelar Bifásica, Contorno de ojos Gleaming Eyes, Crema Facial Porcelain, Serum Multi Active y Serum Transformación. Suma al Kit Facial New Skin el serum antiage de noche, con bakuchiol y retinoides.
 
 ## Cómo se usa
 
-Rutina de día: agua micelar → contorno de ojos → serum multi active → crema facial → protector solar. Rutina de noche: agua micelar → contorno de ojos → serum transformación → crema facial.
+Orden de la rutina: agua micelar → contorno de ojos → serum → crema facial → (de día) protector solar. El Serum Multi Active se usa de día y de noche; el Serum Transformación, solo de noche.
 
 ## Beneficios
 
-- Rutina AM y PM completa, con tratamiento antiage
-- Más conveniente que comprar cada producto por separado
-- Pensada para quien quiere rutina y resultados
+- La rutina facial completa: los cinco productos
+- Incluye el serum de noche con bakuchiol y retinoides
 
 ## Qué incluye
 
@@ -35,12 +34,8 @@ Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).
 
 ### ¿En qué orden uso los productos?
 
-AM: agua micelar → contorno → multi active → crema → protector solar. PM: agua micelar → contorno → transformación → crema.
-
-### ¿Cuánto dura?
-
-[CONFIRMAR tamaños de cada producto para dar un plazo]
+Agua micelar → contorno de ojos → serum → crema facial y, de día, protector solar. El Multi Active va de día y de noche; el Transformación, solo de noche.
 
 ### ¿Se puede regalar?
 
-Sí: podés pedir que lo mandemos directo a la persona que lo recibe. Avisanos por WhatsApp.
+Sí: en el checkout cargá la dirección de la persona que lo recibe.

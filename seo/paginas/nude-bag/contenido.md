@@ -1,13 +1,13 @@
 ---
-title: "Nude Bag · set de regalo de skincare con accesorios | NUDE"
-description: "Rutina clean completa + accesorios en un solo kit: agua micelar, contorno, cremas, serums, pads, vincha y toalla. Pensado para regalo."
+title: "Nude Bag · set de regalo de skincare con accesorios"
+description: "Rutina clean completa + accesorios en un solo kit: agua micelar, contorno, crema facial, serums, pads, vincha y toalla. Pensado para regalo."
 slug: nude-bag
 updatedAt: 2026-10-26
 ---
 
 # Nude Bag · set de regalo de skincare con accesorios
 
-Es un set de regalo de skincare completo: la rutina facial más los accesorios para hacerla cómoda. Un regalo de skincare pensado para alguien que quiere empezar a cuidarse: incluye agua micelar bifásica, crema facial, contorno de ojos, serum transformación, serum multi active, pads desmaquillantes, vincha con velcro y toalla microfibra. Es un kit de skincare con accesorios y, para quienes buscan un regalo cosmética natural que no quede en el fondo del cajón, viene listo para entregar.
+Set de regalo con la rutina facial completa y sus accesorios: Agua Micelar Bifásica, Crema Facial Porcelain, Contorno de ojos Gleaming Eyes, Serum Transformación, Serum Multi Active, Pads Desmaquillantes (x2), Vincha con velcro y Toalla Microfibra.
 
 ## Cómo se usa
 
@@ -17,7 +17,6 @@ La rutina de skincare completa: agua micelar → contorno → serum → crema. L
 
 - Rutina completa + accesorios
 - Pensado para regalo
-- Más conveniente que comprar todo por separado
 
 ## Qué incluye
 
@@ -38,12 +37,8 @@ Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).
 
 ### ¿Lo puedo enviar directo a quien lo recibe?
 
-Sí: avisanos por WhatsApp y lo mandamos directo. Si querés, le podemos sumar una tarjeta.
+Sí: en el checkout cargá la dirección de la persona que lo recibe.
 
 ### ¿Qué pasa si no sé qué tipo de piel tiene?
 
-Casi todo el kit es apto para todo tipo de piel. Si tenés dudas puntuales, escribinos por WhatsApp.
-
-### ¿Qué contiene el agua micelar: 200 o 300 cc?
-
-[CONFIRMAR presentación del agua micelar incluida en la Nude Bag]
+El agua micelar y la crema facial son para todo tipo de piel, y el Serum Multi Active está indicado para piel sensible. Si tenés dudas puntuales, escribinos por WhatsApp.

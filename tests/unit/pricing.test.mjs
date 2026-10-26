@@ -222,3 +222,25 @@ test('calcularEnvio · zona inválida lanza error', () => {
     /Zona de envío inválida/,
   );
 });
+
+test('calcularEnvio · retiro deshabilitado lanza error y listarOpciones no lo ofrece', () => {
+  const envios = {
+    zonas: [{ id: 'a', nombre: 'A', provincias: [], costo: 0, plazoTexto: 'x', modo: 'coordinar' }],
+    retiro: { habilitado: false, direccionTexto: 'x', costo: 0 },
+    envioGratisDesde: null,
+  };
+  assert.throws(() => shipping.calcularEnvio({ modo: 'retiro' }, envios), /Retiro no habilitado/);
+  assert.deepEqual(shipping.listarOpciones(envios).map((o) => o.id), ['a']);
+});
+
+test('listarOpciones · con retiro habilitado lo agrega al final', () => {
+  const envios = {
+    zonas: [{ id: 'a', nombre: 'A', provincias: [], costo: 0, plazoTexto: 'x', modo: 'coordinar' }],
+    retiro: { habilitado: true, direccionTexto: 'Retiro en Mendiolaza', costo: 0 },
+    envioGratisDesde: null,
+  };
+  const ops = shipping.listarOpciones(envios);
+  assert.deepEqual(ops.map((o) => o.id), ['a', 'retiro']);
+  assert.equal(ops[1].modo, 'retiro');
+});
+

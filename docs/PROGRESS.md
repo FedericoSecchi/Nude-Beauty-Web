@@ -20,7 +20,7 @@
 | A Compra en el celular | ✅ | 2026-10-26 | CTA en y≈551–575 px en 360×740 (antes ≈1090) · e2e `ficha-mobile.spec.ts` 14 fichas con y sin stock |
 | B Ningún pedido sin aviso | ✅ | 2026-10-26 | 9 unit tests en `tests/unit/avisos.test.mjs` (falla→éxito = 1 aviso, 2 notificaciones MP = 1 aviso, arrepentimiento con webhook caído se reintenta, stores por contexto) |
 | C Cobro con Mercado Pago | ✅ | 2026-10-26 | 10 unit tests en `tests/unit/mp-checkout.test.mjs` (500 carritos al azar: suma = total y precios > 0; monto/moneda → `revisar`; base URL por contexto; cantidad 1–20; notas ≤ 500) |
-| D Textos con fuente | ⬜ | | |
+| D Textos con fuente | ✅ | 2026-10-26 | `seo/auditoria-hechos.md` · kw_coverage ✅ y copy_lint ✅ en 16/16 · grep en `out/` sin "parte interna del brazo", "lavarropas", "niñ", "más eligen", "\| NUDE" |
 | E Schema y puerta de publicación | ⬜ | | |
 
 Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
@@ -65,7 +65,7 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · E1 · `scripts/preview-check.sh` verifica preview sin depender del shell del harness (usa `/usr/bin/curl` por si el PATH no lo tiene).
 - 2026-10-26 · E2 · Los `contenido.md` por página son snapshots generados por `scripts/snapshot-content.mjs` a partir del JSON. Lo verifica `verify.sh` para medir cobertura y copy-lint sin duplicar la fuente de verdad.
 - 2026-10-26 · E2 · Las keywords del cluster se integran en H1, resumen, FAQ y modo de uso en voseo. Nada de rellenar: cada mención suena a Soledad.
-- 2026-10-26 · E2 · "Apto para niños" en el gloss queda en condicional dentro de la FAQ, con un `[CONFIRMAR]` para pedirle a Soledad el respaldo (política de claims cosméticos).
+- 2026-10-26 · E2 · ~~"Apto para niños" en el gloss queda en condicional dentro de la FAQ~~ → reemplazado en el bloque D: se sacó por completo (texto, FAQ y keywords) hasta que Soledad confirme el respaldo.
 - 2026-10-26 · E3 · Netlify Functions escritas en TypeScript (bundler esbuild automático). Los functions importan `lib/pricing.ts` y `lib/shipping.ts` directo: esbuild resuelve el bundle; una sola fuente de verdad del cálculo (misma función que corre en el navegador para preview).
 - 2026-10-26 · E3 · Snapshot del catálogo (`netlify/functions/_data/catalogo.json`) generado por `scripts/prebuild.mjs`. Lo levantan las functions al iniciar; evita tocar `content/*.json` en runtime y asegura que una edición del panel sin build no afecte pedidos en vuelo.
 - 2026-10-26 · E3 · GA4 opcional (`NEXT_PUBLIC_GA_ID`): sin ID no se cargan scripts; con ID, dispara `add_to_cart`, `begin_checkout` y `purchase` (una sola vez por id, flag en `sessionStorage`).
@@ -84,6 +84,14 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · C · Monto verificado: tolerancia $1; si falta `transaction_amount` también va a `revisar` (lo más seguro). Un pedido en `revisar` no vuelve a `pagado` solo: lo resuelve Soledad.
 - 2026-10-26 · C · Base URL: producción → `URL` (y si faltara, `https://nudecosmetica.com`, nunca un `*.netlify.app`); otros contextos → `DEPLOY_PRIME_URL`, o el origen del request si faltara. El contexto sale de `context.deploy.context`.
 - 2026-10-26 · C · Cantidad: el servidor rechaza no enteros (antes redondeaba hacia abajo); el carrito y la ficha topean en 20.
+- 2026-10-26 · D · Auditoría oración por oración de las 20 páginas + carrito/pedido + componentes globales: 144 afirmaciones sin fuente, todas borradas o reescritas con hechos de `catalogo-tiendanube.md` / `00-contexto.md`; solo la lista de ingredientes del Serum Transformación queda en `[CONFIRMAR]`.
+- 2026-10-26 · D · Pie legal: "NUDE Cosmética Clean · CUIT …" (como el pie de Tiendanube) en vez de `[CONFIRMAR: razón social]`; la razón social y el IVA siguen pendientes para el pie, pero no se imprime un marcador en todas las páginas.
+- 2026-10-26 · D · Nombre de Soledad fuera del texto público ("te escribimos", "la marca") hasta que confirme si quiere aparecer (00-contexto: pendiente).
+- 2026-10-26 · D · Retiro en Mendiolaza deshabilitado (`retiro.habilitado: false`) hasta que se confirme: no se promete en la interfaz. Soledad lo puede volver a activar desde el panel.
+- 2026-10-26 · D · Sin "48 h para transferir" ni "se libera el stock" (sin dato y sin manejo de stock). Sin "más conveniente que por separado" en los kits: con el 5% por 2+ unidades, los productos sueltos salen más baratos que el kit con Mercado Pago.
+- 2026-10-26 · D · Home: el H1 pasa a ser el kicker "Cosmética clean hecha a mano en Córdoba" (keyword principal) y el eslogan queda como párrafo con el mismo estilo; visualmente igual.
+- 2026-10-26 · D · Keywords que solo entraban con frases forzadas → "Descartadas" en cada `keywords.md` con una línea de justificación (p. ej. "serum de bakuchiol y retinol": el producto lleva retinoides, no retinol).
+- 2026-10-26 · D · Títulos: la marca aparece una sola vez (la pone el template del layout); se sacó "| NUDE" de los `seo.title`.
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

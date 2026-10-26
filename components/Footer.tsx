@@ -10,7 +10,7 @@ export function Footer() {
         <div>
           <p className="font-heading text-2xl text-charcoal">nude</p>
           <p className="mt-3 text-sm text-muted-ink max-w-xs">
-            {site.tagline}. Hecha a mano, en pequeños lotes.
+            Cosmética natural hecha a mano, en pequeños lotes, en Mendiolaza (Córdoba).
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export function Footer() {
               </a>
             </li>
             <li className="pt-3 text-xs text-muted-ink">
-              {site.legal.razonSocial} · CUIT {site.legal.cuit} · {site.address.locality}, {site.address.region}, Argentina.
+              {site.name} · CUIT {site.legal.cuit} · {site.address.locality}, {site.address.region}, Argentina.
             </li>
             <li className="text-xs text-muted-ink">
               <a

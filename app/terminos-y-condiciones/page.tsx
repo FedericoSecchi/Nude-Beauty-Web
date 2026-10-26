@@ -27,7 +27,7 @@ export default function TerminosPage() {
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Quiénes somos</h2>
       <p className="text-ink/80">
-        {site.legal.razonSocial}, CUIT {site.legal.cuit}, con domicilio en{' '}
+        {site.name}, CUIT {site.legal.cuit}, con domicilio en{' '}
         {site.address.locality}, {site.address.region}, Argentina. Contacto:{' '}
         <a href={`mailto:${site.contact.email}`} className="link-ghost">
           {site.contact.email}
@@ -36,26 +36,24 @@ export default function TerminosPage() {
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Compras y precios</h2>
       <p className="text-ink/80">
-        Los precios están en pesos argentinos (ARS) e incluyen IVA. Los precios y el stock se
-        confirman en el momento de la compra: el servidor recalcula precios, descuentos,
-        disponibilidad y envío a partir del catálogo del sitio, con independencia de lo que vea
-        tu navegador.
+        Los precios están en pesos argentinos (ARS). Los precios, los descuentos y la
+        disponibilidad se confirman en el momento de la compra, a partir del catálogo del sitio,
+        con independencia de lo que muestre tu navegador.
       </p>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Medios de pago</h2>
       <ul className="list-disc list-inside space-y-1 text-ink/80">
         <li>Mercado Pago (tarjeta de crédito o débito y otros medios habilitados).</li>
         <li>
-          Transferencia bancaria con 20% off: te enviamos los datos y tenés 48 h para transferir;
-          después se libera el stock.
+          Transferencia bancaria con 20% off: al confirmar el pedido te mostramos los datos para
+          transferir.
         </li>
       </ul>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Envíos</h2>
       <p className="text-ink/80">
         Hacemos envíos a todo el país. El costo y el plazo dependen de la zona y los
-        coordinamos por WhatsApp una vez confirmado el pedido. También podés retirar en
-        Mendiolaza (Córdoba) sin costo.
+        coordinamos por WhatsApp una vez confirmado el pedido.
       </p>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Cambios y devoluciones</h2>

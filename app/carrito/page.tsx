@@ -4,7 +4,7 @@ import { CarritoCliente } from './CarritoCliente';
 
 export const metadata: Metadata = {
   title: 'Carrito',
-  description: 'Revisá tu pedido, elegí envío o retiro y pagá con transferencia o Mercado Pago.',
+  description: 'Revisá tu pedido, elegí la entrega y pagá con transferencia o Mercado Pago.',
   robots: { index: false, follow: false },
 };
 

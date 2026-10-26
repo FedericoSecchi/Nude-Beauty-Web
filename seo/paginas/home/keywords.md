@@ -2,11 +2,11 @@
      a validar con SERP de Argentina en la Fase 2. -->
 cosmética clean
 cosmética natural hecha a mano
-cosmética clean argentina
-skincare natural argentina
 cosmética natural córdoba
 cosmética clean córdoba
 nude cosmética
 nude cosmética clean
 
 ## Descartadas
+- cosmética clean argentina — "Argentina" solo entra pegado a mitad de frase; el envío a todo el país ya está dicho
+- skincare natural argentina — misma razón: keyword forzada, no la diría nadie en una frase

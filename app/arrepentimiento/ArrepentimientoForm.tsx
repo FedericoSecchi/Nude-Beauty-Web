@@ -33,7 +33,7 @@ export function ArrepentimientoForm() {
         ok: true,
         codigo: json.codigo,
         mensaje:
-          'Recibimos tu solicitud. Te vamos a escribir en las próximas horas para coordinar la devolución.',
+          'Recibimos tu solicitud. Te escribimos para coordinar la devolución.',
       });
       form.reset();
     } catch (err) {

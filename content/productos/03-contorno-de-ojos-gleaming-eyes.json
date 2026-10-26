@@ -9,13 +9,12 @@
   ],
   "tamano": null,
   "h1": "Contorno de ojos Gleaming Eyes · para ojeras y bolsas, con ácido hialurónico y cafeína",
-  "resumen": "Es un contorno de ojos natural pensado para ojeras y bolsas: con pH específico para la piel delicada del contorno, péptidos Regu-Age PF, ácido hialurónico de alto y bajo peso molecular, liposomas de cafeína, alantoína y centella asiática. Es un contorno de ojos con cafeína (descongestiona) y con ácido hialurónico (hidrata), y también va en el contorno de los labios para líneas finas. Textura ligera, se absorbe rápido.",
+  "resumen": "Contorno de ojos con más de cinco activos para arrugas, ojeras y bolsas, y pH específico para la piel del contorno de ojos y labios. Lleva péptidos Regu-Age PF, ácido hialurónico de alto y bajo peso molecular, liposomas de cafeína-carnitina (descongestionan) y alantoína (regeneradora y calmante). También va en el contorno de los labios para líneas finas.",
   "activos": [
     { "nombre": "Regu-Age PF", "queHace": "Péptidos pensados para bolsas y ojeras." },
     { "nombre": "Liposomas de cafeína-carnitina", "queHace": "Descongestionan y aportan efecto tensor." },
-    { "nombre": "Ácido hialurónico de alto y bajo peso molecular", "queHace": "Hidrata en superficie y en profundidad." },
-    { "nombre": "Alantoína", "queHace": "Calma y ayuda a que la piel se vea más tersa." },
-    { "nombre": "Células madre vegetales y centella asiática", "queHace": "Trabajan sobre la apariencia de líneas finas." }
+    { "nombre": "Ácido hialurónico de alto y bajo peso molecular", "queHace": "Hidrata y aporta efecto relleno." },
+    { "nombre": "Alantoína", "queHace": "Regeneradora y calmante." }
   ],
   "ingredientes": "Células madre, Regu-Age PF, extracto de pepino, centella asiática, liposomas de cafeína y colágeno, ácido hialurónico, provitamina B5, vit E, aceites de pepita de uva, argán, palta, rosa mosqueta, jojoba, agua de rosas, aloe vera, té verde, manzanilla, hamamelis, lavanda, mínima dosis de neroli.",
   "modoDeUso": "Usá una sola gota (no más). Repartí en las yemas de los dedos anulares y aplicá con golpecitos circulares suaves en el contorno de los ojos. También podés usarlo en el contorno de los labios para líneas finas. Día y noche.",
@@ -23,13 +22,12 @@
   "beneficios": [
     "pH específico para la piel del contorno de ojos y labios",
     "Efecto descongestivo, tensor e hidratante",
-    "Textura ligera, se absorbe rápido"
+    "Una sola gota por aplicación"
   ],
   "faq": [
     { "q": "¿Sirve para ojeras y bolsas?", "a": "Está pensado para eso: la mezcla de péptidos Regu-Age PF, liposomas de cafeína (descongestiona) y ácido hialurónico trabaja sobre la apariencia de ojeras y bolsas, aunque los resultados dependen de cada piel." },
-    { "q": "¿Es una crema para ojeras más que un contorno de ojos tradicional?", "a": "Es un contorno de ojos natural: una fórmula líquida, muy concentrada, con pH específico para la piel del contorno. Se absorbe rápido, no deja sensación grasa." },
-    { "q": "¿Cuánto producto uso?", "a": "Una sola gota, no más. Es muy concentrado y rinde." },
-    { "q": "¿Lo puedo usar en el contorno de labios?", "a": "Sí: también va en el contorno de los labios para líneas finas, por el ácido hialurónico y los péptidos." },
+    { "q": "¿Cuánto producto uso?", "a": "Una sola gota, no más, repartida en las yemas de los anulares." },
+    { "q": "¿Lo puedo usar en el contorno de labios?", "a": "Sí: también va en el contorno de los labios para líneas finas." },
     { "q": "¿En qué paso de la rutina va?", "a": "Después del agua micelar y antes del serum. Día y noche." }
   ],
   "relacionados": [
@@ -39,7 +37,7 @@
     "kit-facial-new-skin"
   ],
   "seo": {
-    "title": "Contorno de ojos Gleaming Eyes para ojeras y bolsas | NUDE",
+    "title": "Contorno de ojos Gleaming Eyes para ojeras y bolsas",
     "description": "Contorno de ojos clean con péptidos Regu-Age PF, ácido hialurónico y liposomas de cafeína. Para ojeras, bolsas y líneas finas. 20% off por transferencia y envíos a todo el país."
   },
   "avisoPatch": true,

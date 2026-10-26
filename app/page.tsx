@@ -33,24 +33,23 @@ export default function HomePage() {
 
       <section className="container pt-10 pb-14 md:pt-20 md:pb-24">
         <div className="max-w-prose">
-          <p className="uppercase tracking-widest text-xs text-terracotta mb-4">
-            Cosmética clean · hecha a mano en Córdoba
-          </p>
-          <h1 className="font-heading text-4xl md:text-5xl leading-tight">
-            Tu piel no necesita veinte productos: necesita los correctos, en orden.
+          <h1 className="font-body uppercase tracking-widest text-xs leading-normal text-terracotta mb-4">
+            Cosmética clean hecha a mano en Córdoba
           </h1>
+          <p className="font-heading text-4xl md:text-5xl leading-tight text-charcoal">
+            Tu piel no necesita veinte productos: necesita los correctos, en orden.
+          </p>
           <p className="mt-5 text-ink/80 text-lg">
-            NUDE es una marca de cosmética clean nacida en Mendiolaza, Córdoba. Soledad formula y
-            envasa a mano: cosmética natural hecha a mano con activos que vienen con nombre y
-            porcentaje — niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. Sin parabenos
-            ni fragancias sintéticas.
+            NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano, en
+            pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido
+            hialurónico, péptidos. Sin parabenos.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link href={urls.productos} className="btn-primary">
               Mirá la rutina completa
             </Link>
             <Link href={urls.producto('kit-facial-new-skin')} className="btn-outline">
-              Kit para empezar
+              Kit con los básicos
             </Link>
           </div>
           <p className="mt-4 text-sm text-muted-ink">
@@ -62,24 +61,22 @@ export default function HomePage() {
       <section className="container pb-16">
         <div className="max-w-prose">
           <h2 className="font-heading text-2xl mb-4">
-            Qué quiere decir cosmética clean argentina
+            Qué quiere decir cosmética clean
           </h2>
           <p className="text-ink/80">
-            Fórmulas sin ingredientes que hoy se evitan en skincare —parabenos, fragancias
-            sintéticas, conservantes agresivos— y con activos nombrados, no genéricos. Es skincare
-            natural argentina pensado para funcionar en rutina: agua micelar → contorno de ojos →
-            sérum → crema → protector solar.
+            Fórmulas sin parabenos y con activos nombrados, no genéricos: dice qué tiene cada
+            producto y, cuando corresponde, en qué cantidad. Y una rutina armada en orden: agua
+            micelar → contorno de ojos → sérum → crema → protector solar.
           </p>
           <p className="mt-3 text-ink/80">
-            Nude cosmética (nude cosmética clean, como figura en Instagram) arrancó siendo
-            cosmética natural córdoba para las amigas de Soledad y hoy es cosmética clean córdoba
-            con clientas de todo el país. Lo seguís siendo: hecho a mano, en pequeños lotes.
+            Todo se hace a mano, en pequeños lotes, en Mendiolaza (Córdoba), y se envía a todo el
+            país.
           </p>
         </div>
       </section>
 
       <section className="container pb-20">
-        <h2 className="font-heading text-2xl mb-6">Lo que más eligen las clientas</h2>
+        <h2 className="font-heading text-2xl mb-6">Por dónde empezar</h2>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {destacados.map((p) => (
             <li key={p.slug} className="card flex flex-col">

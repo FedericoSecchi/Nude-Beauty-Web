@@ -36,7 +36,16 @@ test('e2e remoto: checkout por transferencia (requiere E2E_TOKEN)', async ({
     data: {
       items: [{ slug: SLUG, cantidad: 1 }],
       comprador: { nombre: 'E2E Nude', email, telefono: '+54 9 351 000 0000' },
-      entrega: { modo: 'retiro' },
+      // Retiro deshabilitado (auditoría T3): envío a una zona real de content/ajustes/envios.json,
+      // con dirección inventada.
+      entrega: {
+        modo: 'envio',
+        zonaId: 'gran-cordoba',
+        direccion: 'Calle Falsa 123',
+        localidad: 'Mendiolaza',
+        provincia: 'Córdoba',
+        cp: '5107',
+      },
       medioPago: 'transferencia',
       terminos: true,
       source: 'e2e',

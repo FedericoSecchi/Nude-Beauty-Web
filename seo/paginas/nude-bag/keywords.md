@@ -2,7 +2,7 @@
      a validar con SERP de Argentina en la Fase 2. -->
 set de regalo de skincare
 regalo de skincare
-kit de skincare con accesorios
-regalo cosmética natural
 
 ## Descartadas
+- kit de skincare con accesorios — el producto es un set; cubierto por la principal
+- regalo cosmética natural — keyword forzada que rompe la gramática

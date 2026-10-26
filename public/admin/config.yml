@@ -86,7 +86,7 @@ collections:
           - { name: alias, label: Alias de la cuenta, widget: string, required: false }
           - { name: cbu, label: CBU, widget: string, required: false }
           - { name: titularCuenta, label: Titular de la cuenta, widget: string, required: false }
-          - { name: horasReservaTransferencia, label: Horas que reservamos el pedido con transferencia, widget: number, value_type: int, min: 1, max: 168 }
+          - { name: horasReservaTransferencia, label: Horas de reserva con transferencia (hoy no se muestran en el sitio), widget: number, value_type: int, min: 1, max: 168 }
           - { name: whatsapp, label: WhatsApp de la tienda, widget: string }
           - { name: emailTienda, label: Email de la tienda, widget: string }
       - name: envios
@@ -106,7 +106,7 @@ collections:
               - { name: plazoTexto, label: Texto que ve quien compra, widget: text }
               - { name: modo, label: Modo, widget: select, options: [fijo, coordinar] }
           - name: retiro
-            label: Retiro en el taller
+            label: Retiro en Mendiolaza
             widget: object
             fields:
               - { name: habilitado, label: Habilitado, widget: boolean, default: true }

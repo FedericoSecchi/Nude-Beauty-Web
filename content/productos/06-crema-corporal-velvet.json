@@ -9,11 +9,11 @@
   ],
   "tamano": null,
   "h1": "Crema corporal y de manos Velvet · crema corporal reafirmante natural",
-  "resumen": "Es una crema corporal reafirmante natural, también apta para manos. Lleva manteca de karité, urea, alantoína, centella asiática, ginkgo biloba, aceite de rosa mosqueta y liposomas de cafeína-carnitina. Trabaja sobre la apariencia de estrías y celulitis: una crema corporal con urea y una crema corporal con centella asiática pensada para dejar la piel suave, con mejor apariencia. Aroma a azahar, palmarosa y lavanda.",
+  "resumen": "Crema corporal reafirmante, también para manos. Lleva manteca de karité, urea, alantoína, centella asiática, ginkgo biloba, aceite de rosa mosqueta y liposomas de cafeína-carnitina. Deja la piel más tersa y flexible, y ayuda a mejorar la apariencia de estrías y celulitis. Aroma a azahar, palmarosa y lavanda.",
   "activos": [
-    { "nombre": "Manteca de karité", "queHace": "Nutre y suaviza la piel." },
+    { "nombre": "Manteca de karité", "queHace": "Ayuda a dejar la piel más tersa y flexible." },
     { "nombre": "Urea y alantoína", "queHace": "Hidratan y ayudan a mantener la barrera de la piel." },
-    { "nombre": "Centella asiática y ginkgo biloba", "queHace": "Antioxidantes que ayudan a que la piel se vea más tersa." },
+    { "nombre": "Centella asiática y ginkgo biloba", "queHace": "El ginkgo biloba aporta acción antioxidante." },
     { "nombre": "Liposomas de cafeína-carnitina", "queHace": "Trabajan sobre la apariencia de la celulitis." },
     { "nombre": "Aceite de rosa mosqueta", "queHace": "Ayuda a mejorar la apariencia de estrías." }
   ],
@@ -21,22 +21,19 @@
   "modoDeUso": "Aplicá en cuerpo y manos al menos dos veces por día, mejor después de la ducha. Día y noche.",
   "pasoRutina": null,
   "beneficios": [
-    "Hidrata y nutre cuerpo y manos",
+    "Humecta cuerpo y manos",
     "Ayuda a mejorar la apariencia de estrías y celulitis",
     "Para todo tipo de piel"
   ],
   "faq": [
     { "q": "¿Sirve como crema para estrías y celulitis?", "a": "Trabaja sobre la apariencia de estrías y celulitis con rosa mosqueta, cafeína-carnitina en liposomas y centella asiática. Los resultados dependen de cada piel y de la constancia." },
-    { "q": "¿Es una crema corporal con urea apta para todo tipo de piel?", "a": "Sí: la urea está en baja proporción, pensada para hidratar y mantener la función barrera. Apta para todo tipo de piel; en piel muy sensible, hacé una prueba de parche antes." },
-    { "q": "¿Se puede usar en el embarazo?", "a": "[CONFIRMAR con Soledad] En general las fórmulas con urea en baja proporción se usan tranquilas, pero consultá con tu médico." },
-    { "q": "¿Hace falta usar después de depilarse?", "a": "Esperá un rato (la piel queda sensible) y después hidratá con la crema." },
-    { "q": "¿Mancha la ropa?", "a": "No deja residuos oleosos; la piel absorbe la crema en pocos minutos." }
+    { "q": "¿Sirve para todo tipo de piel?", "a": "Sí, es apta para todo tipo de pieles. La urea y la alantoína aportan humectación y ayudan a la función barrera. Antes de la primera aplicación, hacé la prueba de parche." }
   ],
   "relacionados": [
     "oleo-corporal-autobronceante"
   ],
   "seo": {
-    "title": "Crema corporal reafirmante natural Velvet · manos y cuerpo | NUDE",
+    "title": "Crema corporal reafirmante natural Velvet · manos y cuerpo",
     "description": "Crema clean con manteca de karité, urea, alantoína, centella asiática y liposomas de cafeína. Para cuerpo y manos. 20% off por transferencia y envíos a todo el país."
   },
   "avisoPatch": true,

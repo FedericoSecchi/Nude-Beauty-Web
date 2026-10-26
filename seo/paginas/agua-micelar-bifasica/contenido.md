@@ -1,5 +1,5 @@
 ---
-title: "Agua Micelar Bifásica natural con aceite de almendras | NUDE"
+title: "Agua Micelar Bifásica natural con aceite de almendras"
 description: "Agua micelar en dos fases: desmaquilla, limpia y humecta. Con aceite de almendras dulces, agua de rosas, aloe y caléndula. 300 ml. 20% off por transferencia."
 slug: agua-micelar-bifasica
 updatedAt: 2026-10-26
@@ -7,18 +7,18 @@ updatedAt: 2026-10-26
 
 # Agua Micelar Bifásica natural · desmaquillante con aceite de almendras
 
-Es un agua micelar bifásica natural: dos fases que desmaquillan, limpian, humectan y nutren en un solo paso. Es un agua micelar con aceite de almendras dulces (saca maquillaje a prueba de agua), agua de rosas, aloe vera, caléndula y manzanilla. Un desmaquillante natural apto para rostro, contorno de ojos y labios, para todo tipo de piel. Aroma a azahar y vainilla.
+Agua micelar en dos fases, 5 en 1: desmaquilla, limpia, humecta, nutre y suaviza. Lleva aceite de almendras dulces (que también saca el maquillaje), agua de rosas, aloe vera, caléndula y manzanilla: activos suaves que no dañan la barrera lipídica. Para rostro, contorno de ojos y labios, en todo tipo de piel. Aroma a azahar y vainilla.
 
 ## Activos principales
 
-- **Aceite de almendras dulces**: Desmaquilla incluso maquillaje a prueba de agua y nutre.
-- **Agua de rosas y aloe vera**: Calman y refrescan la piel.
-- **Caléndula y manzanilla**: Suavizan la piel sensible.
-- **Extracto hidroglicerinado de avena y pepino**: Hidrata y ayuda a mantener la barrera de la piel.
+- **Aceite de almendras dulces**: Ayuda a sacar el maquillaje y nutre la piel.
+- **Agua de rosas y aloe vera**: Activos suaves que no dañan la barrera lipídica.
+- **Caléndula y manzanilla**: Acompañan la limpieza y ayudan a suavizar la piel.
+- **Extracto hidroglicerinado de avena y pepino**: Ayudan a humectar la piel.
 
 ## Cómo se usa
 
-Agitá antes de usar. Humedecé un pad (de algodón o reutilizable) y pasalo por rostro, contorno de ojos, labios, cuello y escote. Enjuagá con agua tibia. Primer paso de la rutina, día y noche.
+Agitá antes de usar. Humedecé un pad (de algodón o reutilizable) y pasalo por rostro, contorno de ojos, labios, cuello y escote. Enjuagá con agua tibia. Es el primer paso de la rutina.
 
 ## Beneficios
 
@@ -34,18 +34,18 @@ Tamaño: 300 ml
 
 ## Preguntas frecuentes
 
-### ¿Saca el maquillaje a prueba de agua?
+### ¿Saca el maquillaje?
 
-Sí: la fase oleosa con aceite de almendras dulces disuelve el maquillaje. Agitá bien antes de usar.
+Sí: además de limpiar, desmaquilla; el aceite de almendras dulces ayuda a sacar el maquillaje. Agitá bien antes de usar.
 
-### ¿Es un desmaquillante de ojos natural también?
+### ¿Sirve para desmaquillar los ojos?
 
-Sí, es apta para desmaquillar la zona de los ojos y los labios, por eso es un desmaquillante de ojos natural. Pasá el pad con suavidad y enjuagá con agua tibia.
+Sí: se aplica en rostro, contorno de ojos y labios. Pasá el pad con suavidad y enjuagá con agua tibia.
 
-### ¿Es un desmaquillante natural para piel sensible?
+### ¿Sirve para piel sensible?
 
-Sí: aloe vera, caléndula, manzanilla y té verde calman la piel; es apto para todo tipo de piel, incluida la sensible.
+Es para todo tipo de piel, con activos suaves que no dañan la barrera lipídica. Antes de la primera aplicación, hacé la prueba de parche.
 
 ### ¿Qué pads van bien?
 
-Van los de algodón, pero recomendamos los reutilizables de microfibra para generar menos basura.
+Sirve un pad de algodón o uno reutilizable, como nuestros Pads Desmaquillantes (un lado de polar soft y el otro de microfibra).

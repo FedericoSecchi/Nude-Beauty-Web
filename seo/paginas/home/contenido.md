@@ -1,36 +1,32 @@
 ---
-title: "NUDE Cosmética Clean — cosmética natural hecha a mano en Córdoba"
-description: "Cosmética clean argentina hecha a mano en Mendiolaza, Córdoba. Fórmulas con activos nombrados: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. 20% off por transferencia y envíos a todo el país."
+title: "NUDE Cosmética Clean · cosmética clean hecha a mano en Córdoba"
+description: "Cosmética natural y clean hecha a mano en pequeños lotes en Mendiolaza (Córdoba). Fórmulas con activos nombrados: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. 20% off por transferencia, 3 cuotas sin interés con tarjeta y envíos a todo el país."
 slug: ""
 updatedAt: 2026-10-26
 ---
 
-# Cosmética clean, hecha a mano en Córdoba
+<!-- Snapshot del texto publicado en app/page.tsx (auditoría de hechos 2026-10-26). Si cambia la página, actualizar acá. -->
 
-NUDE es una marca de **cosmética clean** nacida en Mendiolaza. Soledad formula y envasa a mano, en pequeños lotes: cosmética natural hecha a mano con activos que vienen con nombre y porcentaje. Niacinamida al 5%, bakuchiol, ácido hialurónico de alto y bajo peso molecular, péptidos.
+# Cosmética clean hecha a mano en Córdoba
 
-Nude cosmética (o nude cosmética clean, como figura en Instagram) nace para resolver algo que hoy nadie resuelve bien en el país: skincare natural argentina de verdad, con precios en pesos y envíos a todo el país. No es "natural" como etiqueta de marketing: es cosmética clean argentina pensada para funcionar en rutina.
+Tu piel no necesita veinte productos: necesita los correctos, en orden.
 
-Tu piel no necesita veinte productos: necesita los correctos, en orden. Agua micelar → contorno de ojos → sérum → crema → protector solar. Esa es la rutina que arma NUDE.
+NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano, en pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. Sin parabenos.
 
-## Qué podés comprar
+[Mirá la rutina completa](/productos/) · [Kit con los básicos](/productos/kit-facial-new-skin/)
 
-Catorce productos pensados para funcionar juntos: dos sérums (uno con niacinamida para el día, otro con bakuchiol para la noche), contorno de ojos, crema facial, agua micelar, crema corporal, un óleo autobronceante para el verano, gloss natural para labios y mejillas, dos kits y los accesorios de la rutina (pads, vincha, toalla).
+20% off pagando con transferencia · 3 cuotas sin interés · envíos a todo el país.
 
-## Córdoba, hecho a mano
+## Qué quiere decir cosmética clean
 
-NUDE arranca en Córdoba. Lo que empezó siendo cosmética natural córdoba para las amigas de Soledad hoy es cosmética clean córdoba con clientas de todo el país. Lo seguís siendo: hecho a mano, en pequeños lotes, con fórmulas que Soledad ajusta en el taller.
+Fórmulas sin parabenos y con activos nombrados, no genéricos: dice qué tiene cada producto y, cuando corresponde, en qué cantidad. Y una rutina armada en orden: agua micelar → contorno de ojos → sérum → crema → protector solar.
 
-## Preguntas frecuentes
+Todo se hace a mano, en pequeños lotes, en Mendiolaza (Córdoba), y se envía a todo el país.
 
-### ¿Qué quiere decir cosmética clean?
+## Por dónde empezar
 
-Fórmulas sin ingredientes que, hoy por hoy, se evitan en skincare: sin parabenos, sin fragancias sintéticas, sin conservantes agresivos. Y con activos nombrados, no genéricos.
+- [Serum Multi Active](/productos/serum-multi-active/)
+- [Serum Transformación](/productos/serum-transformacion/)
+- [Kit Facial New Skin](/productos/kit-facial-new-skin/)
 
-### ¿Hacen envíos a todo el país?
-
-Sí. Enviamos a toda Argentina y también podés retirar en Mendiolaza (Córdoba) sin costo.
-
-### ¿Cómo pago?
-
-Con Mercado Pago (tarjeta en 3 cuotas sin interés) o con transferencia bancaria (20% off).
+[Ver todos los productos →](/productos/)

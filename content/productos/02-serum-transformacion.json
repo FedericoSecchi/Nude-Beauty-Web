@@ -8,29 +8,27 @@
     "/img/productos/serum-transformacion/01.webp"
   ],
   "tamano": null,
-  "h1": "Serum Transformación · serum de bakuchiol y retinol natural para la noche",
-  "resumen": "Serum de noche antiage con bakuchiol (la alternativa natural al retinol), liposomas de retinoides, ácido hialurónico al 1% y péptidos Matrixil-Syn Coll. Pensado para líneas de expresión, manchas y textura. Aroma a azahar y palmarosa.",
+  "h1": "Serum Transformación · serum de noche con bakuchiol y retinoides",
+  "resumen": "Serum de noche con bakuchiol, liposomas de retinoides (retinyl acetate), ácido hialurónico al 1% y péptidos Matrixil-Syn Coll. Pensado para arrugas y líneas de expresión, manchas y luminosidad, y para fortalecer la barrera de la piel. Aroma a azahar y palmarosa.",
   "activos": [
-    { "nombre": "Bakuchiol", "queHace": "Alternativa natural al retinol. Trabaja sobre arrugas y líneas finas con mejor tolerancia." },
-    { "nombre": "Liposomas de retinoides (retinyl acetate)", "queHace": "Renuevan la piel durante la noche." },
-    { "nombre": "Ácido hialurónico al 1%", "queHace": "Hidrata en profundidad, suaviza líneas finas, da efecto relleno." },
-    { "nombre": "Matrixil-Syn Coll (palmitoyl tripeptide-5)", "queHace": "Péptido para la elasticidad de la piel." },
-    { "nombre": "Aceite de pepitas de uva con resveratrol", "queHace": "Antioxidante que ayuda a emparejar el tono." }
+    { "nombre": "Bakuchiol", "queHace": "Activo principal del tratamiento de noche: ayuda a reducir arrugas y líneas de expresión." },
+    { "nombre": "Liposomas de retinoides (retinyl acetate)", "queHace": "Trabajan de noche, junto con el bakuchiol, sobre arrugas, manchas y luminosidad." },
+    { "nombre": "Ácido hialurónico al 1%", "queHace": "Hidrata y aporta efecto relleno." },
+    { "nombre": "Aceite de pepitas de uva con resveratrol", "queHace": "Aporta resveratrol, de acción antioxidante." }
   ],
   "ingredientes": "Bakuchiol, liposomas de retinoides (retinyl acetate), Matrixil-Syn Coll (palmitoyl tripeptide-5), ácido hialurónico de alto y bajo peso molecular, aceite de pepitas de uva (resveratrol), jojoba, coco fraccionado, hidrolato de lavanda, centella asiática, aloe vera, hamamelis, extracto de avena, vit E, pro-vit B5, neroli y palmarosa. [CONFIRMAR: lista final — hay dos versiones en la ficha original]",
   "modoDeUso": "Usalo solo de noche. Después del agua micelar y el contorno de ojos, ponete 3 gotas en rostro, cuello y escote. Al día siguiente usá protector solar y evitá exponerte al sol.",
   "pasoRutina": 3,
   "beneficios": [
-    "Alternativa natural al retinol (bakuchiol)",
-    "Trabaja sobre líneas finas, textura y luminosidad",
+    "Bakuchiol + retinoides en liposomas",
+    "Trabaja sobre arrugas, líneas de expresión, manchas y luminosidad",
     "Aroma a azahar y palmarosa"
   ],
   "faq": [
-    { "q": "¿Es una alternativa natural al retinol?", "a": "Sí: el bakuchiol es la alternativa natural al retinol más estudiada. Trabaja sobre líneas de expresión, firmeza y luminosidad y suele tolerarse mejor que el retinol clásico." },
-    { "q": "¿Qué diferencia hay con un serum de retinoides común?", "a": "Este serum de bakuchiol y retinol combina ambos: el bakuchiol como principal y una dosis baja de retinoides en liposomas, que llegan más gradualmente a la piel. Resultado: trabajo similar al retinol con menos irritación." },
+    { "q": "¿Sirve para piel sensible?", "a": "Sí: está indicado para pieles sensibles. Igual, hacé la prueba de parche antes de la primera aplicación." },
     { "q": "¿Lo puedo usar de día?", "a": "No. Es un serum de noche antiage: al día siguiente, siempre protector solar." },
-    { "q": "¿Puedo combinarlo con el Serum Multi Active?", "a": "Sí: Multi Active de día (con protector después), Transformación de noche." },
-    { "q": "¿Sirve para líneas de expresión?", "a": "Sí: por el bakuchiol, los péptidos Matrixil-Syn Coll y el ácido hialurónico, está pensado para líneas de expresión, textura y manchas." }
+    { "q": "¿Puedo combinarlo con el Serum Multi Active?", "a": "Vienen juntos en el Kit Facial Experiencia Completa. El Transformación va solo de noche; el Multi Active, de día y de noche." },
+    { "q": "¿Sirve para líneas de expresión?", "a": "Sí: es un serum pensado para reducir arrugas y líneas de expresión, con efecto relleno, según lo presenta la marca. También ayuda a unificar el tono y reducir manchas." }
   ],
   "relacionados": [
     "agua-micelar-bifasica",
@@ -40,8 +38,8 @@
     "kit-facial-experiencia-completa"
   ],
   "seo": {
-    "title": "Serum Transformación · serum de bakuchiol y retinol | NUDE",
-    "description": "Serum nocturno con bakuchiol, retinoides en liposomas y ácido hialurónico al 1%. Alternativa natural al retinol clásico. 20% off por transferencia y envíos a todo el país."
+    "title": "Serum Transformación · bakuchiol y retinoides de noche",
+    "description": "Serum nocturno con bakuchiol, retinoides en liposomas y ácido hialurónico al 1%. Para arrugas, líneas de expresión y manchas. 20% off por transferencia y envíos a todo el país."
   },
   "avisoPatch": true,
   "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/serum-transformacion/"

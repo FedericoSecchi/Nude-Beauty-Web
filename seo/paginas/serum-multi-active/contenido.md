@@ -1,21 +1,20 @@
 ---
-title: "Serum Multi Active con niacinamida 5% y vitamina C | NUDE"
+title: "Serum Multi Active con niacinamida 5% y vitamina C"
 description: "Serum clean con niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico y péptidos. Para rostro, cuello y escote. 20% off por transferencia y envíos a todo el país."
 slug: serum-multi-active
 updatedAt: 2026-10-26
 ---
 
-# Serum Multi Active · serum con niacinamida y vitamina C para piel sensible
+# Serum Multi Active con niacinamida y vitamina C, apto para piel sensible
 
-Serum 5 en 1 que trabaja sobre manchas, poros, hidratación y luminosidad. Lleva niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico de alto y bajo peso molecular, péptidos Matrixil-Syn Coll y pro-vitamina B5. Es un serum con niacinamida y vitamina C formulado para que no irrite: apto para piel sensible. Textura ligera, aroma a azahar y palmarosa. Día y noche.
+Serum 5 en 1 que trabaja sobre manchas, poros, hidratación y luminosidad. Lleva niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico de alto y bajo peso molecular, péptidos Matrixil-Syn Coll y pro-vitamina B5. La vitamina C es estable y no irritante, y el serum está indicado para piel sensible. Textura ligera, aroma a azahar y palmarosa. Día y noche.
 
 ## Activos principales
 
 - **Niacinamida al 5%**: Ayuda a emparejar el tono y a que los poros se vean más chicos. Se ven cambios de a poco.
 - **Vitamina C estable (en liposomas)**: Antioxidante que da luminosidad sin irritar. Pensada para piel sensible.
-- **Ácido hialurónico de alto y bajo peso molecular**: Hidrata en superficie y en capas más profundas de la piel.
-- **Matrixil-Syn Coll (palmitoyl tripeptide-5)**: Péptido que trabaja sobre líneas finas y la elasticidad de la piel.
-- **Centella asiática, aloe vera, hamamelis**: Calman rojeces y suavizan la piel.
+- **Ácido hialurónico de alto y bajo peso molecular**: Aporta hidratación: combina ácido hialurónico de alto y bajo peso molecular.
+- **Centella asiática, aloe vera, hamamelis**: Acompañan el efecto del serum sobre rojeces e hinchazón.
 
 ## Cómo se usa
 
@@ -25,7 +24,7 @@ Después de limpiar la piel con el agua micelar, ponete 3 gotas en el rostro (fr
 
 - Textura ligera, se absorbe rápido
 - Aroma a azahar y palmarosa
-- Pensada para piel sensible
+- Pensado para piel sensible
 - Hidrata, da luminosidad y empareja el tono
 
 ## Ingredientes
@@ -34,22 +33,22 @@ Niacinamida (vit B3), liposomas de vitamina C estable (sodium ascorbate), Matrix
 
 ## Preguntas frecuentes
 
-### ¿Es un serum con niacinamida y vitamina C apto para piel sensible?
+### ¿Sirve para piel sensible?
 
-Sí. La vitamina C está estabilizada en liposomas de sodium ascorbate, que es la forma menos irritante. La niacinamida al 5% es la dosis que suele tolerarse bien en piel sensible.
+Sí: está indicado para piel sensible. La vitamina C que lleva es estable y no irritante (liposomas de sodium ascorbate). Igual, hacé la prueba de parche antes de la primera aplicación.
 
 ### ¿Ayuda con manchas y poros?
 
-La niacinamida al 5% y la vitamina C son activos que trabajan sobre el tono y la apariencia de los poros. Se ven cambios de a poco: en general, Soledad habla de 3 a 4 semanas de uso constante.
+Sí: la niacinamida al 5% ayuda a emparejar el tono y a reducir manchas, y el serum ayuda a minimizar los poros. Los cambios se ven de a poco: según la marca, en 3 a 4 semanas.
 
 ### ¿Por qué le dicen serum 5 en 1?
 
-Hidrata, da luminosidad, trabaja sobre manchas y poros, calma rojeces y aporta antioxidantes. Son los cinco frentes de los activos de la fórmula.
+Así lo presenta la marca: en un solo paso hidrata, aporta antioxidantes, ayuda a emparejar el tono y reducir manchas, minimiza poros, calma rojeces y da luminosidad.
 
 ### ¿Lo puedo usar de día y de noche?
 
-Sí. De día, siempre con protector solar después. De noche va solo o antes de la crema.
+Sí, día y noche. Después va la crema facial y, de día, el protector solar.
 
 ### ¿En qué paso de la rutina va?
 
-Después del agua micelar y el contorno de ojos, antes de la crema facial. Si usás protector solar, va al final.
+Después del agua micelar y el contorno de ojos, antes de la crema facial. De día, terminá con protector solar.

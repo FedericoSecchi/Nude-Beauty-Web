@@ -131,7 +131,7 @@ export default async function ProductoPage({
               <div className="mt-3 md:mt-6">
                 <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} />
                 <p className="mt-2 text-xs text-muted-ink">
-                  Elegís el envío o retiro en el paso siguiente.
+                  Elegís la entrega en el paso siguiente.
                 </p>
                 <p className="mt-2 md:mt-3 text-sm">
                   <a
@@ -221,9 +221,9 @@ export default async function ProductoPage({
         {p.avisoPatch ? (
           <aside className="mt-10 max-w-prose rounded-md bg-soft p-5">
             <p className="text-sm text-ink/80">
-              <strong className="text-charcoal">Prueba de parche:</strong> antes de la primera
-              aplicación, probá una pequeña cantidad en la parte interna del brazo. Es solo un
-              pequeño paso para asegurarte de que tu piel esté feliz.
+              <strong className="text-charcoal">Prueba de parche:</strong> antes de usarlo por
+              primera vez, probá una pequeña cantidad: incluso los ingredientes naturales pueden
+              dar reacción. Es solo un pequeño paso para asegurarte de que tu piel esté feliz.
             </p>
           </aside>
         ) : null}

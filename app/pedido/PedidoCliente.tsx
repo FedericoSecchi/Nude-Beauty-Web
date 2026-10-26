@@ -123,7 +123,7 @@ export function PedidoCliente() {
         <section className="card">
           <h2 className="font-heading text-xl mb-2">¡Casi! Falta la transferencia</h2>
           <p className="text-ink/80">
-            Reservamos tu pedido por {estado.reservaHoras ?? 48} h. Transferí a:
+            Para completar el pedido, transferí a:
           </p>
           <dl className="mt-4 text-sm">
             <div className="grid grid-cols-[8rem_1fr] gap-y-1">
@@ -152,7 +152,7 @@ export function PedidoCliente() {
         <section className="card">
           <h2 className="font-heading text-xl mb-2">¡Pedido pagado!</h2>
           <p className="text-ink/80">
-            Recibimos el pago. Soledad te va a escribir por WhatsApp para coordinar la entrega.
+            Recibimos el pago. Te escribimos por WhatsApp para coordinar la entrega.
           </p>
         </section>
       ) : null}
@@ -161,8 +161,8 @@ export function PedidoCliente() {
         <section className="card">
           <h2 className="font-heading text-xl mb-2">Estamos revisando el pago</h2>
           <p className="text-ink/80">
-            Mercado Pago nos avisó del pago, pero el monto no coincide con el pedido. Soledad lo revisa
-            y te escribe por WhatsApp. Si querés, escribinos con el número de pedido.
+            Mercado Pago nos avisó del pago, pero el monto no coincide con el pedido. Lo revisamos y
+            te escribimos por WhatsApp. Si querés, escribinos con el número de pedido.
           </p>
         </section>
       ) : null}

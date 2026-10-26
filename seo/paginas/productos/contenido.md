@@ -1,36 +1,32 @@
 ---
-title: "Productos de cosmética natural — NUDE Cosmética Clean"
-description: "Todos los productos de cosmética natural y skincare clean de NUDE: catorce fórmulas hechas a mano en Córdoba, envíos a todo el país, 20% off por transferencia."
+title: "Productos de cosmética natural · NUDE Cosmética Clean"
+description: "Todos los productos de NUDE Cosmética Clean: cosmética facial, corporal, kits y accesorios. Fórmulas con activos nombrados, hechas a mano. 20% off por transferencia y envíos a todo el país."
 slug: "productos"
 updatedAt: 2026-10-26
 ---
 
+<!-- Snapshot del texto publicado en app/productos/page.tsx (auditoría de hechos 2026-10-26). Si cambia la página, actualizar acá. -->
+
 # Productos de cosmética natural y clean, hechos a mano
 
-Todos los productos de skincare natural y cosmética natural de NUDE en un solo lugar. Catorce fórmulas pensadas en orden —agua micelar, contorno, sérum, crema— más cuidado corporal, kits y accesorios. Comprar cosmética natural online tiene que ser fácil: elegís, pagás y te llega a casa.
+Todo el skincare natural de NUDE, en catorce productos: la rutina facial en orden —agua micelar, contorno, sérum, crema—, cuidado corporal, kits y accesorios. Elegís, pagás con transferencia o Mercado Pago y te lo enviamos a cualquier punto del país.
 
-## Categorías
+Precios en pesos argentinos. 20% off pagando con transferencia · 3 cuotas sin interés con tarjeta · envíos a todo el país.
 
-Para que te orientes, los productos de skincare natural están agrupados en cosmética facial, cosmética corporal, sets y accesorios. Son cuatro grupos que podés recorrer de arriba a abajo o filtrar.
+**Qué es skincare clean para NUDE:** fórmulas sin parabenos y con activos nombrados — niacinamida, bakuchiol, ácido hialurónico, péptidos.
 
-## Cómo elegir
+## La rutina clean, en orden
 
-Si estás empezando una rutina clean, el camino lógico es Kit Facial New Skin (los cuatro básicos) o sumar producto a producto. Si ya hacés rutina, el Kit Facial Experiencia Completa suma el sérum nocturno de bakuchiol. Si buscás un regalo, Nude Bag incluye todo más los accesorios.
+1. [Agua Micelar Bifásica](/productos/agua-micelar-bifasica/) · limpia y desmaquilla.
+2. [Contorno de ojos Gleaming Eyes](/productos/contorno-de-ojos-gleaming-eyes/) · ojeras y bolsas.
+3. Sérum: [Multi Active](/productos/serum-multi-active/) de día y de noche · [Transformación](/productos/serum-transformacion/) solo de noche.
+4. [Crema Facial Porcelain](/productos/crema-facial-porcelain/) · humecta y repara.
+5. Durante el día, siempre protector solar (no está en NUDE: compralo donde quieras).
 
-## Dónde entregamos
+## Cosmética facial
 
-Hacemos **cosmética natural envíos a todo el país**: cualquier dirección en Argentina, con costo y plazo coordinados por WhatsApp. También podés retirar en Mendiolaza sin costo.
+## Cosmética corporal
 
-## Preguntas frecuentes
+## Sets y regalos
 
-### ¿Dónde los puedo comprar cosmética natural online?
-
-Acá mismo: todos los productos aparecen con precio y cantidad disponible. Agregás al carrito y pagás con Mercado Pago o transferencia (20% off).
-
-### ¿Cuánto tarda el envío?
-
-Depende de la zona. Una vez confirmado el pedido te escribimos por WhatsApp con la mejor opción.
-
-### ¿Qué es skincare clean?
-
-Es skincare sin ingredientes que hoy se evitan en cosmética (parabenos, fragancias sintéticas, conservantes agresivos) y con activos nombrados: niacinamida, bakuchiol, ácido hialurónico, péptidos.
+## Accesorios

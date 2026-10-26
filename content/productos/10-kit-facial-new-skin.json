@@ -9,19 +9,17 @@
   ],
   "tamano": null,
   "h1": "Kit Facial New Skin · kit de rutina facial básica para empezar",
-  "resumen": "Es el kit de rutina facial básica de NUDE: los cuatro productos esenciales para una rutina de skincare básica (agua micelar bifásica de 300 cc, contorno de ojos, crema facial y serum multi active). Un kit skincare para empezar, pensado para quien quiere un kit facial básico que funcione sin complicarse. Clean y hecho a mano.",
+  "resumen": "Los cuatro básicos de una rutina de skincare, en un kit: Agua Micelar Bifásica (300 cc), Contorno de ojos Gleaming Eyes, Crema Facial Porcelain y Serum Multi Active. Clean y hecho a mano.",
   "activos": [],
   "ingredientes": "Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).",
   "modoDeUso": "Rutina diaria: agua micelar → contorno de ojos → serum multi active → crema facial. De día, seguí con protector solar.",
   "pasoRutina": null,
   "beneficios": [
-    "Los cuatro básicos de la rutina clean",
-    "Más conveniente que comprarlos por separado",
-    "Ideal para quien recién arranca"
+    "Los cuatro básicos de la rutina clean"
   ],
   "faq": [
     { "q": "¿Qué diferencia hay con el Kit Experiencia Completa?", "a": "New Skin tiene 4 productos (sin el serum nocturno de bakuchiol). Experiencia Completa tiene 5: suma el serum de noche." },
-    { "q": "¿Es para piel sensible?", "a": "Sí: el agua micelar, el contorno, la crema y el multi active están pensados para piel sensible." },
+    { "q": "¿Es para piel sensible?", "a": "El Serum Multi Active está indicado para piel sensible, y el agua micelar y la crema facial son para todo tipo de piel. Antes de empezar, hacé la prueba de parche con cada producto." },
     { "q": "¿Qué sigue después?", "a": "Cuando quieras sumar tratamiento antiage de noche, el paso natural es el Serum Transformación o pasar al Kit Experiencia Completa." }
   ],
   "incluye": [
@@ -35,7 +33,7 @@
     "serum-transformacion"
   ],
   "seo": {
-    "title": "Kit Facial New Skin · kit de rutina facial básica | NUDE",
+    "title": "Kit Facial New Skin · kit de rutina facial básica",
     "description": "Los cuatro básicos de la rutina clean: agua micelar, contorno de ojos, crema facial y serum multi active. 20% off por transferencia y envíos a todo el país."
   },
   "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/kit-facial-new-skin/"

@@ -3,7 +3,7 @@
 gloss y rubor natural 2 en 1
 gloss natural
 rubor en crema natural
-maquillaje natural para niñas
 gloss sin fragancia
 
 ## Descartadas
+- maquillaje natural para niñas — claim sin respaldo, ver 00-contexto §Riesgo de claims

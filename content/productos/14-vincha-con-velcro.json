@@ -8,27 +8,24 @@
     "/img/productos/vincha-con-velcro/01.webp"
   ],
   "tamano": null,
-  "h1": "Vincha con velcro · vincha para skincare y lavarse la cara",
-  "resumen": "Es una vincha para skincare: ajustable con velcro, sujeta el pelo mientras hacés la rutina o te lavás la cara. Una vincha con velcro suave con la piel y práctica para el uso diario; también va bien como vincha para lavarse la cara con el agua micelar.",
+  "h1": "Vincha para skincare, con velcro: sujeta el pelo durante la rutina",
+  "resumen": "Vincha ajustable con velcro: sujeta el pelo mientras hacés la rutina o te lavás la cara.",
   "activos": [],
-  "ingredientes": "Tela sintética suave con velcro.",
-  "modoDeUso": "Poné la vincha antes de lavarte la cara o empezar la rutina. Ajustá con el velcro al grosor de tu pelo.",
+  "ingredientes": "Cierre de velcro, ajustable.",
+  "modoDeUso": "Ponétela antes de lavarte la cara o empezar la rutina y ajustala con el velcro.",
   "pasoRutina": null,
   "beneficios": [
     "Ajustable con velcro",
-    "Suave con la piel y el pelo",
-    "Práctica para la rutina diaria"
+    "Sujeta el pelo durante la rutina"
   ],
-  "faq": [
-    { "q": "¿Sirve para pelo con mucho volumen?", "a": "Sí: el velcro se ajusta al grosor de tu pelo. Si es muy grueso, podés sumar un prendedor." }
-  ],
+  "faq": [],
   "relacionados": [
     "pads-desmaquillantes",
     "nude-bag"
   ],
   "seo": {
-    "title": "Vincha con velcro para skincare | NUDE",
-    "description": "Vincha ajustable con velcro para sujetar el pelo durante la rutina de skincare. Suave con la piel y práctica para el uso diario."
+    "title": "Vincha con velcro para skincare",
+    "description": "Vincha ajustable con velcro para sujetar el pelo durante la rutina de skincare."
   },
   "fichaCorta": true,
   "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/vincha-con-velcro/"

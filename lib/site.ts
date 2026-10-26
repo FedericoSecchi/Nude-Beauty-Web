@@ -33,8 +33,9 @@ export const site = {
     razonSocial: '[CONFIRMAR: razón social]',
     cuit: '23265636934',
     condicionIVA: '[CONFIRMAR]',
-    defensaConsumidorUrl:
-      'https://www.argentina.gob.ar/produccion/defensadelconsumidor/formulario',
+    // URL vigente al 2026-10-26: argentina.gob.ar redirige a autogestion.produccion.gob.ar.
+    // La Res. SCI 424/2020 exige "visibilidad y acceso directo"; usamos el link final.
+    defensaConsumidorUrl: 'https://autogestion.produccion.gob.ar/consumidores',
   },
 } as const;
 

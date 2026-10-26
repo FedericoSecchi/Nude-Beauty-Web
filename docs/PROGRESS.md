@@ -10,7 +10,7 @@
 | E1 Base del sitio | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `3d8833598110` · 20 URLs sitemap OK |
 | E2 Catálogo y fichas | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `184f5665f151` · 16/16 páginas kw ✅ copy ✅ |
 | E3 Carrito, checkout, envíos, pedidos | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `1000c93a5c83` · functions ok · 18/18 unit tests · e2e local ✅ |
-| E4 Panel Decap | ⬜ | — | — |
+| E4 Panel Decap | ✅ | 2026-10-26 | /admin/ en 200, /admin/config.yml en 200 · guía para Soledad en docs/guia-soledad.md |
 | E5 Legal (AR) | ⬜ | — | — |
 | E6 Cierre y PR fuera de borrador | ⬜ | — | — |
 

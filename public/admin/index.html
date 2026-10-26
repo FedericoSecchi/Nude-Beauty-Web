@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Panel NUDE Cosmética Clean</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root { font-family: 'DM Sans', system-ui, sans-serif; }
+      body { margin: 0; background: #f6efe3; color: #3a2a1a; }
+    </style>
+    <!-- Netlify Identity: habilita login seguro contra el sitio de Netlify. -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  </head>
+  <body>
+    <!-- Decap CMS v3: panel de edición apuntando a /admin/config.yml. -->
+    <script src="https://unpkg.com/decap-cms@3.3.5/dist/decap-cms.js"></script>
+    <script>
+      // Redirige al home después del logout para que el token no quede en memoria.
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', (user) => {
+          if (!user) {
+            window.netlifyIdentity.on('login', () => {
+              document.location.href = '/admin/';
+            });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

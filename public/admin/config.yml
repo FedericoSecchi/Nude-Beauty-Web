@@ -1,0 +1,115 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+
+site_url: https://nudecosmetica.com
+display_url: https://nudecosmetica.com
+logo_url: /img/placeholder.svg
+
+publish_mode: simple
+
+media_folder: public/img/productos
+public_folder: /img/productos
+
+collections:
+  - name: productos
+    label: Productos
+    label_singular: Producto
+    folder: content/productos
+    format: json
+    slug: "{{slug}}"
+    identifier_field: slug
+    sortable_fields: [nombre, categoria, precio]
+    create: true
+    delete: true
+    editor:
+      preview: false
+    fields:
+      - { name: slug, label: Slug (no cambiar después de publicar), widget: string }
+      - { name: nombre, label: Nombre, widget: string }
+      - { name: categoria, label: Categoría, widget: select, options: [face, body, sets, accesorios] }
+      - { name: precio, label: Precio (en pesos, sin decimales), widget: number, value_type: int, min: 0, step: 100 }
+      - { name: disponible, label: Disponible, widget: boolean, default: true }
+      - { name: imagenes, label: Imágenes, widget: list, field: { name: imagen, widget: image } }
+      - { name: tamano, label: Tamaño (opcional), widget: string, required: false }
+      - { name: h1, label: Título grande (H1), widget: string }
+      - { name: resumen, label: Resumen (bajada corta), widget: text }
+      - name: activos
+        label: Activos
+        widget: list
+        required: false
+        fields:
+          - { name: nombre, label: Nombre, widget: string }
+          - { name: queHace, label: Qué hace, widget: text }
+      - { name: ingredientes, label: Ingredientes, widget: text }
+      - { name: modoDeUso, label: Cómo se usa, widget: text }
+      - { name: pasoRutina, label: Paso en la rutina (opcional, 1 a 5), widget: number, value_type: int, min: 1, max: 5, required: false }
+      - { name: beneficios, label: Beneficios, widget: list, field: { name: beneficio, widget: string }, required: false }
+      - name: faq
+        label: Preguntas frecuentes
+        widget: list
+        required: false
+        fields:
+          - { name: q, label: Pregunta, widget: string }
+          - { name: a, label: Respuesta, widget: text }
+      - { name: relacionados, label: Slugs relacionados, widget: list, required: false, field: { name: slug, widget: string } }
+      - { name: incluye, label: Slugs incluidos (solo para kits), widget: list, required: false, field: { name: slug, widget: string } }
+      - name: seo
+        label: SEO
+        widget: object
+        fields:
+          - { name: title, label: Title (Google), widget: string }
+          - { name: description, label: Description (Google), widget: text }
+      - { name: avisoPatch, label: Mostrar aviso de prueba de parche, widget: boolean, default: true, required: false }
+      - { name: tiendanubeUrl, label: URL en Tiendanube (opcional, para plan B), widget: string, required: false }
+      - { name: fichaCorta, label: Ficha corta, widget: boolean, default: false, required: false }
+
+  - name: ajustes
+    label: Ajustes de la tienda
+    files:
+      - name: tienda
+        label: Descuentos y pago
+        file: content/ajustes/tienda.json
+        format: json
+        fields:
+          - { name: descuentoTransferencia, label: Descuento por transferencia (0.20 = 20%), widget: number, value_type: float, min: 0, max: 1, step: 0.01 }
+          - name: descuentoCantidad
+            label: Descuento por cantidad
+            widget: object
+            fields:
+              - { name: minUnidades, label: Mínimo de unidades, widget: number, value_type: int, min: 1 }
+              - { name: porcentaje, label: Porcentaje (0.05 = 5%), widget: number, value_type: float, min: 0, max: 1, step: 0.01 }
+          - { name: descuentosAcumulables, label: ¿Los descuentos se acumulan?, widget: boolean, default: false }
+          - { name: cuotasTexto, label: Texto de cuotas (lo mostramos en el carrito), widget: string }
+          - { name: alias, label: Alias de la cuenta, widget: string, required: false }
+          - { name: cbu, label: CBU, widget: string, required: false }
+          - { name: titularCuenta, label: Titular de la cuenta, widget: string, required: false }
+          - { name: horasReservaTransferencia, label: Horas que reservamos el pedido con transferencia, widget: number, value_type: int, min: 1, max: 168 }
+          - { name: whatsapp, label: WhatsApp de la tienda, widget: string }
+          - { name: emailTienda, label: Email de la tienda, widget: string }
+      - name: envios
+        label: Zonas de envío
+        file: content/ajustes/envios.json
+        format: json
+        fields:
+          - name: zonas
+            label: Zonas
+            widget: list
+            fields:
+              - { name: id, label: ID interno (no cambiar), widget: string }
+              - { name: nombre, label: Nombre visible, widget: string }
+              - { name: provincias, label: Provincias, widget: list, field: { name: provincia, widget: string } }
+              - { name: codigosPostales, label: Códigos postales (opcional), widget: list, required: false, field: { name: cp, widget: string } }
+              - { name: costo, label: Costo (0 si va a coordinar), widget: number, value_type: int, min: 0, step: 100 }
+              - { name: plazoTexto, label: Texto que ve quien compra, widget: text }
+              - { name: modo, label: Modo, widget: select, options: [fijo, coordinar] }
+          - name: retiro
+            label: Retiro en el taller
+            widget: object
+            fields:
+              - { name: habilitado, label: Habilitado, widget: boolean, default: true }
+              - { name: direccionTexto, label: Texto del retiro, widget: text }
+              - { name: costo, label: Costo (0 si gratis), widget: number, value_type: int, min: 0 }
+          - { name: envioGratisDesde, label: Envío gratis desde (opcional), widget: number, value_type: int, required: false }

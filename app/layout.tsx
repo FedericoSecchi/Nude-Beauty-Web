@@ -6,6 +6,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { JsonLd } from '@/components/JsonLd';
 import { GA4 } from '@/components/GA4';
+import { IdentityRedirect } from '@/components/IdentityRedirect';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <GA4 />
+        <IdentityRedirect />
         <Header />
         <main id="main">{children}</main>
         <Footer />

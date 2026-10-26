@@ -7,7 +7,7 @@
 | Etapa | Estado | Fecha | Deploy preview |
 |---|---|---|---|
 | E0 Preparación | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `9a82323e7348` |
-| E1 Base del sitio | ⬜ | — | — |
+| E1 Base del sitio | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `3d8833598110` · 20 URLs sitemap OK |
 | E2 Catálogo y fichas | ⬜ | — | — |
 | E3 Carrito, checkout, envíos, pedidos | ⬜ | — | — |
 | E4 Panel Decap | ⬜ | — | — |
@@ -27,6 +27,9 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 | 404 real | ✅ | `curl -sI $PREVIEW/nope-404/` → `HTTP/2 404` |
 | sin tuteo (voseo rioplatense) | ✅ | lista mínima de PLAN §9 |
 | sin `€` ni placeholders viejos | ✅ | grep en `out/` |
+| 20 URLs indexables en sitemap | ✅ | `scripts/preview-check.sh $PREVIEW` → `OK 20/20` |
+| 404 real para URL inexistente | ✅ | `curl -sI $PREVIEW/nope-9999/` → 404 |
+| JSON-LD Organization + Product + FAQ + Breadcrumb | ✅ | `components/JsonLd` en layout y fichas |
 | kw_coverage.py por página | ⏭️ SKIP | aún sin contenido real (E2) |
 | copy_lint.py por página | ⏭️ SKIP | aún sin contenido real (E2) |
 | unit tests | ⏭️ SKIP | aún sin tests (E3) |
@@ -39,6 +42,12 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · E0 · Sitio viejo íntegro a `legacy/` (incluye funciones Netlify originales) como referencia. Nada de `legacy/` se publica.
 - 2026-10-26 · E0 · `scripts/prebuild.mjs` escribe `.env.production.local` con `NEXT_PUBLIC_BUILD_ID` para que el meta aparezca en el HTML sin hidratación.
 - 2026-10-26 · E0 · `verify.sh` corre e2e y kw/copy sólo cuando hay contenido real / credenciales; si no, SKIP (nunca simula PASS).
+- 2026-10-26 · E1 · Zonas de envío: todas en modo `coordinar` (costo = 0 hasta que Soledad confirme) con texto "A coordinar por WhatsApp cuando se confirma el pedido". Evita prometer plazos sin dato real.
+- 2026-10-26 · E1 · Descuentos no acumulables (`descuentosAcumulables: false`): el 20% transferencia reemplaza al 5% por 2 o más unidades. [CONFIRMAR] con Soledad; es la lectura conservadora.
+- 2026-10-26 · E1 · Horas de reserva de transferencia: 48 ([CONFIRMAR]). Las URLs de Mercado Pago y el flujo real llegan en E3.
+- 2026-10-26 · E1 · Imágenes de productos: una por producto, descargada del CDN de Tiendanube (WebP 1024). Fotos adicionales y mejores quedan pendientes del cliente.
+- 2026-10-26 · E1 · Página `/pedido/` y `/carrito/` noindex pero fuera del sitemap: la validez de las 20 URLs del sitemap se mantiene estricta.
+- 2026-10-26 · E1 · `scripts/preview-check.sh` verifica preview sin depender del shell del harness (usa `/usr/bin/curl` por si el PATH no lo tiene).
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

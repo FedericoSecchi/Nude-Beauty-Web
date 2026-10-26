@@ -36,3 +36,8 @@ tsconfig.tsbuildinfo
 verify-results.txt
 .env.production.local
 out-sinstock/
+
+# Miniaturas generadas en el build (scripts/miniaturas.mjs)
+public/img/productos/**/*-480w.webp
+public/img/productos/**/*-768w.webp
+lighthouse-home.json

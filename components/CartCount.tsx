@@ -35,7 +35,7 @@ export function CartCount() {
   return (
     <span
       aria-label={`${count} ítems en el carrito`}
-      className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-terracotta text-cream text-xs font-medium"
+      className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-terracotta text-white text-xs font-medium"
     >
       {count}
     </span>

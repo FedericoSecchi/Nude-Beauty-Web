@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { getProductos, getProductosPorCategoria } from '@/lib/catalogo';
-import { formatARS } from '@/lib/format';
 import { JsonLd } from '@/components/JsonLd';
+import { ProductCard } from '@/components/ProductCard';
 import { breadcrumbJsonLd, itemListJsonLd } from '@/lib/jsonld';
 import { urls } from '@/lib/urls';
 import { CategoryFilter } from './CategoryFilter';
@@ -44,7 +43,7 @@ export default function ProductosPage() {
           <span> · </span>
           <span>Productos</span>
         </nav>
-        <h1 className="font-heading text-3xl md:text-4xl">
+        <h1 className="font-heading text-3xl md:text-5xl">
           Productos de cosmética natural y clean, hechos a mano
         </h1>
         <p className="mt-4 text-ink/80 max-w-prose">
@@ -63,6 +62,7 @@ export default function ProductosPage() {
       </section>
 
       <section className="container pb-10">
+        <div className="rounded-lg bg-soft p-6 shadow-card md:p-8 max-w-3xl">
         <h2 className="font-heading text-2xl mb-4">La rutina clean, en orden</h2>
         <ol className="list-decimal list-inside space-y-1 text-ink/80 max-w-prose">
           <li><Link href={urls.producto('agua-micelar-bifasica')} className="link-ghost">Agua Micelar Bifásica</Link> · limpia y desmaquilla.</li>
@@ -71,6 +71,7 @@ export default function ProductosPage() {
           <li><Link href={urls.producto('crema-facial-porcelain')} className="link-ghost">Crema Facial Porcelain</Link> · humecta y repara.</li>
           <li>Durante el día, siempre protector solar (no está en NUDE: compralo donde quieras).</li>
         </ol>
+        </div>
       </section>
 
       <CategoryFilter grupos={grupos.map((g) => ({ id: g.id, nombre: g.nombre }))} />
@@ -78,31 +79,10 @@ export default function ProductosPage() {
       <section className="container pb-24 space-y-14">
         {grupos.map((grupo) => (
           <div key={grupo.id} id={grupo.id} className="scroll-mt-20">
-            <h2 className="font-heading text-2xl mb-6">{grupo.nombre}</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h2 className="font-heading text-3xl mb-6">{grupo.nombre}</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {grupo.items.map((p) => (
-                <li key={p.slug} className="card flex flex-col">
-                  <Link
-                    href={urls.producto(p.slug)}
-                    className="no-underline hover:no-underline flex flex-col gap-3 h-full"
-                  >
-                    <div className="aspect-[4/5] relative bg-soft overflow-hidden rounded">
-                      <Image
-                        src={p.imagenes[0]}
-                        alt={p.nombre}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                        className="object-cover"
-                      />
-                    </div>
-                    <h3 className="font-heading text-xl text-charcoal">{p.nombre}</h3>
-                    <p className="text-sm text-muted-ink flex-1">{p.resumen}</p>
-                    <p className="font-medium text-charcoal">{formatARS(p.precio)}</p>
-                    {!p.disponible ? (
-                      <p className="text-xs text-muted-ink">Sin stock por ahora</p>
-                    ) : null}
-                  </Link>
-                </li>
+                <ProductCard key={p.slug} producto={p} />
               ))}
             </ul>
           </div>

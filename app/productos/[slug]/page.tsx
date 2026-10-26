@@ -6,6 +6,7 @@ import { getAjustesTienda, getProducto, getProductos, slugsIndexables } from '@/
 import { formatARS } from '@/lib/format';
 import { precioConTransferencia } from '@/lib/pricing';
 import { JsonLd } from '@/components/JsonLd';
+import { ProductCard } from '@/components/ProductCard';
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from '@/lib/jsonld';
 import { urls } from '@/lib/urls';
 import { waLink, waMessages } from '@/lib/whatsapp';
@@ -101,7 +102,7 @@ export default async function ProductoPage({
             ) : null}
           </h1>
 
-          <div className="order-2 md:order-none md:col-start-1 md:row-start-1 md:row-span-4 md:self-start mt-3 md:mt-0 relative h-[30vh] md:h-auto md:aspect-[4/5] bg-soft rounded-lg overflow-hidden">
+          <div className="order-2 md:order-none md:col-start-1 md:row-start-1 md:row-span-4 md:self-start mt-3 md:mt-0 relative h-[30vh] md:h-auto md:aspect-[4/5] bg-soft rounded-lg overflow-hidden md:shadow-soft">
             <Image
               src={p.imagenes[0]}
               alt={p.nombre}
@@ -177,6 +178,8 @@ export default async function ProductoPage({
           ) : null}
         </div>
 
+        {/* Detalle del producto en una tarjeta, como las del sitio viejo. Mismo orden de bloques. */}
+        <div className="mt-14 rounded-lg bg-card p-6 shadow-card md:p-10 [&>*:first-child]:mt-0">
         {p.activos.length ? (
           <section className="mt-14 max-w-prose">
             <h2 className="font-heading text-2xl mb-4">Activos principales</h2>
@@ -219,7 +222,7 @@ export default async function ProductoPage({
         ) : null}
 
         {p.avisoPatch ? (
-          <aside className="mt-10 max-w-prose rounded-md bg-soft p-5">
+          <aside className="mt-10 max-w-prose rounded-md bg-soft p-5 shadow-card">
             <p className="text-sm text-ink/80">
               <strong className="text-charcoal">Prueba de parche:</strong> antes de usarlo por
               primera vez, probá una pequeña cantidad: incluso los ingredientes naturales pueden
@@ -227,27 +230,14 @@ export default async function ProductoPage({
             </p>
           </aside>
         ) : null}
+        </div>
 
         {relacionados.length ? (
           <section className="mt-14">
-            <h2 className="font-heading text-2xl mb-6">También te puede gustar</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h2 className="font-heading text-3xl mb-6">También te puede gustar</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {relacionados.map((r) => (
-                <li key={r.slug} className="card">
-                  <Link href={urls.producto(r.slug)} className="no-underline hover:no-underline">
-                    <div className="aspect-[4/5] relative bg-soft overflow-hidden rounded mb-3">
-                      <Image
-                        src={r.imagenes[0]}
-                        alt={r.nombre}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                        className="object-cover"
-                      />
-                    </div>
-                    <p className="font-heading text-lg text-charcoal">{r.nombre}</p>
-                    <p className="text-sm text-muted-ink mt-1">{formatARS(r.precio)}</p>
-                  </Link>
-                </li>
+                <ProductCard key={r.slug} producto={r} conResumen={false} />
               ))}
             </ul>
           </section>

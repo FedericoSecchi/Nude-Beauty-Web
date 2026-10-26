@@ -27,6 +27,7 @@ const config: Config = {
         cream: 'hsl(var(--nude-cream) / <alpha-value>)',
         sand: 'hsl(var(--nude-sand) / <alpha-value>)',
         terracotta: 'hsl(var(--nude-terracotta) / <alpha-value>)',
+        'terracotta-hover': 'hsl(var(--nude-terracotta-hover) / <alpha-value>)',
         charcoal: 'hsl(var(--nude-charcoal) / <alpha-value>)',
         soft: 'hsl(var(--nude-soft) / <alpha-value>)',
       },
@@ -41,8 +42,8 @@ const config: Config = {
         lg: 'calc(var(--radius) + 6px)',
       },
       boxShadow: {
-        soft: '0 4px 20px -4px hsl(25 20% 22% / 0.08)',
-        card: '0 2px 12px -2px hsl(25 20% 22% / 0.06)',
+        soft: 'var(--shadow-soft)',
+        card: 'var(--shadow-card)',
       },
       maxWidth: {
         prose: '42rem',

@@ -5,7 +5,20 @@ import { waLink, waMessages } from '@/lib/whatsapp';
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-border bg-soft">
+    <footer className="relative isolate mt-24 overflow-hidden border-t border-border bg-soft">
+      {/* Rama de hojas recortada de la foto del hero (legacy/img-old/hero-bg.jpg): detalle de marca.
+          multiply + máscara radial funden su fondo crema con el del pie. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/img/marca/hojas-260.webp"
+        alt=""
+        aria-hidden="true"
+        width={260}
+        height={493}
+        loading="lazy"
+        decoding="async"
+        className="pointer-events-none absolute -bottom-4 right-0 -z-10 hidden md:block w-24 opacity-60 mix-blend-multiply [transform:scaleX(-1)] [mask-image:radial-gradient(closest-side,black_55%,transparent)] xl:w-28"
+      />
       <div className="container py-12 grid gap-10 md:grid-cols-3">
         <div>
           <p className="font-heading text-2xl text-charcoal">nude</p>

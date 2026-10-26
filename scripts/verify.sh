@@ -256,6 +256,9 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
       if [ $rc -eq 0 ]; then
         E2E_BASE_URL="http://127.0.0.1:4123" \
           npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
+        # Hero de la home visible sin scroll en 390×844 y 1366×850.
+        E2E_BASE_URL="http://127.0.0.1:4123" \
+          npx playwright test tests/e2e/home-hero.spec.ts --project=desktop || rc=$?
         # CTA mobile en 360×740 (14 fichas con stock + 14 sin stock + barra fija).
         E2E_BASE_URL="http://127.0.0.1:4123" E2E_SINSTOCK_URL="http://127.0.0.1:4124" \
           npx playwright test tests/e2e/ficha-mobile.spec.ts --project=mobile || rc=$?
@@ -267,6 +270,20 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
     # Instala browsers si no están.
     npx playwright install chromium --with-deps >/dev/null 2>&1 || true
     step "e2e local (Playwright sobre out/)" run_e2e_local
+
+    # Botón principal: texto blanco sobre terracota ≥ 4,5:1 (normal y hover), medido en el navegador.
+    # Lighthouse mobile de la home: LCP ≤ 2,5 s y CLS ≤ 0,1 (mediana de 3 corridas, `serve` comprime
+    # con gzip como hace Netlify con brotli).
+    run_diseno() {
+      local rc=0 pid
+      serve_dir out 4125 || return 1; pid=$SERVE_PID
+      node scripts/check-contraste.mjs "http://127.0.0.1:4125" || rc=1
+      node scripts/check-lighthouse.mjs "http://127.0.0.1:4125/" lighthouse-home.json || rc=1
+      kill $pid >/dev/null 2>&1 || true
+      wait $pid >/dev/null 2>&1 || true
+      return $rc
+    }
+    step "contraste AA del botón principal + Lighthouse mobile home (LCP ≤ 2,5 s, CLS ≤ 0,1)" run_diseno
   else
     skip "e2e local" "falta out/ o npx"
   fi

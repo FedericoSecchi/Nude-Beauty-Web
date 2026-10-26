@@ -5,23 +5,35 @@ slug: ""
 updatedAt: 2026-10-26
 ---
 
-<!-- Snapshot del texto publicado en app/page.tsx (auditoría de hechos 2026-10-26). Si cambia la página, actualizar acá. -->
+<!-- Snapshot del texto publicado en app/page.tsx (auditoría de hechos 2026-10-26; rediseño de marca 2026-10-26: mismo texto, reordenado). Si cambia la página, actualizar acá. -->
+
+<!-- Marca visual del hero (no es encabezado): "nude" -->
 
 # Cosmética clean hecha a mano en Córdoba
 
 Tu piel no necesita veinte productos: necesita los correctos, en orden.
 
-NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano, en pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. Sin parabenos.
-
-[Mirá la rutina completa](/productos/) · [Kit con los básicos](/productos/kit-facial-new-skin/)
+[Ver productos](/productos/) · [Escribinos por WhatsApp](https://wa.me/5493517033348)
 
 20% off pagando con transferencia · 3 cuotas sin interés · envíos a todo el país.
 
-## Qué quiere decir cosmética clean
+NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano, en pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. Sin parabenos.
 
-Fórmulas sin parabenos y con activos nombrados, no genéricos: dice qué tiene cada producto y, cuando corresponde, en qué cantidad. Y una rutina armada en orden: agua micelar → contorno de ojos → sérum → crema → protector solar.
+## ¿Por qué cosmética clean?
+
+### Sin parabenos
+
+Fórmulas sin parabenos.
+
+### Cada activo con su nombre
+
+Activos nombrados, no genéricos: dice qué tiene cada producto y, cuando corresponde, en qué cantidad.
+
+### Hecho a mano, en pequeños lotes
 
 Todo se hace a mano, en pequeños lotes, en Mendiolaza (Córdoba), y se envía a todo el país.
+
+Una rutina armada en orden: agua micelar → contorno de ojos → sérum → crema → protector solar.
 
 ## Por dónde empezar
 

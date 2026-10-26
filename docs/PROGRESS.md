@@ -9,7 +9,7 @@
 | E0 Preparación | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `9a82323e7348` |
 | E1 Base del sitio | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `3d8833598110` · 20 URLs sitemap OK |
 | E2 Catálogo y fichas | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `184f5665f151` · 16/16 páginas kw ✅ copy ✅ |
-| E3 Carrito, checkout, envíos, pedidos | ⬜ | — | — |
+| E3 Carrito, checkout, envíos, pedidos | ✅ | 2026-10-26 | [deploy-preview-2](https://deploy-preview-2--nude-beauty-web.netlify.app) · build-id `1000c93a5c83` · functions ok · 18/18 unit tests · e2e local ✅ |
 | E4 Panel Decap | ⬜ | — | — |
 | E5 Legal (AR) | ⬜ | — | — |
 | E6 Cierre y PR fuera de borrador | ⬜ | — | — |
@@ -27,6 +27,12 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 | 404 real | ✅ | `curl -sI $PREVIEW/nope-404/` → `HTTP/2 404` |
 | sin tuteo (voseo rioplatense) | ✅ | lista mínima de PLAN §9 |
 | sin `€` ni placeholders viejos | ✅ | grep en `out/` |
+| cálculo server-side (precios, descuentos, envío, stock) | ✅ | 11 unit tests en `tests/unit/pricing.test.mjs` |
+| firma `x-signature` de MP + consulta a la API | ✅ | 5 unit tests en `tests/unit/mp-signature.test.mjs` |
+| idempotencia del webhook de MP | ✅ | `avisoEnviado` persistido; aviso solo en no-pagado → pagado |
+| modo e2e con `x-e2e-token` | ✅ | pedidos van a store `pedidos-e2e`, nunca disparan avisos reales |
+| CHECKOUT_MODE `propio` / `tiendanube` | ✅ | redirige al carrito de Tiendanube si está activado |
+| GA4 events (add_to_cart, begin_checkout, purchase) | ✅ | detrás de `NEXT_PUBLIC_GA_ID`; sin ID no se cargan scripts |
 | 20 URLs indexables en sitemap | ✅ | `scripts/preview-check.sh $PREVIEW` → `OK 20/20` |
 | 404 real para URL inexistente | ✅ | `curl -sI $PREVIEW/nope-9999/` → 404 |
 | JSON-LD Organization + Product + FAQ + Breadcrumb | ✅ | `components/JsonLd` en layout y fichas |
@@ -51,6 +57,11 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · E2 · Los `contenido.md` por página son snapshots generados por `scripts/snapshot-content.mjs` a partir del JSON. Lo verifica `verify.sh` para medir cobertura y copy-lint sin duplicar la fuente de verdad.
 - 2026-10-26 · E2 · Las keywords del cluster se integran en H1, resumen, FAQ y modo de uso en voseo. Nada de rellenar: cada mención suena a Soledad.
 - 2026-10-26 · E2 · "Apto para niños" en el gloss queda en condicional dentro de la FAQ, con un `[CONFIRMAR]` para pedirle a Soledad el respaldo (política de claims cosméticos).
+- 2026-10-26 · E3 · Netlify Functions escritas en TypeScript (bundler esbuild automático). Los functions importan `lib/pricing.ts` y `lib/shipping.ts` directo: esbuild resuelve el bundle; una sola fuente de verdad del cálculo (misma función que corre en el navegador para preview).
+- 2026-10-26 · E3 · Snapshot del catálogo (`netlify/functions/_data/catalogo.json`) generado por `scripts/prebuild.mjs`. Lo levantan las functions al iniciar; evita tocar `content/*.json` en runtime y asegura que una edición del panel sin build no afecte pedidos en vuelo.
+- 2026-10-26 · E3 · GA4 opcional (`NEXT_PUBLIC_GA_ID`): sin ID no se cargan scripts; con ID, dispara `add_to_cart`, `begin_checkout` y `purchase` (una sola vez por id, flag en `sessionStorage`).
+- 2026-10-26 · E3 · Playwright: proyectos Chromium (Pixel 5 + Desktop Chrome) en lugar de iPhone 13 (webkit) para no depender de un browser extra; mobile/desktop cubre lo mismo del PLAN §9.
+- 2026-10-26 · E3 · Preview smoke contra las functions: `estado-pedido` sin id → 400, con id inexistente → 404, `crear-pedido` GET → 405, POST inválido → 400 "items vacío". Las functions están desplegadas y validando.
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

@@ -1,30 +1,41 @@
 import type { Metadata } from 'next';
 import { BUILD_ID } from '@/lib/build-id';
+import { site } from '@/lib/site';
+import { organizationJsonLd } from '@/lib/jsonld';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { JsonLd } from '@/components/JsonLd';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://nudecosmetica.com'),
+  metadataBase: new URL(site.url),
   title: {
-    default: 'NUDE Cosmética Clean — cosmética natural hecha a mano en Córdoba',
-    template: '%s · NUDE Cosmética Clean',
+    default: `${site.name} — ${site.tagline}`,
+    template: `%s · ${site.name}`,
   },
-  description:
-    'Cosmética natural hecha a mano en Mendiolaza, Córdoba. Fórmulas con activos nombrados (niacinamida, bakuchiol, ácido hialurónico), 20% off por transferencia y envíos a todo el país.',
+  description: site.description,
   openGraph: {
     type: 'website',
-    locale: 'es_AR',
-    siteName: 'NUDE Cosmética Clean',
+    locale: site.ogLocale,
+    siteName: site.name,
+    url: site.url,
   },
   robots: { index: true, follow: true },
+  alternates: { canonical: site.url },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-AR">
+    <html lang={site.locale}>
       <head>
         <meta name="build-id" content={BUILD_ID} />
+        <JsonLd data={organizationJsonLd()} id="org-ld" />
       </head>
-      <body>{children}</body>
+      <body>
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }

@@ -1,0 +1,35 @@
+{
+  "slug": "vincha-con-velcro",
+  "nombre": "Vincha con velcro",
+  "categoria": "accesorios",
+  "precio": 8200,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/vincha-con-velcro/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Vincha con velcro · para la rutina de skincare",
+  "resumen": "Vincha ajustable con velcro para sujetar el pelo mientras hacés la rutina de skincare o te lavás la cara. Fácil de poner y sacar.",
+  "activos": [],
+  "ingredientes": "Tela sintética suave con velcro.",
+  "modoDeUso": "Poné la vincha antes de lavarte la cara o empezar la rutina. Ajustá con el velcro al grosor de tu pelo.",
+  "pasoRutina": null,
+  "beneficios": [
+    "Ajustable con velcro",
+    "Suave con la piel y el pelo",
+    "Práctica para la rutina diaria"
+  ],
+  "faq": [
+    { "q": "¿Sirve para pelo con mucho volumen?", "a": "Sí: el velcro se ajusta al grosor de tu pelo. Si es muy grueso, podés sumar un prendedor." }
+  ],
+  "relacionados": [
+    "pads-desmaquillantes",
+    "nude-bag"
+  ],
+  "seo": {
+    "title": "Vincha con velcro para skincare | NUDE",
+    "description": "Vincha ajustable con velcro para sujetar el pelo durante la rutina de skincare. Suave con la piel y práctica para el uso diario."
+  },
+  "fichaCorta": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/vincha-con-velcro/"
+}

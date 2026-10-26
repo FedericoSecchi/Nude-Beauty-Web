@@ -1,0 +1,45 @@
+{
+  "slug": "contorno-de-ojos-gleaming-eyes",
+  "nombre": "Contorno de ojos Gleaming Eyes",
+  "categoria": "face",
+  "precio": 22000,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/contorno-de-ojos-gleaming-eyes/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Contorno de ojos Gleaming Eyes · para ojeras, bolsas y líneas finas",
+  "resumen": "Contorno de ojos con pH específico para la piel delicada del contorno. Péptidos Regu-Age PF, ácido hialurónico, liposomas de cafeína-carnitina, alantoína y centella asiática. También va en el contorno de los labios.",
+  "activos": [
+    { "nombre": "Regu-Age PF", "queHace": "Péptidos pensados para bolsas y ojeras." },
+    { "nombre": "Liposomas de cafeína-carnitina", "queHace": "Descongestionan y aportan efecto tensor." },
+    { "nombre": "Ácido hialurónico de alto y bajo peso molecular", "queHace": "Hidrata en superficie y en profundidad." },
+    { "nombre": "Alantoína", "queHace": "Calma y ayuda a que la piel se vea más tersa." },
+    { "nombre": "Células madre vegetales y centella asiática", "queHace": "Trabajan sobre la apariencia de líneas finas." }
+  ],
+  "ingredientes": "Células madre, Regu-Age PF, extracto de pepino, centella asiática, liposomas de cafeína y colágeno, ácido hialurónico, provitamina B5, vit E, aceites de pepita de uva, argán, palta, rosa mosqueta, jojoba, agua de rosas, aloe vera, té verde, manzanilla, hamamelis, lavanda, mínima dosis de neroli.",
+  "modoDeUso": "Usá una sola gota (no más). Repartí en las yemas de los dedos anulares y aplicá con golpecitos circulares suaves en el contorno de los ojos. También podés usarlo en el contorno de los labios para líneas finas. Día y noche.",
+  "pasoRutina": 2,
+  "beneficios": [
+    "pH específico para la piel del contorno de ojos y labios",
+    "Efecto descongestivo, tensor e hidratante",
+    "Textura ligera, se absorbe rápido"
+  ],
+  "faq": [
+    { "q": "¿Cuánto producto uso?", "a": "Una sola gota, no más. Es muy concentrado." },
+    { "q": "¿Lo puedo usar en los labios?", "a": "Sí: también va en el contorno de los labios para líneas finas." },
+    { "q": "¿En qué paso de la rutina va?", "a": "Después del agua micelar y antes del serum." }
+  ],
+  "relacionados": [
+    "agua-micelar-bifasica",
+    "serum-multi-active",
+    "serum-transformacion",
+    "kit-facial-new-skin"
+  ],
+  "seo": {
+    "title": "Contorno de ojos Gleaming Eyes para ojeras y bolsas | NUDE",
+    "description": "Contorno de ojos clean con péptidos Regu-Age PF, ácido hialurónico y liposomas de cafeína. Para ojeras, bolsas y líneas finas. 20% off por transferencia y envíos a todo el país."
+  },
+  "avisoPatch": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/contorno-de-ojos-gleaming-eyes/"
+}

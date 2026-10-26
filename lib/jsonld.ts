@@ -1,0 +1,122 @@
+import { site } from './site';
+import type { Producto, AjustesTienda } from './types';
+import { absolute, urls } from './urls';
+import { precioConTransferencia } from './pricing';
+
+export function organizationJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: site.name,
+    url: site.url,
+    logo: absolute('/img/logo.png'),
+    description: site.description,
+    sameAs: [site.contact.instagramUrl],
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        telephone: site.contact.whatsapp,
+        email: site.contact.email,
+        availableLanguage: ['Spanish'],
+      },
+    ],
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.address.locality,
+      addressRegion: site.address.region,
+      addressCountry: site.address.country,
+    },
+    taxID: site.legal.cuit,
+  };
+}
+
+export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      item: absolute(it.url),
+    })),
+  };
+}
+
+export function productJsonLd(p: Producto, tienda: AjustesTienda) {
+  const image = p.imagenes.map((img) =>
+    img.startsWith('http') ? img : absolute(img),
+  );
+  const url = absolute(urls.producto(p.slug));
+  const precioTransfer = precioConTransferencia(p.precio, tienda);
+  const availability = p.disponible
+    ? 'https://schema.org/InStock'
+    : 'https://schema.org/OutOfStock';
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: p.nombre,
+    description: p.resumen,
+    image,
+    sku: p.slug,
+    brand: { '@type': 'Brand', name: site.name },
+    offers: {
+      '@type': 'Offer',
+      price: p.precio,
+      priceCurrency: site.currency,
+      availability,
+      url,
+      seller: { '@type': 'Organization', name: site.name },
+      priceSpecification: [
+        {
+          '@type': 'UnitPriceSpecification',
+          price: p.precio,
+          priceCurrency: site.currency,
+          description: 'Precio de lista',
+        },
+        {
+          '@type': 'UnitPriceSpecification',
+          price: precioTransfer,
+          priceCurrency: site.currency,
+          description: 'Pagando con transferencia (20% off)',
+        },
+      ],
+    },
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'AR',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: 10,
+      returnMethod: 'https://schema.org/ReturnByMail',
+      returnFees: 'https://schema.org/FreeReturn',
+      itemCondition: 'https://schema.org/UnopenedCondition',
+    },
+  };
+}
+
+export function itemListJsonLd(productos: Producto[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: productos.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: absolute(urls.producto(p.slug)),
+      name: p.nombre,
+    })),
+  };
+}
+
+export function faqJsonLd(items: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((it) => ({
+      '@type': 'Question',
+      name: it.q,
+      acceptedAnswer: { '@type': 'Answer', text: it.a },
+    })),
+  };
+}

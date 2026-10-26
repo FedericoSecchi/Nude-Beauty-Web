@@ -1,0 +1,36 @@
+{
+  "slug": "pads-desmaquillantes",
+  "nombre": "Pads Desmaquillantes",
+  "categoria": "accesorios",
+  "precio": 15000,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/pads-desmaquillantes/01.webp"
+  ],
+  "tamano": "10 cm · 2 unidades con bolsita",
+  "h1": "Pads Desmaquillantes reutilizables · 2 unidades",
+  "resumen": "Pads de 10 cm, reutilizables, con un lado de polar soft y otro de microfibra. Dos unidades con bolsita para lavar. Pensados para usar con el agua micelar.",
+  "activos": [],
+  "ingredientes": "100% tela sintética (polar soft y microfibra).",
+  "modoDeUso": "Humedecé el pad con el agua micelar y pasalo por rostro y ojos. Después del uso, lavalo con jabón neutro o metelo en la bolsita y lavarropa con el programa delicado. Dura muchos meses.",
+  "pasoRutina": null,
+  "beneficios": [
+    "Reutilizables: menos basura que los pads de algodón",
+    "Dos texturas: polar soft (más suave) y microfibra (más abrasiva)",
+    "Vienen con bolsita para el lavarropas"
+  ],
+  "faq": [
+    { "q": "¿Cuánto duran?", "a": "Con buen cuidado (lavado suave, al aire), duran muchos meses." },
+    { "q": "¿Sirven solo con el agua micelar?", "a": "Van muy bien con el agua micelar bifásica, pero podés usarlos con cualquier limpiador." }
+  ],
+  "relacionados": [
+    "agua-micelar-bifasica",
+    "nude-bag"
+  ],
+  "seo": {
+    "title": "Pads Desmaquillantes reutilizables · 2 unidades | NUDE",
+    "description": "Pads de 10 cm reutilizables, con polar soft y microfibra. Dos unidades con bolsita de lavado. Pensados para usar con el agua micelar bifásica."
+  },
+  "fichaCorta": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/pads-desmaquillantes/"
+}

@@ -1,0 +1,47 @@
+{
+  "slug": "serum-multi-active",
+  "nombre": "Serum Multi Active",
+  "categoria": "face",
+  "precio": 23300,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/serum-multi-active/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Serum Multi Active · niacinamida 5% + vitamina C + ácido hialurónico",
+  "resumen": "Serum facial clean con niacinamida al 5%, vitamina C estable, ácido hialurónico de alto y bajo peso molecular, péptidos (Matrixil-Syn Coll) y pro-vitamina B5. Textura ligera, aroma a azahar y palmarosa. Para día y noche.",
+  "activos": [
+    { "nombre": "Niacinamida al 5%", "queHace": "Ayuda a emparejar el tono y a que los poros se vean más chicos. Se ven cambios de a poco." },
+    { "nombre": "Vitamina C estable (en liposomas)", "queHace": "Antioxidante que da luminosidad sin irritar. Pensada para piel sensible." },
+    { "nombre": "Ácido hialurónico de alto y bajo peso molecular", "queHace": "Hidrata en superficie y en capas más profundas de la piel." },
+    { "nombre": "Matrixil-Syn Coll (palmitoyl tripeptide-5)", "queHace": "Péptido que trabaja sobre líneas finas y la elasticidad de la piel." },
+    { "nombre": "Centella asiática, aloe vera, hamamelis", "queHace": "Calman rojeces y suavizan la piel." }
+  ],
+  "ingredientes": "Niacinamida (vit B3), liposomas de vitamina C estable (sodium ascorbate), Matrixil-Syn Coll (palmitoyl tripeptide-5), elastina, ácido hialurónico de alto y bajo peso molecular, pro-vitamina B5, centella asiática, aloe vera, hamamelis, aceites esenciales de neroli (azahar) y palmarosa.",
+  "modoDeUso": "Después de limpiar la piel con el agua micelar, ponete 3 gotas en el rostro (frente y mejillas), dejá secar unos segundos y seguí con la crema facial y el protector solar. También va en cuello y escote. Día y noche.",
+  "pasoRutina": 3,
+  "beneficios": [
+    "Textura ligera, se absorbe rápido",
+    "Aroma a azahar y palmarosa",
+    "Pensada para piel sensible",
+    "Hidrata, da luminosidad y empareja el tono"
+  ],
+  "faq": [
+    { "q": "¿Lo puedo usar de día y de noche?", "a": "Sí. De día, siempre con protector solar después. De noche va solo (o antes de la crema)." },
+    { "q": "¿Sirve para piel sensible?", "a": "Sí, está pensada para piel sensible: la vitamina C está en liposomas y no irrita." },
+    { "q": "¿En qué paso de la rutina va?", "a": "Después del agua micelar y el contorno de ojos, antes de la crema facial. Si usás protector solar, va al final." }
+  ],
+  "relacionados": [
+    "agua-micelar-bifasica",
+    "contorno-de-ojos-gleaming-eyes",
+    "crema-facial-porcelain",
+    "serum-transformacion",
+    "kit-facial-new-skin"
+  ],
+  "seo": {
+    "title": "Serum Multi Active con niacinamida 5% y vitamina C | NUDE",
+    "description": "Serum clean con niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico y péptidos. Para rostro, cuello y escote. 20% off por transferencia y envíos a todo el país."
+  },
+  "avisoPatch": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/serum-multi-active/"
+}

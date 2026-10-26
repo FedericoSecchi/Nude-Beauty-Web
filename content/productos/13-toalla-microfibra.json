@@ -1,0 +1,35 @@
+{
+  "slug": "toalla-microfibra",
+  "nombre": "Toalla Microfibra",
+  "categoria": "accesorios",
+  "precio": 8200,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/toalla-microfibra/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Toalla de microfibra para la cara",
+  "resumen": "Toalla pensada para secar el rostro después de la rutina de skincare. Absorbe rápido y no hace falta frotar la piel: solo apoyar y levantar.",
+  "activos": [],
+  "ingredientes": "100% microfibra.",
+  "modoDeUso": "Después de lavarte la cara, apoyá la toalla sobre la piel y sacala sin frotar. Lavala seguido con jabón neutro.",
+  "pasoRutina": null,
+  "beneficios": [
+    "Seca sin frotar la piel",
+    "Absorbe más rápido que una toalla común",
+    "Suave con pieles sensibles"
+  ],
+  "faq": [
+    { "q": "¿La puedo meter al lavarropas?", "a": "Sí, en programa delicado y sin suavizante." }
+  ],
+  "relacionados": [
+    "pads-desmaquillantes",
+    "nude-bag"
+  ],
+  "seo": {
+    "title": "Toalla de microfibra para la cara | NUDE",
+    "description": "Toalla de microfibra para secar el rostro después de la rutina de skincare. Absorbe rápido y es suave con pieles sensibles."
+  },
+  "fichaCorta": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/toalla-microfibra/"
+}

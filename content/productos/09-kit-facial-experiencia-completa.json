@@ -1,0 +1,43 @@
+{
+  "slug": "kit-facial-experiencia-completa",
+  "nombre": "Kit Facial Experiencia Completa",
+  "categoria": "sets",
+  "precio": 128000,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/kit-facial-experiencia-completa/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Kit Facial Experiencia Completa · la rutina clean completa",
+  "resumen": "La rutina facial completa con los cinco productos: agua micelar bifásica, contorno de ojos, crema facial, serum multi active y serum transformación. Para hacer rutina de día y de noche con tratamiento antiage.",
+  "activos": [],
+  "ingredientes": "Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).",
+  "modoDeUso": "Rutina de día: agua micelar → contorno de ojos → serum multi active → crema facial → protector solar. Rutina de noche: agua micelar → contorno de ojos → serum transformación → crema facial.",
+  "pasoRutina": null,
+  "beneficios": [
+    "Rutina AM y PM completa, con tratamiento antiage",
+    "Más conveniente que comprar cada producto por separado",
+    "Pensada para quien quiere rutina y resultados"
+  ],
+  "faq": [
+    { "q": "¿En qué orden uso los productos?", "a": "AM: agua micelar → contorno → multi active → crema → protector solar. PM: agua micelar → contorno → transformación → crema." },
+    { "q": "¿Cuánto dura?", "a": "[CONFIRMAR tamaños de cada producto para dar un plazo]" },
+    { "q": "¿Se puede regalar?", "a": "Sí: podés pedir que lo mandemos directo a la persona que lo recibe. Avisanos por WhatsApp." }
+  ],
+  "incluye": [
+    "agua-micelar-bifasica",
+    "contorno-de-ojos-gleaming-eyes",
+    "crema-facial-porcelain",
+    "serum-multi-active",
+    "serum-transformacion"
+  ],
+  "relacionados": [
+    "kit-facial-new-skin",
+    "nude-bag"
+  ],
+  "seo": {
+    "title": "Kit Facial Experiencia Completa · rutina skincare clean | NUDE",
+    "description": "Rutina AM y PM completa con agua micelar, contorno de ojos, crema facial y los dos serums. 20% off por transferencia y envíos a todo el país."
+  },
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/kit-facial-experiencia-completa/"
+}

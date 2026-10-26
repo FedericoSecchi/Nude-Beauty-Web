@@ -1,0 +1,46 @@
+{
+  "slug": "serum-transformacion",
+  "nombre": "Serum Transformación",
+  "categoria": "face",
+  "precio": 34550,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/serum-transformacion/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Serum Transformación · bakuchiol + retinoides para la noche",
+  "resumen": "Serum nocturno con bakuchiol (alternativa natural al retinol), liposomas de retinoides, ácido hialurónico al 1% y Matrixil-Syn Coll. Pensado para líneas finas, manchas y textura. Aroma a azahar y palmarosa.",
+  "activos": [
+    { "nombre": "Bakuchiol", "queHace": "Alternativa natural al retinol. Trabaja sobre arrugas y líneas finas con mejor tolerancia." },
+    { "nombre": "Liposomas de retinoides (retinyl acetate)", "queHace": "Renuevan la piel durante la noche." },
+    { "nombre": "Ácido hialurónico al 1%", "queHace": "Hidrata en profundidad, suaviza líneas finas, da efecto relleno." },
+    { "nombre": "Matrixil-Syn Coll (palmitoyl tripeptide-5)", "queHace": "Péptido para la elasticidad de la piel." },
+    { "nombre": "Aceite de pepitas de uva con resveratrol", "queHace": "Antioxidante que ayuda a emparejar el tono." }
+  ],
+  "ingredientes": "Bakuchiol, liposomas de retinoides (retinyl acetate), Matrixil-Syn Coll (palmitoyl tripeptide-5), ácido hialurónico de alto y bajo peso molecular, aceite de pepitas de uva (resveratrol), jojoba, coco fraccionado, hidrolato de lavanda, centella asiática, aloe vera, hamamelis, extracto de avena, vit E, pro-vit B5, neroli y palmarosa. [CONFIRMAR: lista final — hay dos versiones en la ficha original]",
+  "modoDeUso": "Usalo solo de noche. Después del agua micelar y el contorno de ojos, ponete 3 gotas en rostro, cuello y escote. Al día siguiente usá protector solar y evitá exponerte al sol.",
+  "pasoRutina": 3,
+  "beneficios": [
+    "Alternativa natural al retinol (bakuchiol)",
+    "Trabaja sobre líneas finas, textura y luminosidad",
+    "Aroma a azahar y palmarosa"
+  ],
+  "faq": [
+    { "q": "¿Lo puedo usar de día?", "a": "No, solo de noche. Al día siguiente, siempre protector solar." },
+    { "q": "¿Puedo combinarlo con el Serum Multi Active?", "a": "Sí: Multi Active de día (con protector después), Transformación de noche." },
+    { "q": "¿En qué se diferencia del retinol clásico?", "a": "El bakuchiol tiene efectos parecidos al retinol pero suele tolerarse mejor en pieles sensibles. El serum también incluye liposomas de retinoides en baja dosis." }
+  ],
+  "relacionados": [
+    "agua-micelar-bifasica",
+    "contorno-de-ojos-gleaming-eyes",
+    "crema-facial-porcelain",
+    "serum-multi-active",
+    "kit-facial-experiencia-completa"
+  ],
+  "seo": {
+    "title": "Serum Transformación con bakuchiol y retinoides | NUDE",
+    "description": "Serum nocturno con bakuchiol, retinoides en liposomas y ácido hialurónico al 1%. Alternativa natural al retinol clásico. 20% off por transferencia y envíos a todo el país."
+  },
+  "avisoPatch": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/serum-transformacion/"
+}

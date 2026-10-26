@@ -1,0 +1,46 @@
+{
+  "slug": "crema-facial-porcelain",
+  "nombre": "Crema Facial Porcelain",
+  "categoria": "face",
+  "precio": 23450,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/crema-facial-porcelain/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Crema Facial Porcelain · hidratación y reparación clean",
+  "resumen": "Crema facial de día y noche con células madre vegetales Green Cell (Camellia sinensis), alantoína, proteína de trigo hidrolizada, liposomas de colágeno y elastina. Textura ligera, apta para todo tipo de piel. Aroma a azahar, palmarosa y vainilla.",
+  "activos": [
+    { "nombre": "Células madre vegetales Green Cell (Camellia sinensis)", "queHace": "Antioxidante que ayuda a que la piel se vea más tersa." },
+    { "nombre": "Proteína de trigo hidrolizada (fitoqueratina)", "queHace": "Da firmeza y ayuda a retener la humedad." },
+    { "nombre": "Alantoína", "queHace": "Calma y suaviza." },
+    { "nombre": "Liposomas de colágeno y elastina", "queHace": "Trabajan sobre la elasticidad de la piel." },
+    { "nombre": "Aceites de rosa mosqueta, argán y jojoba", "queHace": "Nutren sin dejar sensación grasa." }
+  ],
+  "ingredientes": "Células madre, centella asiática, proteína de trigo hidrolizada, liposomas de colágeno y elastina, provitamina B5, vit E, aceites de pepita de uva, jojoba, argán, rosa mosqueta, agua de rosas, aloe vera, té verde, manzanilla, hamamelis, lavanda, neroli, palmarosa, vainilla. [CONFIRMAR cómo comunicar el ingrediente con trigo para quienes tienen celiaquía o intolerancia]",
+  "modoDeUso": "Aplicá en rostro, cuello y escote después del serum. Si es de día, seguí con protector solar. Para todo tipo de piel.",
+  "pasoRutina": 4,
+  "beneficios": [
+    "Humectante, nutritiva y reparadora",
+    "Textura ligera, para todo tipo de piel",
+    "Aroma a azahar, palmarosa y vainilla"
+  ],
+  "faq": [
+    { "q": "¿Es apta para piel grasa?", "a": "Sí, la textura es ligera. Está formulada para todo tipo de piel." },
+    { "q": "¿Lleva protector solar?", "a": "No. De día, aplicá después un protector solar." },
+    { "q": "¿Tiene trigo?", "a": "Sí, contiene proteína de trigo hidrolizada. Si tenés celiaquía o intolerancia, consultanos antes de usarla. [CONFIRMAR con Soledad cómo comunicarlo]" }
+  ],
+  "relacionados": [
+    "serum-multi-active",
+    "serum-transformacion",
+    "contorno-de-ojos-gleaming-eyes",
+    "agua-micelar-bifasica",
+    "kit-facial-new-skin"
+  ],
+  "seo": {
+    "title": "Crema Facial Porcelain natural, humectante y antiage | NUDE",
+    "description": "Crema facial clean con células madre vegetales, péptidos y liposomas de colágeno. Textura ligera, apta para todo tipo de piel. 20% off por transferencia y envíos a todo el país."
+  },
+  "avisoPatch": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/crema-facial-porcelain/"
+}

@@ -1,0 +1,44 @@
+{
+  "slug": "agua-micelar-bifasica",
+  "nombre": "Agua Micelar Bifásica",
+  "categoria": "face",
+  "precio": 25200,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/agua-micelar-bifasica/01.webp"
+  ],
+  "tamano": "300 ml",
+  "h1": "Agua Micelar Bifásica · desmaquilla, limpia y humecta",
+  "resumen": "Agua micelar en dos fases que desmaquilla, limpia, humecta, nutre y suaviza. Con aceite de almendras dulces, agua de rosas, aloe vera, caléndula y manzanilla. Para todo tipo de piel. Aroma a azahar y vainilla.",
+  "activos": [
+    { "nombre": "Aceite de almendras dulces", "queHace": "Desmaquilla incluso maquillaje a prueba de agua y nutre." },
+    { "nombre": "Agua de rosas y aloe vera", "queHace": "Calman y refrescan la piel." },
+    { "nombre": "Caléndula y manzanilla", "queHace": "Suavizan la piel sensible." },
+    { "nombre": "Extracto hidroglicerinado de avena y pepino", "queHace": "Hidrata y ayuda a mantener la barrera de la piel." }
+  ],
+  "ingredientes": "Agua de rosas, aloe vera, caléndula, manzanilla, té verde, aceite de ricino sulfonado, aceite de almendras dulces, extracto hidroglicerinado de avena y pepino, neroli, vainilla.",
+  "modoDeUso": "Agitá antes de usar. Humedecé un pad (de algodón o reutilizable) y pasalo por rostro, contorno de ojos, labios, cuello y escote. Enjuagá con agua tibia. Primer paso de la rutina, día y noche.",
+  "pasoRutina": 1,
+  "beneficios": [
+    "5 en 1: desmaquilla, limpia, humecta, nutre y suaviza",
+    "Para todo tipo de piel",
+    "Aroma a azahar y vainilla"
+  ],
+  "faq": [
+    { "q": "¿Saca el maquillaje a prueba de agua?", "a": "Sí: la fase oleosa con aceite de almendras dulces disuelve el maquillaje." },
+    { "q": "¿Puedo usarla en el contorno de los ojos?", "a": "Sí, es apta para desmaquillar la zona de los ojos y los labios." },
+    { "q": "¿Qué pads van bien?", "a": "Van los de algodón, pero recomendamos los reutilizables para generar menos basura." }
+  ],
+  "relacionados": [
+    "contorno-de-ojos-gleaming-eyes",
+    "serum-multi-active",
+    "pads-desmaquillantes",
+    "kit-facial-new-skin"
+  ],
+  "seo": {
+    "title": "Agua Micelar Bifásica natural con aceite de almendras | NUDE",
+    "description": "Agua micelar en dos fases: desmaquilla, limpia y humecta. Con aceite de almendras dulces, agua de rosas, aloe y caléndula. 300 ml. 20% off por transferencia."
+  },
+  "avisoPatch": true,
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/agua-micelar-bifasica/"
+}

@@ -1,0 +1,46 @@
+{
+  "slug": "nude-bag",
+  "nombre": "Nude Bag",
+  "categoria": "sets",
+  "precio": 159400,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/nude-bag/01.webp"
+  ],
+  "tamano": null,
+  "h1": "Nude Bag · regalo de skincare completo con accesorios",
+  "resumen": "Set de regalo con la rutina completa más los accesorios. Incluye agua micelar bifásica, crema facial, contorno de ojos, serum transformación, serum multi active, pads desmaquillantes x2, vincha con velcro y toalla microfibra.",
+  "activos": [],
+  "ingredientes": "Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).",
+  "modoDeUso": "La rutina de skincare completa: agua micelar → contorno → serum → crema. Los pads reutilizables para desmaquillar, la vincha para sujetar el pelo durante la rutina y la toalla de microfibra para secar la cara sin frotar.",
+  "pasoRutina": null,
+  "beneficios": [
+    "Rutina completa + accesorios",
+    "Pensado para regalo",
+    "Más conveniente que comprar todo por separado"
+  ],
+  "faq": [
+    { "q": "¿Lo puedo enviar directo a quien lo recibe?", "a": "Sí: avisanos por WhatsApp y lo mandamos directo. Si querés, le podemos sumar una tarjeta." },
+    { "q": "¿Qué pasa si no sé qué tipo de piel tiene?", "a": "Casi todo el kit es apto para todo tipo de piel. Si tenés dudas puntuales, escribinos por WhatsApp." },
+    { "q": "¿Qué contiene el agua micelar: 200 o 300 cc?", "a": "[CONFIRMAR presentación del agua micelar incluida en la Nude Bag]" }
+  ],
+  "incluye": [
+    "agua-micelar-bifasica",
+    "contorno-de-ojos-gleaming-eyes",
+    "crema-facial-porcelain",
+    "serum-multi-active",
+    "serum-transformacion",
+    "pads-desmaquillantes",
+    "vincha-con-velcro",
+    "toalla-microfibra"
+  ],
+  "relacionados": [
+    "kit-facial-experiencia-completa",
+    "kit-facial-new-skin"
+  ],
+  "seo": {
+    "title": "Nude Bag · set de regalo de skincare con accesorios | NUDE",
+    "description": "Rutina clean completa + accesorios en un solo kit: agua micelar, contorno, cremas, serums, pads, vincha y toalla. Pensado para regalo."
+  },
+  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/nude-bag1/"
+}

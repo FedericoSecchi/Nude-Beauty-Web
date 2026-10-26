@@ -6,6 +6,10 @@ import { urls } from '@/lib/urls';
 import { formatARS } from '@/lib/format';
 import { waLink, waMessages } from '@/lib/whatsapp';
 
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 interface PedidoPublico {
   id: string;
   estado: string;
@@ -122,19 +126,35 @@ export function PedidoCliente() {
       {estado.estado === 'pendiente_transferencia' ? (
         <section className="card">
           <h2 className="font-heading text-xl mb-2">¡Casi! Falta la transferencia</h2>
+          {/* Solo se muestran los datos cargados en el panel. Sin alias ni CBU un build de producción
+              no pasa la puerta de publicación (no habría medio de pago). */}
           <p className="text-ink/80">
-            Para completar el pedido, transferí a:
+            {estado.alias || estado.cbu
+              ? 'Para completar el pedido, transferí a:'
+              : 'Escribinos por WhatsApp y te pasamos los datos para transferir.'}
           </p>
           <dl className="mt-4 text-sm">
             <div className="grid grid-cols-[8rem_1fr] gap-y-1">
-              <dt className="text-muted-ink">Alias</dt>
-              <dd>{estado.alias ?? '[CONFIRMAR con Soledad]'}</dd>
-              <dt className="text-muted-ink">CBU</dt>
-              <dd>{estado.cbu ?? '[CONFIRMAR con Soledad]'}</dd>
-              <dt className="text-muted-ink">Titular</dt>
-              <dd>{estado.titular ?? '[CONFIRMAR con Soledad]'}</dd>
+              {estado.alias ? (
+                <>
+                  <dt className="text-muted-ink">Alias</dt>
+                  <dd data-testid="alias">{estado.alias}</dd>
+                </>
+              ) : null}
+              {estado.cbu ? (
+                <>
+                  <dt className="text-muted-ink">CBU</dt>
+                  <dd data-testid="cbu">{estado.cbu}</dd>
+                </>
+              ) : null}
+              {estado.titular ? (
+                <>
+                  <dt className="text-muted-ink">Titular</dt>
+                  <dd>{estado.titular}</dd>
+                </>
+              ) : null}
               <dt className="text-muted-ink">Monto</dt>
-              <dd className="font-medium">{formatARS(estado.total)}</dd>
+              <dd data-testid="monto" className="font-medium">{formatARS(estado.total)}</dd>
             </div>
           </dl>
           <a
@@ -157,7 +177,7 @@ export function PedidoCliente() {
         </section>
       ) : null}
 
-      {estado.estado === 'revisar' ? (
+      {mpHabilitado && estado.estado === 'revisar' ? (
         <section className="card">
           <h2 className="font-heading text-xl mb-2">Estamos revisando el pago</h2>
           <p className="text-ink/80">
@@ -167,7 +187,7 @@ export function PedidoCliente() {
         </section>
       ) : null}
 
-      {estado.estado === 'pendiente_mp' ? (
+      {mpHabilitado && estado.estado === 'pendiente_mp' ? (
         <section className="card">
           <h2 className="font-heading text-xl mb-2">Esperando a Mercado Pago</h2>
           <p className="text-ink/80">
@@ -209,7 +229,7 @@ export function PedidoCliente() {
           ))}
           <div className="flex justify-between"><span>Envío</span><span>{estado.envio === 0 ? 'a coordinar' : formatARS(estado.envio)}</span></div>
           <div className="flex justify-between font-heading text-lg text-charcoal pt-2 border-t border-border">
-            <span>Total</span><span>{formatARS(estado.total)}</span>
+            <span>Total</span><span data-testid="total">{formatARS(estado.total)}</span>
           </div>
         </div>
       </section>

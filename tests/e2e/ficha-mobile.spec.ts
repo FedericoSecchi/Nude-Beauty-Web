@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
-import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { leerContenido } from '../../lib/contenido.mjs';
 
 // PLAN §5: en 360×740, H1, precio, CTA y link de WhatsApp visibles sin scroll en las 14 fichas.
 // - "ficha mobile · con stock": contra el build normal (E2E_BASE_URL).
@@ -9,10 +9,7 @@ import { join } from 'node:path';
 
 const VIEWPORT = { width: 360, height: 740 };
 
-const slugs = readdirSync(join(process.cwd(), 'content', 'productos'))
-  .filter((f) => f.endsWith('.json'))
-  .sort()
-  .map((f) => JSON.parse(readFileSync(join(process.cwd(), 'content', 'productos', f), 'utf8')).slug as string);
+const slugs = leerContenido(join(process.cwd(), 'content')).productos.map((p) => p.slug);
 
 test.use({ viewport: VIEWPORT, isMobile: true, hasTouch: true });
 

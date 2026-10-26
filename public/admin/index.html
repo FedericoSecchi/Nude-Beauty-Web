@@ -14,11 +14,13 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
-    <!-- Decap CMS v3: panel de edición apuntando a /admin/config.yml. -->
-    <script src="https://unpkg.com/decap-cms@3.3.5/dist/decap-cms.js"></script>
+    <!-- Decap CMS 3.16.3 (versión fija; la 3.3.5 que estaba no existe en npm): panel de edición apuntando a /admin/config.yml. -->
+    <script src="https://unpkg.com/decap-cms@3.16.3/dist/decap-cms.js"></script>
     <script>
       // Redirige al home después del logout para que el token no quede en memoria.
       if (window.netlifyIdentity) {
+        // Pantalla de ingreso en español ("¿Olvidaste tu contraseña?").
+        if (typeof window.netlifyIdentity.setLocale === 'function') window.netlifyIdentity.setLocale('es');
         window.netlifyIdentity.on('init', (user) => {
           if (!user) {
             window.netlifyIdentity.on('login', () => {

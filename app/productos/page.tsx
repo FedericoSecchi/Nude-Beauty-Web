@@ -7,6 +7,10 @@ import { breadcrumbJsonLd, itemListJsonLd } from '@/lib/jsonld';
 import { urls } from '@/lib/urls';
 import { CategoryFilter } from './CategoryFilter';
 
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 export const metadata: Metadata = {
   title: 'Productos de cosmética natural',
   description:
@@ -16,14 +20,15 @@ export const metadata: Metadata = {
 
 export default function ProductosPage() {
   const productos = getProductos();
-  const { face, body, sets, accesorios } = getProductosPorCategoria();
+  const { face, body, sets, accesorios, otros } = getProductosPorCategoria();
 
   const grupos = [
     { id: 'face', nombre: 'Cosmética facial', items: face },
     { id: 'body', nombre: 'Cosmética corporal', items: body },
     { id: 'sets', nombre: 'Sets y regalos', items: sets },
     { id: 'accesorios', nombre: 'Accesorios', items: accesorios },
-  ];
+    { id: 'otros', nombre: 'Más productos', items: otros },
+  ].filter((g) => g.items.length);
 
   return (
     <>
@@ -49,11 +54,12 @@ export default function ProductosPage() {
         <p className="mt-4 text-ink/80 max-w-prose">
           Todo el skincare natural de NUDE, en catorce productos: la rutina facial en orden —agua
           micelar, contorno, sérum, crema—, cuidado corporal, kits y accesorios. Elegís, pagás con
-          transferencia o Mercado Pago y te lo enviamos a cualquier punto del país.
+          transferencia{mpHabilitado ? ' o Mercado Pago' : ''} y te lo enviamos a cualquier punto del
+          país.
         </p>
         <p className="mt-3 text-sm text-muted-ink">
-          Precios en pesos argentinos. 20% off pagando con transferencia · 3 cuotas sin interés con
-          tarjeta · envíos a todo el país.
+          Precios en pesos argentinos. 20% off pagando con transferencia ·{' '}
+          {mpHabilitado ? '3 cuotas sin interés con tarjeta · ' : ''}envíos a todo el país.
         </p>
         <p className="mt-3 text-ink/80 max-w-prose text-sm">
           <strong>Qué es skincare clean para NUDE:</strong> fórmulas sin parabenos y con activos

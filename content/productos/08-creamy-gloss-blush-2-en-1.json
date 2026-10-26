@@ -1,37 +1,54 @@
 {
-  "slug": "creamy-gloss-blush-2-en-1",
   "nombre": "Creamy Gloss & Blush Natural 2 en 1",
-  "categoria": "face",
   "precio": 16250,
   "disponible": true,
   "imagenes": [
     "/img/productos/creamy-gloss-blush-2-en-1/01.webp"
   ],
   "tamano": null,
-  "h1": "Creamy Gloss & Blush Natural 2 en 1 · gloss para labios y rubor en crema",
   "resumen": "Gloss para labios y rubor en crema en un mismo envase. Acabado luminoso, no pegajoso. Sin fragancias ni alcoholes, con mantecas de karité, mango y cacao, aceites de jojoba, ricino y coco, fitoescualeno, vitamina E, pigmentos naturales y micas.",
-  "activos": [
-    { "nombre": "Manteca de karité, mango y cacao", "queHace": "Aportan nutrición." },
-    { "nombre": "Aceites de jojoba y ricino", "queHace": "Humectan y dan brillo sin dejar sensación pegajosa." },
-    { "nombre": "Pigmentos naturales y micas", "queHace": "Dan color y acabado luminoso." }
-  ],
   "ingredientes": "Manteca de karité, manteca de mango, manteca de cacao, aceite de jojoba, aceite de ricino, fitoescualeno, vitamina E, aceite de coco, caprylic/capric triglyceride, pigmentos naturales y micas.",
   "modoDeUso": "Usalo como gloss en los labios o como rubor en crema en las mejillas.",
-  "pasoRutina": null,
-  "beneficios": [
-    "Dos en uno: gloss y rubor",
-    "Acabado luminoso, no pegajoso",
-    "Sin fragancias ni alcoholes"
-  ],
-  "faq": [
-    { "q": "¿Tiene fragancia?", "a": "No: el gloss es sin fragancias ni alcoholes." },
-    { "q": "¿Qué colores hay?", "a": "Consultá los colores disponibles por WhatsApp antes de comprar." }
-  ],
-  "relacionados": [],
-  "seo": {
-    "title": "Creamy Gloss & Blush · gloss y rubor natural 2 en 1",
-    "description": "Gloss y rubor en crema, dos en uno. Acabado luminoso, no pegajoso. Sin fragancias ni alcoholes. Con mantecas vegetales y pigmentos naturales."
-  },
-  "avisoPatch": true,
-  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/creamy-gloss-blush-natural-2-en-1-humectante-nutritivo-y-apto-para-ninos-4zick/"
+  "avanzado": {
+    "slug": "creamy-gloss-blush-2-en-1",
+    "categoria": "face",
+    "h1": "Creamy Gloss & Blush Natural 2 en 1 · gloss para labios y rubor en crema",
+    "activos": [
+      {
+        "nombre": "Manteca de karité, mango y cacao",
+        "queHace": "Aportan nutrición."
+      },
+      {
+        "nombre": "Aceites de jojoba y ricino",
+        "queHace": "Humectan y dan brillo sin dejar sensación pegajosa."
+      },
+      {
+        "nombre": "Pigmentos naturales y micas",
+        "queHace": "Dan color y acabado luminoso."
+      }
+    ],
+    "pasoRutina": null,
+    "beneficios": [
+      "Dos en uno: gloss y rubor",
+      "Acabado luminoso, no pegajoso",
+      "Sin fragancias ni alcoholes"
+    ],
+    "faq": [
+      {
+        "q": "¿Tiene fragancia?",
+        "a": "No: el gloss es sin fragancias ni alcoholes."
+      },
+      {
+        "q": "¿Qué colores hay?",
+        "a": "Consultá los colores disponibles por WhatsApp antes de comprar."
+      }
+    ],
+    "relacionados": [],
+    "seo": {
+      "title": "Creamy Gloss & Blush · gloss y rubor natural 2 en 1",
+      "description": "Gloss y rubor en crema, dos en uno. Acabado luminoso, no pegajoso. Sin fragancias ni alcoholes. Con mantecas vegetales y pigmentos naturales."
+    },
+    "avisoPatch": true,
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/creamy-gloss-blush-natural-2-en-1-humectante-nutritivo-y-apto-para-ninos-4zick/"
+  }
 }

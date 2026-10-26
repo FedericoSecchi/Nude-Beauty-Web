@@ -1,9 +1,16 @@
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 export const site = {
   name: 'NUDE Cosmética Clean',
   shortName: 'NUDE',
   tagline: 'Cosmética natural hecha a mano en Mendiolaza, Córdoba',
   description:
-    'Cosmética natural y clean hecha a mano en pequeños lotes en Mendiolaza (Córdoba). Fórmulas con activos nombrados: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. 20% off por transferencia, 3 cuotas sin interés con tarjeta y envíos a todo el país.',
+    'Cosmética natural y clean hecha a mano en pequeños lotes en Mendiolaza (Córdoba). Fórmulas con activos nombrados: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. ' +
+    (mpHabilitado
+      ? '20% off por transferencia, 3 cuotas sin interés con tarjeta y envíos a todo el país.'
+      : '20% off por transferencia y envíos a todo el país.'),
   url: 'https://nudecosmetica.com',
   locale: 'es-AR',
   ogLocale: 'es_AR',
@@ -11,7 +18,8 @@ export const site = {
   country: 'AR',
 
   contact: {
-    whatsapp: '+5493517033348',
+    // Sale del panel (content/ajustes/tienda.json, vía next.config.mjs).
+    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP || '+5493517033348',
     email: 'nudecosmeticaclean@gmail.com',
     instagram: 'nude.cosmeticaclean',
     instagramUrl: 'https://instagram.com/nude.cosmeticaclean',

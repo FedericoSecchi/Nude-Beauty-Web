@@ -8,6 +8,10 @@ import { urls } from '@/lib/urls';
 import { site } from '@/lib/site';
 import { waLink, waMessages } from '@/lib/whatsapp';
 
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 export const metadata: Metadata = {
   title: `${site.name} · cosmética clean hecha a mano en Córdoba`,
   description: site.description,
@@ -125,7 +129,8 @@ export default function HomePage() {
             </a>
           </div>
           <p className="mx-auto mt-5 max-w-xs text-sm text-ink/75 sm:max-w-none">
-            20% off pagando con transferencia · 3 cuotas sin interés · envíos a todo el país.
+            20% off pagando con transferencia · {mpHabilitado ? '3 cuotas sin interés · ' : ''}envíos a
+            todo el país.
           </p>
         </div>
       </section>

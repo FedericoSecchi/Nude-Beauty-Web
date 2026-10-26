@@ -3,6 +3,10 @@ import Link from 'next/link';
 import { urls } from '@/lib/urls';
 import { site } from '@/lib/site';
 
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 export const metadata: Metadata = {
   title: 'Términos y condiciones',
   description:
@@ -19,11 +23,6 @@ export default function TerminosPage() {
         <span>Términos y condiciones</span>
       </nav>
       <h1 className="font-heading text-3xl md:text-4xl mb-6">Términos y condiciones</h1>
-
-      <p className="text-sm text-muted-ink">
-        [REVISAR LEGAL] Este texto es un borrador. Antes de publicarlo tiene que leerlo quien se
-        ocupa de legales del negocio.
-      </p>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Quiénes somos</h2>
       <p className="text-ink/80">
@@ -43,7 +42,9 @@ export default function TerminosPage() {
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Medios de pago</h2>
       <ul className="list-disc list-inside space-y-1 text-ink/80">
-        <li>Mercado Pago (tarjeta de crédito o débito y otros medios habilitados).</li>
+        {mpHabilitado ? (
+          <li>Mercado Pago (tarjeta de crédito o débito y otros medios habilitados).</li>
+        ) : null}
         <li>
           Transferencia bancaria con 20% off: al confirmar el pedido te mostramos los datos para
           transferir.

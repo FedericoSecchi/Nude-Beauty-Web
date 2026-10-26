@@ -12,6 +12,10 @@ import { urls } from '@/lib/urls';
 import { waLink, waMessages } from '@/lib/whatsapp';
 import { AddToCart } from './AddToCart';
 
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 interface Params {
   slug: string;
 }
@@ -124,8 +128,8 @@ export default async function ProductoPage({
               </span>
             </div>
             <p className="mt-1 text-sm text-muted-ink">
-              {formatARS(precioTransfer)} con transferencia (20% off) · {tienda.cuotasTexto} ·
-              envíos a todo el país.
+              {formatARS(precioTransfer)} con transferencia (20% off) ·{' '}
+              {mpHabilitado ? `${tienda.cuotasTexto} · ` : ''}envíos a todo el país.
             </p>
 
             {p.disponible ? (

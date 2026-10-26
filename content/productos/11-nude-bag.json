@@ -1,44 +1,52 @@
 {
-  "slug": "nude-bag",
   "nombre": "Nude Bag",
-  "categoria": "sets",
   "precio": 159400,
   "disponible": true,
   "imagenes": [
     "/img/productos/nude-bag/01.webp"
   ],
   "tamano": null,
-  "h1": "Nude Bag · set de regalo de skincare con accesorios",
   "resumen": "Set de regalo con la rutina facial completa y sus accesorios: Agua Micelar Bifásica, Crema Facial Porcelain, Contorno de ojos Gleaming Eyes, Serum Transformación, Serum Multi Active, Pads Desmaquillantes (x2), Vincha con velcro y Toalla Microfibra.",
-  "activos": [],
   "ingredientes": "Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).",
   "modoDeUso": "La rutina de skincare completa: agua micelar → contorno → serum → crema. Los pads reutilizables para desmaquillar, la vincha para sujetar el pelo durante la rutina y la toalla de microfibra para secar la cara sin frotar.",
-  "pasoRutina": null,
-  "beneficios": [
-    "Rutina completa + accesorios",
-    "Pensado para regalo"
-  ],
-  "faq": [
-    { "q": "¿Lo puedo enviar directo a quien lo recibe?", "a": "Sí: en el checkout cargá la dirección de la persona que lo recibe." },
-    { "q": "¿Qué pasa si no sé qué tipo de piel tiene?", "a": "El agua micelar y la crema facial son para todo tipo de piel, y el Serum Multi Active está indicado para piel sensible. Si tenés dudas puntuales, escribinos por WhatsApp." }
-  ],
-  "incluye": [
-    "agua-micelar-bifasica",
-    "contorno-de-ojos-gleaming-eyes",
-    "crema-facial-porcelain",
-    "serum-multi-active",
-    "serum-transformacion",
-    "pads-desmaquillantes",
-    "vincha-con-velcro",
-    "toalla-microfibra"
-  ],
-  "relacionados": [
-    "kit-facial-experiencia-completa",
-    "kit-facial-new-skin"
-  ],
-  "seo": {
-    "title": "Nude Bag · set de regalo de skincare con accesorios",
-    "description": "Rutina clean completa + accesorios en un solo kit: agua micelar, contorno, crema facial, serums, pads, vincha y toalla. Pensado para regalo."
-  },
-  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/nude-bag1/"
+  "avanzado": {
+    "slug": "nude-bag",
+    "categoria": "sets",
+    "h1": "Nude Bag · set de regalo de skincare con accesorios",
+    "activos": [],
+    "pasoRutina": null,
+    "beneficios": [
+      "Rutina completa + accesorios",
+      "Pensado para regalo"
+    ],
+    "faq": [
+      {
+        "q": "¿Lo puedo enviar directo a quien lo recibe?",
+        "a": "Sí: en el checkout cargá la dirección de la persona que lo recibe."
+      },
+      {
+        "q": "¿Qué pasa si no sé qué tipo de piel tiene?",
+        "a": "El agua micelar y la crema facial son para todo tipo de piel, y el Serum Multi Active está indicado para piel sensible. Si tenés dudas puntuales, escribinos por WhatsApp."
+      }
+    ],
+    "incluye": [
+      "agua-micelar-bifasica",
+      "contorno-de-ojos-gleaming-eyes",
+      "crema-facial-porcelain",
+      "serum-multi-active",
+      "serum-transformacion",
+      "pads-desmaquillantes",
+      "vincha-con-velcro",
+      "toalla-microfibra"
+    ],
+    "relacionados": [
+      "kit-facial-experiencia-completa",
+      "kit-facial-new-skin"
+    ],
+    "seo": {
+      "title": "Nude Bag · set de regalo de skincare con accesorios",
+      "description": "Rutina clean completa + accesorios en un solo kit: agua micelar, contorno, crema facial, serums, pads, vincha y toalla. Pensado para regalo."
+    },
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/nude-bag1/"
+  }
 }

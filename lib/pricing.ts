@@ -1,5 +1,11 @@
 import type { AjustesTienda, Producto } from './types';
 
+// Lo único de los ajustes que usa el cálculo de precios.
+export type AjustesDescuentos = Pick<
+  AjustesTienda,
+  'descuentoTransferencia' | 'descuentoCantidad' | 'descuentosAcumulables'
+>;
+
 export type MedioPago = 'mercadopago' | 'transferencia';
 
 export interface CarritoItem {
@@ -75,7 +81,7 @@ export function calcularLineas(
 
 export function calcularDescuentos(
   lineas: LineaCalculada[],
-  tienda: AjustesTienda,
+  tienda: AjustesDescuentos,
   medio: MedioPago,
 ): { descuentos: DescuentoAplicado[]; subtotalConDescuentos: number } {
   const subtotal = lineas.reduce((s, l) => s + l.subtotal, 0);
@@ -115,7 +121,7 @@ function round0(n: number): number {
 export function calcularTotal(
   items: CarritoItem[],
   productos: Producto[],
-  tienda: AjustesTienda,
+  tienda: AjustesDescuentos,
   medio: MedioPago,
   envio: number,
 ): TotalesCalculados {
@@ -135,7 +141,7 @@ export function calcularTotal(
   };
 }
 
-export function precioConTransferencia(precioLista: number, tienda: AjustesTienda): number {
+export function precioConTransferencia(precioLista: number, tienda: AjustesDescuentos): number {
   if (!tienda.descuentoTransferencia) return precioLista;
   return round0(precioLista * (1 - tienda.descuentoTransferencia));
 }

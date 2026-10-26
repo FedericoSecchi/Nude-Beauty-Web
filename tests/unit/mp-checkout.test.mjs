@@ -5,8 +5,8 @@
 // - Validación de cantidad (1–20) y notas (≤ 500).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { leerContenido } from '../../lib/contenido.mjs';
 import {
   bundle,
   blobs,
@@ -20,10 +20,7 @@ import {
 } from './_harness.mjs';
 
 const root = join(import.meta.dirname, '..', '..');
-const productos = readdirSync(join(root, 'content', 'productos'))
-  .filter((f) => f.endsWith('.json'))
-  .map((f) => JSON.parse(readFileSync(join(root, 'content', 'productos', f), 'utf8')));
-const tienda = JSON.parse(readFileSync(join(root, 'content', 'ajustes', 'tienda.json'), 'utf8'));
+const { productos, tienda } = leerContenido(join(root, 'content'));
 
 const SECRET = 'secreto-de-prueba';
 let mp, pricing, sitio, validar, webhook;

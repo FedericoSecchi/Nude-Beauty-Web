@@ -10,9 +10,8 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: PREVIEW_URL,
-    extraHTTPHeaders: process.env.E2E_TOKEN
-      ? { 'x-e2e-token': process.env.E2E_TOKEN }
-      : undefined,
+    // x-e2e-token NO va global: se mandaría también a otros orígenes. Lo agrega compra.spec.ts
+    // solo a las functions del preview.
   },
   // Usamos Chromium para mobile (Pixel 5) y desktop: evita instalar webkit extra y mantiene
   // una base común. El objetivo es verificar comportamiento responsive, no renderers.

@@ -50,7 +50,14 @@ build_sinstock() {
     rm -rf out-sinstock && mv out out-sinstock
 }
 step "build fixture sin stock (out-sinstock/)" build_sinstock
-step "build (next build + export)" npm run build
+# Variante con Mercado Pago encendido (token de mentira: solo prende el flag del build, no se llama
+# a MP). El build real de abajo va con MP apagado, como está hoy producción.
+build_con_mp() {
+  MP_ACCESS_TOKEN=verify-flag-mp npm run build >/tmp/nude-build-mp.log 2>&1 &&
+    rm -rf out-mp && mv out out-mp
+}
+step "build con Mercado Pago encendido (out-mp/)" build_con_mp
+step "build (next build + export, Mercado Pago apagado)" env -u MP_ACCESS_TOKEN npm run build
 
 # --- Unit tests (si existe el dir y tiene archivos) ---
 if [ -d tests/unit ] && [ -n "$(find tests/unit -maxdepth 1 -name '*.test.mjs' -print -quit)" ]; then
@@ -71,16 +78,45 @@ if [ -d out ]; then
   }
   step "no hay símbolo € en out/" check_no_euro
 
-  check_no_dirty() {
-    local bad="Lorem\|lorem\|test1\|barco\|placeholder\|Hola\|hola.json\|hey.json\|Sérum Facial Renovador"
-    if grep -r --include='*.html' --include='*.json' -E -l "$bad" out >/dev/null; then
-      echo "sucios en out/:"
-      grep -r --include='*.html' --include='*.json' -E -l "$bad" out || true
-      return 1
-    fi
+  # Antes usaba `\|` dentro de grep -E (ahí es un "|" literal) y no detectaba nada.
+  # "Hola" salió de la lista: es el saludo del mensaje de WhatsApp; los productos de prueba viejos
+  # se detectan por hola.json / hey.json / test1.
+  sin_sucios() {  # sin_sucios <dir> → falla y lista archivo:línea si encuentra algo
+    local bad='Lorem|lorem|test1|barco|placeholder|hola\.json|hey\.json|Sérum Facial Renovador|\[CONFIRMAR|\[REVISAR'
+    local hits
+    hits=$(grep -r --include='*.html' --include='*.json' --include='*.txt' --include='*.js' --include='*.xml' \
+      -E -o -n "$bad" "$1" 2>/dev/null || true)
+    if [ -n "$hits" ]; then echo "sucios en $1:"; echo "$hits" | head -20; return 1; fi
     return 0
   }
-  step "no hay placeholders ni productos viejos" check_no_dirty
+  check_sucios_detecta() {
+    local tmp; tmp="$(mktemp -d)"
+    printf '<p>Tamaño: [CONFIRMAR: x]</p>\n' > "$tmp/a.html"
+    printf '{"nota":"[REVISAR LEGAL]"}' > "$tmp/b.json"
+    if sin_sucios "$tmp" >/dev/null; then echo "no detectó [CONFIRMAR: x] / [REVISAR LEGAL]"; rm -rf "$tmp"; return 1; fi
+    rm "$tmp/a.html"
+    if sin_sucios "$tmp" >/dev/null; then echo "no detectó [REVISAR LEGAL] solo"; rm -rf "$tmp"; return 1; fi
+    rm -rf "$tmp"
+  }
+  step "check de placeholders detecta [CONFIRMAR: x] y [REVISAR LEGAL] (archivo de prueba)" check_sucios_detecta
+  step "no hay placeholders, marcas ni productos viejos en out/" sin_sucios out
+
+  # Mercado Pago apagado: ni "cuotas", ni "tarjeta", ni "Mercado Pago" en lo que se publica
+  # (out/admin/ queda afuera: es el panel de Soledad, no lo ve quien compra).
+  palabras_mp() {
+    grep -r --include='*.html' --include='*.txt' --include='*.js' --include='*.json' --include='*.xml' \
+      --exclude-dir=admin -i -E -o -n 'cuotas|tarjeta|mercado ?pago' "$1" 2>/dev/null || true
+  }
+  check_sin_mp() {
+    local hits; hits=$(palabras_mp out)
+    if [ -n "$hits" ]; then echo "con MP apagado aparecen:"; echo "$hits" | head -20; return 1; fi
+  }
+  step "MP apagado: sin cuotas/tarjeta/Mercado Pago en out/" check_sin_mp
+  check_con_mp() {
+    [ -d out-mp ] || return 1
+    grep -q -i 'cuotas' out-mp/index.html && grep -q 'Mercado Pago' out-mp/terminos-y-condiciones/index.html
+  }
+  step "MP encendido: vuelven cuotas y Mercado Pago (out-mp/)" check_con_mp
 
   check_build_id_meta() {
     grep -q '<meta name="build-id"' out/index.html
@@ -145,24 +181,45 @@ check_puerta_simulada() {
   printf '<html><body>\n<p>Tamaño: [CONFIRMAR: ml]</p>\n</body></html>\n' > "$sucio/productos/x/index.html"
   printf '{"nota":"[REVISAR LEGAL]"}' > "$sucio/data.json"
   printf '<html><body>ok</body></html>' > "$limpio/index.html"
+  # Contenido con y sin datos de transferencia (alias inventado, solo para la prueba).
+  local con_pago="$tmp/con-pago" sin_pago="$tmp/sin-pago"
+  cp -R content "$con_pago"; cp -R content "$sin_pago"
+  node -e '
+    const fs = require("fs"); const [f, alias] = process.argv.slice(1);
+    const t = JSON.parse(fs.readFileSync(f, "utf8")); t.alias = alias || null; t.cbu = null;
+    fs.writeFileSync(f, JSON.stringify(t));' "$con_pago/ajustes/tienda.json" "prueba.verify"
+  node -e '
+    const fs = require("fs"); const f = process.argv[1];
+    const t = JSON.parse(fs.readFileSync(f, "utf8")); t.alias = ""; t.cbu = "";
+    fs.writeFileSync(f, JSON.stringify(t));' "$sin_pago/ajustes/tienda.json"
   # Producción con pendientes → falla y lista archivo:línea.
-  rc=0; out=$(CONTEXT=production node scripts/puerta-publicacion.mjs "$sucio" 2>&1) || rc=$?
+  rc=0; out=$(env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$sucio" "$con_pago" 2>&1) || rc=$?
   [ "$rc" -ne 0 ] || { echo "producción con [CONFIRMAR] no falló"; return 1; }
   echo "$out" | grep -q 'productos/x/index.html:2' || { echo "no lista archivo:línea"; echo "$out"; return 1; }
   echo "$out" | grep -q 'data.json:1  \[REVISAR LEGAL\]' || { echo "no detecta [REVISAR"; echo "$out"; return 1; }
   # Deploy preview con pendientes → solo avisa.
-  CONTEXT=deploy-preview node scripts/puerta-publicacion.mjs "$sucio" >/dev/null 2>&1 || { echo "preview no debería fallar"; return 1; }
-  # Producción sin pendientes → pasa.
-  CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" >/dev/null 2>&1 || { echo "producción limpia falló"; return 1; }
+  CONTEXT=deploy-preview node scripts/puerta-publicacion.mjs "$sucio" "$sin_pago" >/dev/null 2>&1 || { echo "preview no debería fallar"; return 1; }
+  # Producción sin pendientes y con alias → pasa.
+  env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$con_pago" >/dev/null 2>&1 || { echo "producción limpia falló"; return 1; }
+  # Producción limpia pero sin alias ni CBU y con MP apagado → falla (no hay medio de pago).
+  rc=0; out=$(env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$sin_pago" 2>&1) || rc=$?
+  [ "$rc" -ne 0 ] || { echo "producción sin medio de pago no falló"; return 1; }
+  echo "$out" | grep -q 'sin medio de pago' || { echo "no explica que falta el medio de pago"; echo "$out"; return 1; }
+  # Lo mismo con MP encendido → pasa (MP alcanza como medio de pago).
+  MP_ACCESS_TOKEN=verify-flag-mp CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$sin_pago" >/dev/null 2>&1 || { echo "con MP encendido no debería exigir alias"; return 1; }
   rm -rf "$tmp"
 }
 step "puerta de publicación simulada (CONTEXT=production bloquea, preview avisa)" check_puerta_simulada
 
 if [ -d out ]; then
-  PENDIENTES=$(node scripts/puerta-publicacion.mjs out 2>&1 | grep -c '^  out/' || true)
-  if [ "$PENDIENTES" -gt 0 ]; then
-    echo "INFO · puerta: out/ tiene $PENDIENTES marcas [CONFIRMAR]/[REVISAR] → hoy un build de producción fallaría (esperado hasta que Soledad confirme)"
-    echo "INFO · puerta: $PENDIENTES marcas pendientes en out/ (producción bloqueada)" >> "$RESULTS_FILE"
+  # Lo que diría la puerta de un build de producción con este contenido (no hace fallar verify:
+  # el build de producción real se prueba aparte con CONTEXT=production npm run build).
+  PUERTA=$(env -u MP_ACCESS_TOKEN node scripts/puerta-publicacion.mjs out 2>&1 | grep '^  ' || true)
+  if [ -n "$PUERTA" ]; then
+    echo "INFO · puerta: un build de producción con MP apagado hoy fallaría por:"; echo "$PUERTA"
+    echo "INFO · puerta (producción, MP apagado) bloquearía:" >> "$RESULTS_FILE"; echo "$PUERTA" >> "$RESULTS_FILE"
+  else
+    echo "INFO · puerta: un build de producción pasaría" >> "$RESULTS_FILE"
   fi
 fi
 
@@ -236,7 +293,7 @@ fi
 
 # --- E2E local (Playwright contra out/ servido estáticamente) ---
 if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
-  if [ -d out ] && [ -d out-sinstock ] && command -v npx >/dev/null 2>&1; then
+  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && command -v npx >/dev/null 2>&1; then
     serve_dir() {  # serve_dir <dir> <port> → deja el pid en SERVE_PID
       pkill -f "serve.*$1.*$2" >/dev/null 2>&1 || true
       npx --yes serve "$1" -l "$2" >"/tmp/nude-serve-$2.log" 2>&1 &
@@ -250,12 +307,19 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
       return 1
     }
     run_e2e_local() {
-      local rc=0 pid1 pid2
+      local rc=0 pid1 pid2 pid3
       serve_dir out 4123 || rc=1; pid1=$SERVE_PID
       serve_dir out-sinstock 4124 || rc=1; pid2=$SERVE_PID
       if [ $rc -eq 0 ]; then
         E2E_BASE_URL="http://127.0.0.1:4123" \
           npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
+        # Carrito con un solo medio de pago (MP apagado) y con dos (out-mp/).
+        serve_dir out-mp 4126 || rc=1; pid3=$SERVE_PID
+        E2E_BASE_URL="http://127.0.0.1:4123" E2E_MP=0 \
+          npx playwright test tests/e2e/medios-pago.spec.ts --project=desktop || rc=$?
+        E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 \
+          npx playwright test tests/e2e/medios-pago.spec.ts --project=desktop || rc=$?
+        kill $pid3 >/dev/null 2>&1 || true
         # Hero de la home visible sin scroll en 390×844 y 1366×850.
         E2E_BASE_URL="http://127.0.0.1:4123" \
           npx playwright test tests/e2e/home-hero.spec.ts --project=desktop || rc=$?
@@ -291,13 +355,32 @@ else
   skip "e2e local" "sin playwright config aún"
 fi
 
-# --- Env vars condicionales ---
-for v in E2E_TOKEN; do
-  if [ -z "${!v:-}" ]; then
-    skip "e2e remoto ($v)" "variable no configurada"
-    break
+# --- E2E remoto contra el deploy preview (requiere E2E_TOKEN y que el preview sirva este commit) ---
+# El token va solo en el header x-e2e-token de los pedidos de prueba; nunca se imprime.
+REMOTE_URL="${E2E_REMOTE_URL:-https://deploy-preview-2--nude-beauty-web.netlify.app}"
+if [ -z "${E2E_TOKEN:-}" ]; then
+  skip "e2e remoto" "E2E_TOKEN no configurado"
+else
+  SERVIDO=$(/usr/bin/curl -sL --max-time 20 "$REMOTE_URL/" | grep -oE 'build-id" content="[^"]+"' | head -1 | sed 's/build-id" content="//;s/"$//' || true)
+  HEAD_SHA=$(git rev-parse HEAD)
+  if [ -z "$SERVIDO" ] || [ "${HEAD_SHA#"$SERVIDO"}" = "$HEAD_SHA" ]; then
+    skip "e2e remoto" "el preview sirve ${SERVIDO:-?} y HEAD es ${HEAD_SHA:0:12}: correr verify.sh de nuevo cuando termine el deploy"
+  else
+    run_e2e_remoto() {
+      local rc=0
+      bash scripts/preview-check.sh "$REMOTE_URL" "$HEAD_SHA" || rc=1
+      # Sin reintentos (playwright.config.ts: retries 0). E2E_MP: lo que el preview tiene que ofrecer.
+      E2E_BASE_URL="$REMOTE_URL" E2E_MP="${E2E_MP_REMOTO:-0}" \
+        npx playwright test tests/e2e/compra.spec.ts tests/e2e/medios-pago.spec.ts --project=desktop --retries=0 || rc=$?
+      E2E_BASE_URL="$REMOTE_URL" \
+        npx playwright test tests/e2e/ficha-mobile.spec.ts --project=mobile --grep-invert "sin stock" --retries=0 || rc=$?
+      E2E_BASE_URL="$REMOTE_URL" \
+        npx playwright test tests/e2e/home-hero.spec.ts --project=desktop --retries=0 || rc=$?
+      return $rc
+    }
+    step "e2e remoto contra $REMOTE_URL (build-id ${SERVIDO})" run_e2e_remoto
   fi
-done
+fi
 
 printf "\n==== Resumen ====\n"
 printf "PASS=%d FAIL=%d SKIP=%d\n" "$PASS" "$FAIL" "$SKIP"

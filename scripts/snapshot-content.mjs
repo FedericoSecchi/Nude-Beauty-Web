@@ -1,23 +1,16 @@
 #!/usr/bin/env node
 // snapshot-content.mjs — Ensambla seo/paginas/<slug>/contenido.md a partir del JSON del producto.
 // Es un "snapshot" del texto que sale al HTML, para que kw_coverage.py y copy_lint.py puedan medir.
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { leerContenido } from '../lib/contenido.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
 
 async function listProducts() {
-  const dir = join(root, 'content', 'productos');
-  const files = await readdir(dir);
-  const out = [];
-  for (const f of files) {
-    if (!f.endsWith('.json')) continue;
-    const raw = await readFile(join(dir, f), 'utf8');
-    out.push(JSON.parse(raw));
-  }
-  return out;
+  return leerContenido(join(root, 'content')).productos;
 }
 
 function fmtMd(p) {

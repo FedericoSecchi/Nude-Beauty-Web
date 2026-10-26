@@ -13,7 +13,7 @@ export interface Activo {
 export interface Producto {
   slug: string;
   nombre: string;
-  categoria: Categoria;
+  categoria: Categoria | null;
   precio: number;
   disponible: boolean;
   imagenes: string[];

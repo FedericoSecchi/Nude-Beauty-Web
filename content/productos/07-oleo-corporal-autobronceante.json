@@ -1,41 +1,64 @@
 {
-  "slug": "oleo-corporal-autobronceante",
   "nombre": "Óleo Corporal Autobronceante",
-  "categoria": "body",
   "precio": 30900,
   "disponible": true,
   "imagenes": [
     "/img/productos/oleo-corporal-autobronceante/01.webp"
   ],
   "tamano": null,
-  "h1": "Óleo Corporal Autobronceante · aceite autobronceante natural con urucum",
   "resumen": "Óleo corporal con aceites vegetales, óleo de urucum y aceite de zanahoria (betacarotenos) y micas perladas. Da un efecto glow perlado y potencia el bronceado natural. No tiene protección solar: cuando lo uses para tomar sol, usá protector solar también.",
-  "activos": [
-    { "nombre": "Óleo de urucum", "queHace": "Rico en betacarotenos: potencia el bronceado natural." },
-    { "nombre": "Aceite de zanahoria", "queHace": "Aporta betacarotenos, que potencian el bronceado natural." },
-    { "nombre": "Micas perladas", "queHace": "Dan el efecto glow perlado." }
-  ],
   "ingredientes": "Ingredientes principales: aceites vegetales, óleo de urucum, aceite de zanahoria y micas perladas. Si necesitás la lista completa, escribinos por WhatsApp.",
   "modoDeUso": "Tiene tres usos. 1) Sobre piel seca: brillo durante algunas horas. 2) Antes de tomar sol: aplicalo y tomá sol 15 minutos como máximo; según la marca, el bronceado dura de 15 a 20 días. Importante: no tiene protección solar ni reemplaza al protector. 3) Bajo la ducha, sobre piel húmeda: aplicalo y enjuagá; deja glow durante algunas horas.",
-  "pasoRutina": null,
-  "beneficios": [
-    "Efecto glow perlado",
-    "Potencia el bronceado natural",
-    "100% natural"
-  ],
-  "faq": [
-    { "q": "¿Da color sin tomar sol?", "a": "Sobre piel seca da un efecto glow perlado que dura algunas horas. El bronceado lo potencia cuando lo usás antes de tomar sol (15 minutos como máximo): el óleo de urucum y el aceite de zanahoria aportan betacarotenos." },
-    { "q": "¿Sirve como aceite para potenciar el bronceado?", "a": "Sí: es uno de sus tres usos. Aplicalo antes de tomar sol y exponete 15 minutos como máximo. El urucum y el aceite de zanahoria aportan betacarotenos que potencian el bronceado natural. Importante: no tiene protección solar." },
-    { "q": "¿Sirve como aceite corporal con brillo para una noche?", "a": "Sí: sobre piel seca da brillo durante algunas horas. También podés aplicarlo bajo la ducha, sobre piel húmeda, y enjuagarlo: deja glow durante algunas horas." },
-    { "q": "¿Protege del sol?", "a": "No. No reemplaza al protector solar: usá siempre protector solar cuando te expongas al sol." }
-  ],
-  "relacionados": [
-    "crema-corporal-velvet"
-  ],
-  "seo": {
-    "title": "Óleo Corporal · aceite autobronceante natural con urucum",
-    "description": "Aceite corporal con urucum, aceite de zanahoria y micas perladas. Potencia el bronceado natural y da efecto glow. No reemplaza al protector solar."
-  },
-  "avisoPatch": true,
-  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/oleo-corporal-autobronceante-verano-eterno-sobre-tu-piel-pr9hj/"
+  "avanzado": {
+    "slug": "oleo-corporal-autobronceante",
+    "categoria": "body",
+    "h1": "Óleo Corporal Autobronceante · aceite autobronceante natural con urucum",
+    "activos": [
+      {
+        "nombre": "Óleo de urucum",
+        "queHace": "Rico en betacarotenos: potencia el bronceado natural."
+      },
+      {
+        "nombre": "Aceite de zanahoria",
+        "queHace": "Aporta betacarotenos, que potencian el bronceado natural."
+      },
+      {
+        "nombre": "Micas perladas",
+        "queHace": "Dan el efecto glow perlado."
+      }
+    ],
+    "pasoRutina": null,
+    "beneficios": [
+      "Efecto glow perlado",
+      "Potencia el bronceado natural",
+      "100% natural"
+    ],
+    "faq": [
+      {
+        "q": "¿Da color sin tomar sol?",
+        "a": "Sobre piel seca da un efecto glow perlado que dura algunas horas. El bronceado lo potencia cuando lo usás antes de tomar sol (15 minutos como máximo): el óleo de urucum y el aceite de zanahoria aportan betacarotenos."
+      },
+      {
+        "q": "¿Sirve como aceite para potenciar el bronceado?",
+        "a": "Sí: es uno de sus tres usos. Aplicalo antes de tomar sol y exponete 15 minutos como máximo. El urucum y el aceite de zanahoria aportan betacarotenos que potencian el bronceado natural. Importante: no tiene protección solar."
+      },
+      {
+        "q": "¿Sirve como aceite corporal con brillo para una noche?",
+        "a": "Sí: sobre piel seca da brillo durante algunas horas. También podés aplicarlo bajo la ducha, sobre piel húmeda, y enjuagarlo: deja glow durante algunas horas."
+      },
+      {
+        "q": "¿Protege del sol?",
+        "a": "No. No reemplaza al protector solar: usá siempre protector solar cuando te expongas al sol."
+      }
+    ],
+    "relacionados": [
+      "crema-corporal-velvet"
+    ],
+    "seo": {
+      "title": "Óleo Corporal · aceite autobronceante natural con urucum",
+      "description": "Aceite corporal con urucum, aceite de zanahoria y micas perladas. Potencia el bronceado natural y da efecto glow. No reemplaza al protector solar."
+    },
+    "avisoPatch": true,
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/oleo-corporal-autobronceante-verano-eterno-sobre-tu-piel-pr9hj/"
+  }
 }

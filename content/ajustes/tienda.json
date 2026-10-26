@@ -1,15 +1,17 @@
 {
-  "descuentoTransferencia": 0.2,
-  "descuentoCantidad": {
-    "minUnidades": 2,
-    "porcentaje": 0.05
-  },
-  "descuentosAcumulables": false,
-  "cuotasTexto": "3 cuotas sin interés con tarjeta de crédito",
   "alias": null,
-  "cbu": null,
   "titularCuenta": null,
-  "horasReservaTransferencia": 48,
+  "cbu": null,
   "whatsapp": "+5493517033348",
-  "emailTienda": "nudecosmeticaclean@gmail.com"
+  "avanzado": {
+    "descuentoTransferencia": 0.2,
+    "descuentoCantidad": {
+      "minUnidades": 2,
+      "porcentaje": 0.05
+    },
+    "descuentosAcumulables": false,
+    "cuotasTexto": "3 cuotas sin interés con tarjeta de crédito",
+    "horasReservaTransferencia": 48,
+    "emailTienda": "nudecosmeticaclean@gmail.com"
+  }
 }

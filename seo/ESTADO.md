@@ -37,8 +37,8 @@ Modo: multipágina (sitio nuevo, tipo D)
 | toalla-microfibra | 15 | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ |
 | vincha-con-velcro | 16 | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ |
 | cambios-y-devoluciones | 17 | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ |
-| terminos-y-condiciones | 18 | ✅ | ✅ (borrador) | ✅ | ⚠️ [REVISAR LEGAL] | ⬜ | ⬜ |
-| privacidad | 19 | ✅ | ✅ (borrador) | ✅ | ⚠️ [REVISAR LEGAL] | ⬜ | ⬜ |
+| terminos-y-condiciones | 18 | ✅ | ✅ (borrador publicado) | ✅ | ⚠️ pendiente revisión de abogado (nota interna) | ⬜ | ⬜ |
+| privacidad | 19 | ✅ | ✅ (borrador publicado) | ✅ | ⚠️ pendiente revisión de abogado (nota interna) | ⬜ | ⬜ |
 | arrepentimiento | 20 | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ |
 
 ## Etapas de la tienda (PLAN §4)
@@ -77,3 +77,6 @@ Ver `docs/PROGRESS.md` §[CONFIRMAR] pendientes: tamaños, ingredientes del Óle
 - 2026-10-25 · Fede elige terminar el sitio propio en lugar de apuntar el dominio a Tiendanube.
 - 2026-10-26 · Fede confirma: la web propia reemplaza a Tiendanube (checkout, envíos, panel). Kosmos queda a cargo de mantenerlos.
 - 2026-10-26 · Fede acepta Decap + Netlify Identity pese a que Identity solo recibe parches de seguridad.
+- 2026-10-26 · Fede decide publicar los borradores de términos y condiciones y de privacidad. Se sacó el aviso
+  visible de borrador. **Nota interna: pendiente revisión de abogado** de ambos textos (`app/terminos-y-condiciones/page.tsx`,
+  `app/privacidad/page.tsx`); no hay marca en el sitio para que no frene la puerta de publicación.

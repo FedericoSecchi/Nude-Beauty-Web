@@ -15,6 +15,10 @@ import {
 import { calcularEnvio, listarOpciones, ShippingError } from '@/lib/shipping';
 import type { AjustesEnvios, AjustesTienda, Producto } from '@/lib/types';
 
+// Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
+// minificador borra del bundle los textos de MP cuando está apagado.
+const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+
 const KEY = 'nude.carrito.v1';
 
 interface ProductoResumen {
@@ -27,8 +31,9 @@ interface ProductoResumen {
 
 interface Props {
   productos: ProductoResumen[];
-  tienda: AjustesTienda;
+  tienda: Omit<AjustesTienda, 'cuotasTexto'>;
   envios: AjustesEnvios;
+  textoMp?: string;
 }
 
 interface CartItem {
@@ -68,7 +73,7 @@ function writeCart(items: CartItem[]) {
   }
 }
 
-export function CarritoCliente({ productos, tienda, envios }: Props) {
+export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
   const [items, setItems] = useState<CartItem[] | null>(null);
   const [medio, setMedio] = useState<MedioPago>('transferencia');
   const opcionesEnvio = useMemo(() => listarOpciones(envios), [envios]);
@@ -234,7 +239,8 @@ export function CarritoCliente({ productos, tienda, envios }: Props) {
             provincia: comprador.provincia,
             cp: comprador.cp,
           },
-      medioPago: medio,
+      // Con MP apagado el único medio es transferencia (crear-pedido rechaza mercadopago).
+      medioPago: mpHabilitado ? medio : ('transferencia' as const),
       terminos,
     };
 
@@ -376,20 +382,22 @@ export function CarritoCliente({ productos, tienda, envios }: Props) {
               </span>
             </span>
           </label>
-          <label className={`border rounded p-3 cursor-pointer flex items-start gap-3 ${medio === 'mercadopago' ? 'border-charcoal bg-soft' : 'border-border'}`}>
-            <input
-              type="radio"
-              name="medio"
-              value="mercadopago"
-              checked={medio === 'mercadopago'}
-              onChange={() => setMedio('mercadopago')}
-              className="mt-1"
-            />
-            <span>
-              <span className="block font-medium">Mercado Pago</span>
-              <span className="block text-sm text-muted-ink">{tienda.cuotasTexto}</span>
-            </span>
-          </label>
+          {mpHabilitado ? (
+            <label className={`border rounded p-3 cursor-pointer flex items-start gap-3 ${medio === 'mercadopago' ? 'border-charcoal bg-soft' : 'border-border'}`}>
+              <input
+                type="radio"
+                name="medio"
+                value="mercadopago"
+                checked={medio === 'mercadopago'}
+                onChange={() => setMedio('mercadopago')}
+                className="mt-1"
+              />
+              <span>
+                <span className="block font-medium">Mercado Pago</span>
+                <span className="block text-sm text-muted-ink">{textoMp}</span>
+              </span>
+            </label>
+          ) : null}
         </div>
       </section>
 
@@ -532,7 +540,11 @@ export function CarritoCliente({ productos, tienda, envios }: Props) {
           {error ? <p role="status" className="text-destructive text-sm">{error}</p> : null}
 
           <button type="submit" className="btn-primary w-full" disabled={enviando || !terminos}>
-            {enviando ? 'Confirmando…' : medio === 'transferencia' ? 'Confirmar pedido' : 'Ir a pagar con Mercado Pago'}
+            {enviando
+              ? 'Confirmando…'
+              : mpHabilitado && medio === 'mercadopago'
+                ? 'Ir a pagar con Mercado Pago'
+                : 'Confirmar pedido'}
           </button>
         </form>
       )}

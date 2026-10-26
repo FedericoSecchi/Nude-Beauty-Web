@@ -1,40 +1,51 @@
 {
-  "slug": "kit-facial-new-skin",
   "nombre": "Kit Facial New Skin",
-  "categoria": "sets",
   "precio": 93450,
   "disponible": true,
   "imagenes": [
     "/img/productos/kit-facial-new-skin/01.webp"
   ],
   "tamano": null,
-  "h1": "Kit Facial New Skin · kit de rutina facial básica para empezar",
   "resumen": "Los cuatro básicos de una rutina de skincare, en un kit: Agua Micelar Bifásica (300 cc), Contorno de ojos Gleaming Eyes, Crema Facial Porcelain y Serum Multi Active. Clean y hecho a mano.",
-  "activos": [],
   "ingredientes": "Cada producto lleva su propia lista de ingredientes (ver ficha de cada uno).",
   "modoDeUso": "Rutina diaria: agua micelar → contorno de ojos → serum multi active → crema facial. De día, seguí con protector solar.",
-  "pasoRutina": null,
-  "beneficios": [
-    "Los cuatro básicos de la rutina clean"
-  ],
-  "faq": [
-    { "q": "¿Qué diferencia hay con el Kit Experiencia Completa?", "a": "New Skin tiene 4 productos (sin el serum nocturno de bakuchiol). Experiencia Completa tiene 5: suma el serum de noche." },
-    { "q": "¿Es para piel sensible?", "a": "El Serum Multi Active está indicado para piel sensible, y el agua micelar y la crema facial son para todo tipo de piel. Antes de empezar, hacé la prueba de parche con cada producto." },
-    { "q": "¿Qué sigue después?", "a": "Cuando quieras sumar tratamiento antiage de noche, el paso natural es el Serum Transformación o pasar al Kit Experiencia Completa." }
-  ],
-  "incluye": [
-    "agua-micelar-bifasica",
-    "contorno-de-ojos-gleaming-eyes",
-    "crema-facial-porcelain",
-    "serum-multi-active"
-  ],
-  "relacionados": [
-    "kit-facial-experiencia-completa",
-    "serum-transformacion"
-  ],
-  "seo": {
-    "title": "Kit Facial New Skin · kit de rutina facial básica",
-    "description": "Los cuatro básicos de la rutina clean: agua micelar, contorno de ojos, crema facial y serum multi active. 20% off por transferencia y envíos a todo el país."
-  },
-  "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/kit-facial-new-skin/"
+  "avanzado": {
+    "slug": "kit-facial-new-skin",
+    "categoria": "sets",
+    "h1": "Kit Facial New Skin · kit de rutina facial básica para empezar",
+    "activos": [],
+    "pasoRutina": null,
+    "beneficios": [
+      "Los cuatro básicos de la rutina clean"
+    ],
+    "faq": [
+      {
+        "q": "¿Qué diferencia hay con el Kit Experiencia Completa?",
+        "a": "New Skin tiene 4 productos (sin el serum nocturno de bakuchiol). Experiencia Completa tiene 5: suma el serum de noche."
+      },
+      {
+        "q": "¿Es para piel sensible?",
+        "a": "El Serum Multi Active está indicado para piel sensible, y el agua micelar y la crema facial son para todo tipo de piel. Antes de empezar, hacé la prueba de parche con cada producto."
+      },
+      {
+        "q": "¿Qué sigue después?",
+        "a": "Cuando quieras sumar tratamiento antiage de noche, el paso natural es el Serum Transformación o pasar al Kit Experiencia Completa."
+      }
+    ],
+    "incluye": [
+      "agua-micelar-bifasica",
+      "contorno-de-ojos-gleaming-eyes",
+      "crema-facial-porcelain",
+      "serum-multi-active"
+    ],
+    "relacionados": [
+      "kit-facial-experiencia-completa",
+      "serum-transformacion"
+    ],
+    "seo": {
+      "title": "Kit Facial New Skin · kit de rutina facial básica",
+      "description": "Los cuatro básicos de la rutina clean: agua micelar, contorno de ojos, crema facial y serum multi active. 20% off por transferencia y envíos a todo el país."
+    },
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/kit-facial-new-skin/"
+  }
 }

@@ -80,12 +80,21 @@ export async function fetchPayment(
   return (await res.json()) as MpPayment;
 }
 
+export interface MpItem {
+  title: string;
+  quantity: number;
+  unit_price: number;
+  currency_id: 'ARS';
+}
+
 export interface MpPreferenceInput {
   pedidoId: string;
-  items: { title: string; quantity: number; unit_price: number; currency_id: string }[];
+  /** Líneas a precio de lista (como las calcula lib/pricing). */
+  lineas: { title: string; quantity: number; unit_price: number }[];
   comprador: { nombre: string; email: string };
   envio: number;
-  descuentos: { motivo: string; monto: number }[];
+  /** Total final del pedido (lista − descuentos + envío), calculado en el servidor. */
+  total: number;
   siteUrl: string;
   notificationUrl: string;
 }
@@ -96,19 +105,51 @@ export interface MpPreference {
   sandbox_init_point?: string;
 }
 
+/**
+ * Ítems de la preferencia de Checkout Pro sin precios ≤ 0: los descuentos se reparten en el precio
+ * unitario de cada línea (redondeo a pesos enteros) y el resto del redondeo va a la última línea.
+ * Si la última línea tiene más de una unidad, el resto se aplica a una sola unidad separada, para
+ * que la suma de unit_price × quantity sea exactamente el total del pedido.
+ */
+export function itemsPreferencia(input: Pick<MpPreferenceInput, 'lineas' | 'envio' | 'total'>): MpItem[] {
+  if (!input.lineas.length) throw new Error('preferencia sin líneas');
+  const envio = Math.max(0, Math.round(input.envio));
+  const subtotal = input.lineas.reduce((s, l) => s + l.unit_price * l.quantity, 0);
+  const objetivo = Math.round(input.total) - envio;
+  if (subtotal <= 0 || objetivo <= 0 || objetivo > subtotal) {
+    throw new Error(`totales inconsistentes (subtotal ${subtotal}, productos ${objetivo})`);
+  }
+  const factor = objetivo / subtotal;
+
+  const items: MpItem[] = input.lineas.map((l) => ({
+    title: l.title,
+    quantity: l.quantity,
+    unit_price: Math.round(l.unit_price * factor),
+    currency_id: 'ARS',
+  }));
+  const resto = objetivo - items.reduce((s, i) => s + i.unit_price * i.quantity, 0);
+  if (resto !== 0) {
+    const ultima = items[items.length - 1];
+    if (ultima.quantity === 1) {
+      ultima.unit_price += resto;
+    } else {
+      ultima.quantity -= 1;
+      items.push({ ...ultima, quantity: 1, unit_price: ultima.unit_price + resto });
+    }
+  }
+  if (envio > 0) items.push({ title: 'Envío', quantity: 1, unit_price: envio, currency_id: 'ARS' });
+
+  if (items.some((i) => !Number.isInteger(i.unit_price) || i.unit_price <= 0)) {
+    throw new Error('preferencia con precio unitario inválido');
+  }
+  return items;
+}
+
 export async function createPreference(
   input: MpPreferenceInput,
   accessToken: string,
 ): Promise<MpPreference> {
-  const items = [
-    ...input.items,
-    ...(input.envio > 0
-      ? [{ title: 'Envío', quantity: 1, unit_price: input.envio, currency_id: 'ARS' }]
-      : []),
-    ...input.descuentos
-      .filter((d) => d.monto > 0)
-      .map((d) => ({ title: d.motivo, quantity: 1, unit_price: -d.monto, currency_id: 'ARS' })),
-  ];
+  const items = itemsPreferencia(input);
 
   const body = {
     items,
@@ -127,6 +168,7 @@ export async function createPreference(
   };
 
   const res = await fetch('https://api.mercadopago.com/checkout/preferences', {
+    signal: AbortSignal.timeout(20_000),
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,

@@ -44,13 +44,16 @@ function readCart(): CartItem[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (it) =>
-        it &&
-        typeof it.slug === 'string' &&
-        Number.isFinite(it.cantidad) &&
-        it.cantidad > 0,
-    );
+    // Cantidad por línea: entero entre 1 y 20 (el servidor rechaza lo demás).
+    return parsed
+      .filter(
+        (it) =>
+          it &&
+          typeof it.slug === 'string' &&
+          Number.isFinite(it.cantidad) &&
+          it.cantidad >= 1,
+      )
+      .map((it) => ({ ...it, cantidad: Math.min(20, Math.floor(it.cantidad)) }));
   } catch {
     return [];
   }
@@ -303,7 +306,7 @@ export function CarritoCliente({ productos, tienda, envios }: Props) {
                   max={20}
                   value={it.cantidad}
                   onChange={(e) =>
-                    cambiarCantidad(it.slug, Math.max(0, Number(e.target.value) || 0))
+                    cambiarCantidad(it.slug, Math.min(20, Math.max(0, Math.floor(Number(e.target.value)) || 0)))
                   }
                   className="w-16 rounded border border-border bg-card px-3 py-2 text-center"
                 />

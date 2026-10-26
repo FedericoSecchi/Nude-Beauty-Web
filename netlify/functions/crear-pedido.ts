@@ -3,6 +3,8 @@ import { loadSnapshot } from './_shared/catalogo';
 import { generarIdPedido } from './_shared/ids';
 import { entornoDe, storePedidos, type PedidoGuardado } from './_shared/blobs';
 import { procesarAviso } from './_shared/avisos';
+import { baseUrlSitio } from './_shared/sitio';
+import { validarPayload } from './_shared/validar';
 import { createPreference } from './_shared/mp';
 import { calcularTotal, PricingError, type MedioPago } from '../../lib/pricing';
 import { calcularEnvio, ShippingError } from '../../lib/shipping';
@@ -50,21 +52,6 @@ function serverError(message: string) {
   );
 }
 
-function assertString(v: unknown, field: string, max = 200): string {
-  if (typeof v !== 'string' || v.trim().length === 0) {
-    throw new Error(`${field} requerido`);
-  }
-  const trimmed = v.trim();
-  if (trimmed.length > max) throw new Error(`${field} supera ${max} caracteres`);
-  return trimmed;
-}
-
-function assertEmail(v: unknown): string {
-  const s = assertString(v, 'email', 120);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) throw new Error('email inválido');
-  return s;
-}
-
 export default async (req: Request, ctx: Context): Promise<Response> => {
   if (req.method !== 'POST') {
     return new Response('method not allowed', { status: 405 });
@@ -85,29 +72,8 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     return badRequest('source=e2e sin token válido');
   }
 
-  // Validaciones mínimas.
   try {
-    if (!Array.isArray(payload.items) || payload.items.length === 0) {
-      throw new Error('items vacío');
-    }
-    if (payload.items.length > 50) throw new Error('demasiados items');
-    assertString(payload.comprador?.nombre, 'nombre', 120);
-    assertEmail(payload.comprador?.email);
-    assertString(payload.comprador?.telefono, 'telefono', 40);
-    if (!payload.terminos) throw new Error('tenés que aceptar los términos');
-    if (!payload.entrega || !payload.entrega.modo) throw new Error('entrega requerida');
-    if (payload.entrega.modo === 'envio') {
-      assertString(payload.entrega.zonaId, 'zona de envío', 40);
-      assertString(payload.entrega.direccion, 'dirección', 200);
-      assertString(payload.entrega.localidad, 'localidad', 120);
-      assertString(payload.entrega.provincia, 'provincia', 120);
-      assertString(payload.entrega.cp, 'código postal', 20);
-    } else if (payload.entrega.modo !== 'retiro') {
-      throw new Error('entrega.modo inválido');
-    }
-    if (payload.medioPago !== 'mercadopago' && payload.medioPago !== 'transferencia') {
-      throw new Error('medio de pago inválido');
-    }
+    validarPayload(payload);
   } catch (err) {
     return badRequest((err as Error).message);
   }
@@ -143,6 +109,7 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     return serverError((err as Error).message);
   }
 
+  const entorno = entornoDe(ctx);
   const id = generarIdPedido();
   const ahora = new Date().toISOString();
 
@@ -188,30 +155,31 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
       cbu: snapshot.tienda.cbu,
       titular: snapshot.tienda.titularCuenta,
     },
-    notas: payload.notas,
+    notas: payload.notas?.trim() || undefined,
   };
 
   // Si es MP y hay credenciales, creamos preferencia.
   const checkoutMode = (process.env.CHECKOUT_MODE || 'propio').toLowerCase();
   if (esMp && checkoutMode === 'propio' && process.env.MP_ACCESS_TOKEN) {
     try {
-      const siteUrl =
-        process.env.DEPLOY_PRIME_URL ||
-        process.env.URL ||
-        'https://nudecosmetica.com';
-      const notificationUrl = `${siteUrl.replace(/\/+$/, '')}/.netlify/functions/mp-webhook`;
+      const siteUrl = baseUrlSitio({
+        produccion: entorno.produccion,
+        URL: process.env.URL,
+        DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
+        origen: new URL(req.url).origin,
+      });
+      const notificationUrl = `${siteUrl}/.netlify/functions/mp-webhook`;
       const preference = await createPreference(
         {
           pedidoId: id,
-          items: totales.lineas.map((l) => ({
+          lineas: totales.lineas.map((l) => ({
             title: l.nombre,
             quantity: l.cantidad,
             unit_price: l.precioUnitario,
-            currency_id: 'ARS',
           })),
           comprador: pedido.comprador,
           envio: totales.envio,
-          descuentos: totales.descuentos,
+          total: totales.total,
           siteUrl,
           notificationUrl,
         },
@@ -232,7 +200,7 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     });
   }
 
-  const store = storePedidos(entornoDe(ctx), isE2E);
+  const store = storePedidos(entorno, isE2E);
   try {
     const res = await store.setJSON(pedido.id, pedido, { onlyIfNew: true });
     if (!res.modified) throw new Error('id de pedido repetido');

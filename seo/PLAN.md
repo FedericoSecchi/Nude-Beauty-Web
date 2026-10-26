@@ -182,20 +182,25 @@ confirmados. Sin `aggregateRating` ni `review`. Coincide con el texto visible.
 POST JSON, header `x-nude-secret: <ORDER_WEBHOOK_SECRET>`:
 ```json
 {
-  "tipo": "pedido_pagado | pedido_transferencia | arrepentimiento",
+  "tipo": "pedido_pagado | pedido_transferencia | pedido_revisar | arrepentimiento",
   "id": "NUDE-20261026-ab12cd",
   "creado": "ISO-8601",
-  "estado": "pagado | pendiente_transferencia",
+  "estado": "pagado | revisar | pendiente_transferencia",
   "comprador": { "nombre": "", "email": "", "telefono": "", "dni": "" },
   "entrega": { "modo": "envio | retiro", "zona": "", "direccion": "", "localidad": "", "provincia": "", "cp": "" },
   "items": [{ "slug": "", "nombre": "", "cantidad": 1, "precioUnitario": 0 }],
   "subtotal": 0, "descuentos": [{ "motivo": "", "monto": 0 }], "envio": 0, "total": 0,
-  "pago": { "medio": "mercadopago | transferencia", "mpPaymentId": "", "mpEstado": "" },
+  "pago": { "medio": "mercadopago | transferencia", "mpPaymentId": "", "mpEstado": "",
+            "mpMonto": 0, "mpMoneda": "ARS", "motivoRevision": "" },
   "notas": ""
 }
 ```
 n8n hace: fila en la Google Sheet de pedidos, mensaje de Telegram a Soledad, email a Soledad y email de
 confirmación al comprador. Pedidos de prueba (`source: "e2e"`) nunca llegan acá (§9).
+
+`pedido_revisar` (revisión post-E6): MP aprobó el pago pero `transaction_amount` difiere del `total` en más de $1
+o la moneda no es ARS. El pedido queda en estado `revisar` (no `pagado`); `pago.mpMonto`, `pago.mpMoneda` y
+`pago.motivoRevision` solo vienen en este tipo. n8n: avisar a Soledad para revisar antes de despachar.
 
 Arrepentimiento (`tipo: "arrepentimiento"`): `{ "tipo", "id": "NUDE-ARR-XXXXXX", "creado", "estado": "arrepentimiento",
 "numeroOrden", "nombre", "email", "motivo" }`.

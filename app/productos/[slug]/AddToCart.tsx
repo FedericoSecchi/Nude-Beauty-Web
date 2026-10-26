@@ -63,7 +63,7 @@ export function AddToCart({ slug, nombre, precio }: Props) {
     const items = readCart();
     const existente = items.find((i) => i.slug === slug);
     if (existente) {
-      existente.cantidad += cantidad;
+      existente.cantidad = Math.min(20, existente.cantidad + cantidad);
     } else {
       items.push({ slug, cantidad, nombre, precio });
     }

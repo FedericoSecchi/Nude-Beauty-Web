@@ -157,6 +157,16 @@ export function PedidoCliente() {
         </section>
       ) : null}
 
+      {estado.estado === 'revisar' ? (
+        <section className="card">
+          <h2 className="font-heading text-xl mb-2">Estamos revisando el pago</h2>
+          <p className="text-ink/80">
+            Mercado Pago nos avisó del pago, pero el monto no coincide con el pedido. Soledad lo revisa
+            y te escribe por WhatsApp. Si querés, escribinos con el número de pedido.
+          </p>
+        </section>
+      ) : null}
+
       {estado.estado === 'pendiente_mp' ? (
         <section className="card">
           <h2 className="font-heading text-xl mb-2">Esperando a Mercado Pago</h2>

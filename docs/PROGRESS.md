@@ -19,7 +19,7 @@
 |---|---|---|---|
 | A Compra en el celular | ✅ | 2026-10-26 | CTA en y≈551–575 px en 360×740 (antes ≈1090) · e2e `ficha-mobile.spec.ts` 14 fichas con y sin stock |
 | B Ningún pedido sin aviso | ✅ | 2026-10-26 | 9 unit tests en `tests/unit/avisos.test.mjs` (falla→éxito = 1 aviso, 2 notificaciones MP = 1 aviso, arrepentimiento con webhook caído se reintenta, stores por contexto) |
-| C Cobro con Mercado Pago | ⬜ | | |
+| C Cobro con Mercado Pago | ✅ | 2026-10-26 | 10 unit tests en `tests/unit/mp-checkout.test.mjs` (500 carritos al azar: suma = total y precios > 0; monto/moneda → `revisar`; base URL por contexto; cantidad 1–20; notas ≤ 500) |
 | D Textos con fuente | ⬜ | | |
 | E Schema y puerta de publicación | ⬜ | | |
 
@@ -80,6 +80,10 @@ Estados: ⬜ pendiente · 🟡 en curso · ✅ cerrado · ⛔ bloqueado
 - 2026-10-26 · B · `reintentar-avisos` (programada `*/10 * * * *` UTC): backoff 10, 20, 40… min con techo de 6 h, sin límite de intentos (el arrepentimiento es obligación legal: no se abandona). Corta a los 20 s para no pasar el límite de 30 s; lo que falte va en la corrida siguiente. Netlify solo la ejecuta en producción.
 - 2026-10-26 · B · Contexto de deploy desde `context.deploy.context` de la función (fallback `CONTEXT`, y si no hay, `dev`): solo `production` usa `pedidos` / `arrepentimientos`; el resto `*-preview`. Ante la duda, nunca producción.
 - 2026-10-26 · B · El arrepentimiento ahora se guarda antes de avisar; si no se puede guardar, responde 500 y el formulario muestra WhatsApp / mail (sin código no hay constancia).
+- 2026-10-26 · C · Ítems negativos: la referencia oficial de preferencias solo documenta el error `invalid_items` ("unit_price invalid") sin precisar valores y no ofrece ítems negativos como mecanismo de descuento. No se probó en la práctica: `MP_ACCESS_TOKEN` está cargado pero es secreto (la API de Netlify no devuelve el valor) y no se usan credenciales de Soledad. Se elimina el riesgo igual: descuentos repartidos en el precio unitario, redondeo a pesos y resto en la última línea; si esa línea tiene varias unidades, el resto va en una unidad separada para que la suma sea exacta.
+- 2026-10-26 · C · Monto verificado: tolerancia $1; si falta `transaction_amount` también va a `revisar` (lo más seguro). Un pedido en `revisar` no vuelve a `pagado` solo: lo resuelve Soledad.
+- 2026-10-26 · C · Base URL: producción → `URL` (y si faltara, `https://nudecosmetica.com`, nunca un `*.netlify.app`); otros contextos → `DEPLOY_PRIME_URL`, o el origen del request si faltara. El contexto sale de `context.deploy.context`.
+- 2026-10-26 · C · Cantidad: el servidor rechaza no enteros (antes redondeaba hacia abajo); el carrito y la ficha topean en 20.
 
 ## [CONFIRMAR] pendientes (bloquean publicación)
 <!-- se llenan a medida que aparecen; ver seo/00-contexto.md §Pendientes para pedir al cliente -->

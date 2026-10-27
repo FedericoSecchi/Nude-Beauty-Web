@@ -4,8 +4,8 @@ import { execSync } from 'node:child_process';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { leerContenido, validarProductos } from '../lib/contenido.mjs';
-import { modoVenta } from '../lib/modo-venta.mjs';
+import { leerContenido, leerDireccionRetiro, validarProductos } from '../lib/contenido.mjs';
+import { modoVenta, motivoModoWhatsapp } from '../lib/modo-venta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -37,6 +37,18 @@ console.log(`[prebuild] BUILD_ID=${shortSha}`);
 // Snapshot del catálogo para las Netlify Functions (en runtime no leen el repo), ya normalizado.
 const outDir = join(root, 'netlify', 'functions', '_data');
 
+// Modo de venta del build (lib/modo-venta.mjs). Las functions deciden con lo mismo que vio el build
+// (no con el entorno de runtime): sitio y functions no pueden quedar desfasados.
+const mpHabilitado = Boolean((process.env.MP_ACCESS_TOKEN || '').trim());
+const webhookAviso = Boolean((process.env.ORDER_WEBHOOK_URL || '').trim());
+const dirContenido = process.env.NUDE_CONTENT_DIR || join(root, 'content');
+{
+  const { tienda } = leerContenido(dirContenido);
+  const modo = modoVenta(tienda, mpHabilitado, webhookAviso);
+  const motivo = motivoModoWhatsapp(tienda, mpHabilitado, webhookAviso);
+  console.log(`[prebuild] modo de venta: ${modo === 'whatsapp' ? 'pedido por WhatsApp' : 'checkout'}${motivo ? ` · ${motivo}` : ''}`);
+}
+
 if (process.env.NUDE_CONTENT_DIR) {
   // Build de prueba con contenido alternativo (fixture sin stock): no pisamos el snapshot real.
   console.log('[prebuild] NUDE_CONTENT_DIR definido: snapshot omitido');
@@ -50,9 +62,9 @@ if (process.env.NUDE_CONTENT_DIR) {
     process.exit(1);
   }
   await mkdir(outDir, { recursive: true });
-  // Las functions deciden el modo con lo mismo que vio el build (no con el entorno de runtime).
-  const mpHabilitado = Boolean((process.env.MP_ACCESS_TOKEN || '').trim());
-  const snapshot = { buildId: shortSha, productos, tienda, envios, mpHabilitado };
+  // La dirección exacta del retiro solo viaja en el snapshot (gitignored, no se publica en out/).
+  const direccionRetiro = leerDireccionRetiro(join(root, 'content'));
+  const snapshot = { buildId: shortSha, productos, tienda, envios, mpHabilitado, webhookAviso, direccionRetiro };
   await writeFile(join(outDir, 'catalogo.json'), JSON.stringify(snapshot), 'utf8');
-  console.log(`[prebuild] catálogo snapshot: ${productos.length} productos · modo ${modoVenta(tienda, mpHabilitado)}`);
+  console.log(`[prebuild] catálogo snapshot: ${productos.length} productos · modo ${modoVenta(tienda, mpHabilitado, webhookAviso)}`);
 }

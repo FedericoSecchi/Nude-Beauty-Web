@@ -70,6 +70,10 @@ export interface PedidoGuardado extends SeguimientoAviso {
     localidad?: string;
     provincia?: string;
     cp?: string;
+    /** Solo con retiro: la dirección exacta (snapshot del build). Va en /pedido/ y en el aviso a n8n. */
+    direccionRetiro?: string;
+    /** Si un proveedor de envíos cotizó (lib/shipping.ts › ProveedorEnvio). */
+    proveedorEnvio?: string;
   };
   items: {
     slug: string;

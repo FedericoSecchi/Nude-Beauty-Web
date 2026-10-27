@@ -42,7 +42,14 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     alias: pedido.pago.alias,
     cbu: pedido.pago.cbu,
     titular: pedido.pago.titular,
-    entrega: { modo: pedido.entrega.modo, zona: pedido.entrega.zona },
+    // La dirección exacta del retiro solo para pedidos con retiro (no está en el sitio estático).
+    entrega: {
+      modo: pedido.entrega.modo,
+      zona: pedido.entrega.zona,
+      ...(pedido.entrega.modo === 'retiro' && pedido.entrega.direccionRetiro
+        ? { direccionRetiro: pedido.entrega.direccionRetiro }
+        : {}),
+    },
     creado: pedido.creado,
   };
 

@@ -7,7 +7,7 @@ import { baseUrlSitio } from './_shared/sitio';
 import { validarPayload } from './_shared/validar';
 import { createPreference } from './_shared/mp';
 import { calcularTotal, PricingError, type MedioPago } from '../../lib/pricing';
-import { calcularEnvio, ShippingError } from '../../lib/shipping';
+import { cotizarEnvio, NOMBRE_RETIRO, ShippingError } from '../../lib/shipping';
 import { modoVenta } from '../../lib/modo-venta.mjs';
 
 interface CarritoItemInput {
@@ -65,10 +65,11 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     return serverError(`catálogo no disponible: ${(err as Error).message}`);
   }
 
-  // Sin medio de pago el sitio está en modo pedido por WhatsApp: no se procesa ni se guarda ningún
-  // pedido ni se avisa a n8n (misma regla que el build, con lo que vio el build). Va antes de leer
-  // el body: en este modo cualquier POST se rechaza igual.
-  if (modoVenta(snapshot.tienda, snapshot.mpHabilitado ?? false) === 'whatsapp') {
+  // Sin medio de pago o sin ORDER_WEBHOOK_URL el sitio está en modo pedido por WhatsApp: no se procesa
+  // ni se guarda ningún pedido (misma regla que el build, con lo que vio el build). Así nunca entra un
+  // pedido cobrado sin aviso a Soledad. Va antes de leer el body: en este modo cualquier POST se
+  // rechaza igual.
+  if (modoVenta(snapshot.tienda, snapshot.mpHabilitado ?? false, snapshot.webhookAviso ?? false) === 'whatsapp') {
     return new Response(
       JSON.stringify({ error: 'La tienda toma los pedidos por WhatsApp por ahora.' }),
       { status: 409, headers: { 'content-type': 'application/json' } },
@@ -101,11 +102,20 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
   let totales;
   let envio;
   try {
-    envio = calcularEnvio(
+    // Zonas «a coordinar»: si algún día hay un proveedor (Correo Argentino, Andreani), cotiza acá.
+    envio = await cotizarEnvio(
       payload.entrega.modo === 'envio'
         ? { modo: 'envio', zonaId: payload.entrega.zonaId }
         : { modo: 'retiro' },
       snapshot.envios,
+      payload.entrega.modo === 'envio'
+        ? {
+            cp: payload.entrega.cp,
+            localidad: payload.entrega.localidad,
+            provincia: payload.entrega.provincia,
+            items: payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+          }
+        : null,
     );
     totales = calcularTotal(
       payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
@@ -148,8 +158,13 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
             localidad: payload.entrega.localidad,
             provincia: payload.entrega.provincia,
             cp: payload.entrega.cp,
+            ...(envio.proveedor ? { proveedorEnvio: envio.proveedor } : {}),
           }
-        : { modo: 'retiro', zona: 'Retiro en Mendiolaza' },
+        : {
+            modo: 'retiro',
+            zona: NOMBRE_RETIRO,
+            ...(snapshot.direccionRetiro ? { direccionRetiro: snapshot.direccionRetiro } : {}),
+          },
     items: totales.lineas.map((l) => ({
       slug: l.slug,
       nombre: l.nombre,

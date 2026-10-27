@@ -11,3 +11,4 @@ export function leerContenido(dir: string): {
   tienda: AjustesTienda;
   envios: AjustesEnvios;
 };
+export function leerDireccionRetiro(dir: string): string | null;

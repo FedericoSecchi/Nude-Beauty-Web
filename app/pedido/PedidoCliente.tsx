@@ -23,7 +23,8 @@ interface PedidoPublico {
   alias?: string | null;
   cbu?: string | null;
   titular?: string | null;
-  entrega: { modo: 'envio' | 'retiro'; zona: string };
+  // direccionRetiro: solo en pedidos con retiro (la manda estado-pedido; no está en el sitio).
+  entrega: { modo: 'envio' | 'retiro'; zona: string; direccionRetiro?: string };
   creado: string;
 }
 
@@ -208,6 +209,20 @@ export function PedidoCliente() {
         </section>
       ) : null}
 
+      {estado.entrega.modo === 'retiro' && estado.estado !== 'cancelado' ? (
+        <section className="card mt-6">
+          <h2 className="font-heading text-xl mb-2">Retiro en Mendiolaza</h2>
+          {estado.entrega.direccionRetiro ? (
+            <p className="text-ink/80">
+              Retirás en <span data-testid="direccion-retiro" className="font-medium">{estado.entrega.direccionRetiro}</span>.
+              Soledad te escribe por WhatsApp para coordinar el día.
+            </p>
+          ) : (
+            <p className="text-ink/80">Soledad te escribe por WhatsApp con la dirección y para coordinar el día.</p>
+          )}
+        </section>
+      ) : null}
+
       <section className="mt-8">
         <h2 className="font-heading text-xl mb-3">Detalle</h2>
         <ul className="divide-y divide-border border-y border-border">
@@ -227,7 +242,10 @@ export function PedidoCliente() {
               <span>{d.motivo}</span><span>-{formatARS(d.monto)}</span>
             </div>
           ))}
-          <div className="flex justify-between"><span>Envío</span><span>{estado.envio === 0 ? 'a coordinar' : formatARS(estado.envio)}</span></div>
+          <div className="flex justify-between">
+            <span>{estado.entrega.modo === 'retiro' ? 'Retiro' : 'Envío'}</span>
+            <span>{estado.envio > 0 ? formatARS(estado.envio) : estado.entrega.modo === 'retiro' ? 'Gratis' : 'a coordinar'}</span>
+          </div>
           <div className="flex justify-between font-heading text-lg text-charcoal pt-2 border-t border-border">
             <span>Total</span><span data-testid="total">{formatARS(estado.total)}</span>
           </div>

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { urls } from '@/lib/urls';
 import { site } from '@/lib/site';
+import { getAjustesEnvios, getAjustesTienda } from '@/lib/catalogo';
+import { formatARS } from '@/lib/format';
 
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
@@ -16,7 +18,13 @@ export const metadata: Metadata = {
   alternates: { canonical: urls.terminos },
 };
 
+const pct = (p: number) => `${Math.round(p * 100)}%`;
+
 export default function TerminosPage() {
+  const tienda = getAjustesTienda();
+  const envios = getAjustesEnvios();
+  const dq = tienda.descuentoCantidad;
+  const zonasFijas = envios.zonas.filter((z) => z.modo === 'fijo');
   return (
     <article className="container py-12 max-w-prose">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-ink mb-4">
@@ -41,6 +49,14 @@ export default function TerminosPage() {
         disponibilidad se confirman en el momento de la compra, a partir del catálogo del sitio,
         con independencia de lo que muestre tu navegador.
       </p>
+      <p className="text-ink/80 mt-3">
+        Comprando {dq.minUnidades} o más unidades tenés {pct(dq.porcentaje)} off sobre el precio de lista.
+        Pagando con transferencia tenés {pct(tienda.descuentoTransferencia)} off
+        {tienda.descuentosAcumulables
+          ? `: si además aplica el ${pct(dq.porcentaje)}, el ${pct(tienda.descuentoTransferencia)} se calcula sobre el precio ya descontado.`
+          : ` (no se suma al ${pct(dq.porcentaje)} por cantidad).`}
+        {mpHabilitado ? ` Con Mercado Pago aplica solo el ${pct(dq.porcentaje)} por cantidad.` : ''}
+      </p>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Medios de pago</h2>
       <ul className="list-disc list-inside space-y-1 text-ink/80">
@@ -50,9 +66,9 @@ export default function TerminosPage() {
         {modoWhatsapp ? (
           <li>
             Por ahora los pedidos se hacen por WhatsApp: armás el carrito en la web y nos lo mandás
-            con el botón «Enviar pedido por WhatsApp». Te respondemos con los datos para pagar por
-            transferencia bancaria (20% off sobre el precio de lista) y coordinamos la entrega. El
-            pedido queda confirmado cuando recibimos el pago.
+            con el botón «Enviar pedido por WhatsApp». Te respondemos para confirmar el pedido, lo
+            pagás por transferencia bancaria (con {pct(tienda.descuentoTransferencia)} off) y
+            coordinamos la entrega. El pedido queda confirmado cuando recibimos el pago.
           </li>
         ) : (
           <li>
@@ -64,8 +80,13 @@ export default function TerminosPage() {
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Envíos</h2>
       <p className="text-ink/80">
-        Hacemos envíos a todo el país. El costo y el plazo dependen de la zona y los
-        coordinamos por WhatsApp una vez confirmado el pedido.
+        Hacemos envíos a todo el país.
+        {zonasFijas.map((z) => ` ${z.nombre}: ${formatARS(z.costo)}.`).join('')} Al resto de Córdoba
+        y del país, el costo depende del tamaño del paquete y del destino: te lo pasamos por WhatsApp
+        antes de que pagues.
+        {envios.retiro.habilitado
+          ? ` ${envios.retiro.direccionTexto}: la dirección exacta te la pasamos cuando confirmás el pedido.`
+          : ''}
       </p>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Cambios y devoluciones</h2>

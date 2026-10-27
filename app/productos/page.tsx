@@ -62,7 +62,7 @@ export default function ProductosPage() {
         </p>
         <p className="mt-3 text-sm text-muted-ink">
           Precios en pesos argentinos. 20% off pagando con transferencia ·{' '}
-          {mpHabilitado ? '3 cuotas sin interés con tarjeta · ' : ''}envíos a todo el país.
+          {mpHabilitado ? '3 cuotas sin interés con Mercado Pago · ' : ''}envíos a todo el país.
         </p>
         <p className="mt-3 text-ink/80 max-w-prose text-sm">
           <strong>Qué es skincare clean para NUDE:</strong> fórmulas sin parabenos y con activos

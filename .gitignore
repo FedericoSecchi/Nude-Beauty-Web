@@ -37,6 +37,7 @@ verify-results.txt
 .env.production.local
 out-sinstock/
 out-mp/
+out-webhook/
 out-alias/
 
 # Miniaturas generadas en el build (scripts/miniaturas.mjs)

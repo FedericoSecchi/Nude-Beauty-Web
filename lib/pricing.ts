@@ -79,6 +79,10 @@ export function calcularLineas(
   return lineas;
 }
 
+// Orden de los descuentos (Soledad, 27-10-2026): primero el de cantidad sobre el precio de lista y
+// después el de transferencia sobre el precio ya descontado. 2 × $23.300 = $46.600 → −5% = $44.270 →
+// −20% = $35.416. Con Mercado Pago, solo el de cantidad. Si no acumulan, el de transferencia
+// reemplaza al de cantidad y se calcula sobre la lista.
 export function calcularDescuentos(
   lineas: LineaCalculada[],
   tienda: AjustesDescuentos,
@@ -90,22 +94,21 @@ export function calcularDescuentos(
 
   const dq = tienda.descuentoCantidad;
   const aplicaCantidad = cantidadTotal >= dq.minUnidades && dq.porcentaje > 0;
-  if (aplicaCantidad) {
+  const transferencia = medio === 'transferencia' && tienda.descuentoTransferencia > 0;
+  let base = subtotal;
+
+  if (aplicaCantidad && (!transferencia || tienda.descuentosAcumulables)) {
+    const monto = round0(subtotal * dq.porcentaje);
     descuentos.push({
-      motivo: `Descuento por ${dq.minUnidades} o más unidades (${(dq.porcentaje * 100).toFixed(0)}%)`,
-      monto: round0(subtotal * dq.porcentaje),
+      motivo: `Descuento por ${dq.minUnidades} o más unidades (${porcentaje(dq.porcentaje)})`,
+      monto,
     });
+    base = subtotal - monto;
   }
 
-  if (medio === 'transferencia' && tienda.descuentoTransferencia > 0) {
-    let base = subtotal;
-    if (!tienda.descuentosAcumulables && aplicaCantidad) {
-      // Si no acumula, el descuento por transferencia reemplaza al de cantidad.
-      descuentos.length = 0;
-      base = subtotal;
-    }
+  if (transferencia) {
     descuentos.push({
-      motivo: `20% off por transferencia`,
+      motivo: `${porcentaje(tienda.descuentoTransferencia)} off por transferencia`,
       monto: round0(base * tienda.descuentoTransferencia),
     });
   }
@@ -116,6 +119,10 @@ export function calcularDescuentos(
 
 function round0(n: number): number {
   return Math.round(n);
+}
+
+function porcentaje(p: number): string {
+  return `${Math.round(p * 100)}%`;
 }
 
 export function calcularTotal(

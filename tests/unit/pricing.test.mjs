@@ -121,7 +121,7 @@ test('calcularTotal · descuentos no acumulables: transferencia reemplaza al 5% 
   assert.equal(t.total, 16000);
 });
 
-test('calcularTotal · acumulables: transferencia + cantidad', () => {
+test('calcularTotal · acumulables: primero 5% por cantidad y el 20% sobre el precio ya descontado', () => {
   const t = pricing.calcularTotal(
     [{ slug: 'a', cantidad: 2 }],
     [producto('a', 10000)],
@@ -130,8 +130,51 @@ test('calcularTotal · acumulables: transferencia + cantidad', () => {
     0,
   );
   assert.equal(t.descuentos.length, 2);
-  const total = t.descuentos.reduce((s, d) => s + d.monto, 0);
-  assert.equal(total, 1000 + 4000);
+  // 20000 − 5% (1000) = 19000 → − 20% de 19000 (3800) = 15200. No es 25% sobre la lista (15000).
+  assert.deepEqual(t.descuentos.map((d) => d.monto), [1000, 3800]);
+  assert.equal(t.total, 15200);
+});
+
+// Ejemplo de Soledad (WhatsApp 27-10-2026): 2 × $23.300 = $46.600 → −5% = $44.270 → −20% = $35.416.
+const SERUM = 23300;
+const ACUMULA = { descuentosAcumulables: true };
+
+test('ejemplo de Soledad · 2 × $23.300 con transferencia = $35.416', () => {
+  const t = pricing.calcularTotal([{ slug: 's', cantidad: 2 }], [producto('s', SERUM)], tienda(ACUMULA), 'transferencia', 0);
+  assert.equal(t.subtotal, 46600);
+  assert.deepEqual(t.descuentos.map((d) => d.monto), [2330, 8854]);
+  assert.equal(t.subtotal - t.descuentos[0].monto, 44270);
+  assert.equal(t.total, 35416);
+  assert.match(t.descuentos[0].motivo, /2 o más unidades \(5%\)/);
+  assert.equal(t.descuentos[1].motivo, '20% off por transferencia');
+});
+
+test('ejemplo de Soledad · 1 unidad con transferencia: solo 20% ($18.640)', () => {
+  const t = pricing.calcularTotal([{ slug: 's', cantidad: 1 }], [producto('s', SERUM)], tienda(ACUMULA), 'transferencia', 0);
+  assert.equal(t.descuentos.length, 1);
+  assert.equal(t.total, 18640);
+});
+
+test('ejemplo de Soledad · 2 unidades con Mercado Pago: solo 5% ($44.270)', () => {
+  const t = pricing.calcularTotal([{ slug: 's', cantidad: 2 }], [producto('s', SERUM)], tienda(ACUMULA), 'mercadopago', 0);
+  assert.equal(t.descuentos.length, 1);
+  assert.equal(t.total, 44270);
+  assert.ok(t.descuentos.every((d) => d.monto > 0));
+});
+
+test('ejemplo de Soledad · el envío se suma después de los descuentos', () => {
+  const t = pricing.calcularTotal([{ slug: 's', cantidad: 2 }], [producto('s', SERUM)], tienda(ACUMULA), 'transferencia', 3500);
+  assert.equal(t.total, 35416 + 3500);
+});
+
+test('el contenido real acumula descuentos (Soledad, 27-10-2026)', async () => {
+  const { leerContenido } = await import('../../lib/contenido.mjs');
+  const { tienda: real, productos } = leerContenido(join(root, 'content'));
+  assert.equal(real.descuentosAcumulables, true);
+  const t = pricing.calcularTotal([{ slug: 'serum-multi-active', cantidad: 2 }], productos, real, 'transferencia', 0);
+  const p = productos.find((x) => x.slug === 'serum-multi-active').precio;
+  const conCantidad = 2 * p - Math.round(2 * p * 0.05);
+  assert.equal(t.total, conCantidad - Math.round(conCantidad * 0.2));
 });
 
 test('calcularTotal · rechaza precios manipulados: usa el precio del catálogo', () => {
@@ -244,3 +287,47 @@ test('listarOpciones · con retiro habilitado lo agrega al final', () => {
   assert.equal(ops[1].modo, 'retiro');
 });
 
+
+// --- Proveedor de envíos (interfaz lista, sin integración) ---
+const ENVIOS_PROV = {
+  zonas: [
+    { id: 'eco', nombre: 'Eco', provincias: [], costo: 3500, plazoTexto: '', aclaracion: '', modo: 'fijo' },
+    { id: 'pais', nombre: 'País', provincias: [], costo: 0, plazoTexto: 'a coordinar', aclaracion: '', modo: 'coordinar' },
+  ],
+  retiro: { habilitado: true, direccionTexto: 'Retiro gratis', costo: 0 },
+  envioGratisDesde: null,
+};
+const DESTINO = { cp: '5000', localidad: 'X', provincia: 'Córdoba', items: [{ slug: 'a', cantidad: 1 }] };
+
+test('cotizarEnvio · sin proveedores (hoy): igual que calcularEnvio', async () => {
+  const r = await shipping.cotizarEnvio({ modo: 'envio', zonaId: 'pais' }, ENVIOS_PROV, DESTINO);
+  assert.equal(r.costo, 0);
+  assert.equal(r.requiereCoordinacion, true);
+  assert.equal(shipping.PROVEEDORES_ENVIO.length, 0);
+});
+
+test('cotizarEnvio · un proveedor cotiza las zonas a coordinar, no las fijas ni el retiro', async () => {
+  const pedidos = [];
+  const prov = { id: 'correo-prueba', cotizar: async (s) => (pedidos.push(s.zona.id), { costo: 7200.4, plazoTexto: '5 días' }) };
+  const r = await shipping.cotizarEnvio({ modo: 'envio', zonaId: 'pais' }, ENVIOS_PROV, DESTINO, [prov]);
+  assert.deepEqual([r.costo, r.requiereCoordinacion, r.proveedor], [7200, false, 'correo-prueba']);
+  const fija = await shipping.cotizarEnvio({ modo: 'envio', zonaId: 'eco' }, ENVIOS_PROV, DESTINO, [prov]);
+  assert.equal(fija.costo, 3500);
+  const retiro = await shipping.cotizarEnvio({ modo: 'retiro' }, ENVIOS_PROV, null, [prov]);
+  assert.equal(retiro.costo, 0);
+  assert.deepEqual(pedidos, ['pais']);
+});
+
+test('cotizarEnvio · proveedor caído o sin cobertura: queda a coordinar', async () => {
+  const caido = { id: 'x', cotizar: async () => { throw new Error('timeout'); } };
+  const sinCobertura = { id: 'y', cotizar: async () => null };
+  const r = await shipping.cotizarEnvio({ modo: 'envio', zonaId: 'pais' }, ENVIOS_PROV, DESTINO, [caido, sinCobertura]);
+  assert.equal(r.requiereCoordinacion, true);
+  assert.equal(r.costo, 0);
+});
+
+test('listarOpciones · aclaración de la zona y retiro gratis con el texto público', () => {
+  const ops = shipping.listarOpciones({ ...ENVIOS_PROV, zonas: [{ ...ENVIOS_PROV.zonas[0], aclaracion: 'Si no estás en la zona…' }] });
+  assert.equal(ops[0].aclaracion, 'Si no estás en la zona…');
+  assert.deepEqual([ops[1].id, ops[1].costo, ops[1].plazoTexto], ['retiro', 0, 'Retiro gratis']);
+});

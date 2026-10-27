@@ -23,7 +23,7 @@ export function Footer() {
         <div>
           <p className="font-heading text-2xl text-charcoal">nude</p>
           <p className="mt-3 text-sm text-muted-ink max-w-xs">
-            Cosmética natural hecha a mano, en pequeños lotes, en Mendiolaza (Córdoba).
+            Cosmética natural hecha a mano por Soledad, en pequeños lotes, en Mendiolaza (Córdoba).
           </p>
         </div>
 
@@ -71,7 +71,8 @@ export function Footer() {
               </a>
             </li>
             <li className="pt-3 text-xs text-muted-ink">
-              {site.name} · CUIT {site.legal.cuit} · {site.address.locality}, {site.address.region}, Argentina.
+              {/* Igual que el pie de su tienda (Soledad, 27-10-2026). Sin condición frente al IVA. */}
+              {site.name} · CUIT {site.legal.cuit} · {site.address.locality}, {site.address.region}
             </li>
             <li className="text-xs text-muted-ink">
               <a

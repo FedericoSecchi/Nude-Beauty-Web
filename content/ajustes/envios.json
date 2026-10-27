@@ -1,11 +1,12 @@
 {
   "zonas": [
     {
-      "nombre": "Gran Córdoba",
-      "costo": 0,
+      "nombre": "Envío económico · Unquillo, Mendiolaza, Villa Allende y zona Norte de Córdoba",
+      "costo": 3500,
       "plazoTexto": "",
+      "aclaracion": "Si tu dirección no está en esta zona, te avisamos el costo por WhatsApp.",
       "avanzado": {
-        "id": "gran-cordoba",
+        "id": "envio-economico",
         "provincias": [
           "Córdoba"
         ],
@@ -16,6 +17,7 @@
       "nombre": "Resto de Córdoba",
       "costo": 0,
       "plazoTexto": "",
+      "aclaracion": "",
       "avanzado": {
         "id": "resto-cordoba",
         "provincias": [
@@ -28,6 +30,7 @@
       "nombre": "Resto del país",
       "costo": 0,
       "plazoTexto": "",
+      "aclaracion": "",
       "avanzado": {
         "id": "resto-pais",
         "provincias": [
@@ -59,12 +62,13 @@
       }
     }
   ],
+  "retiro": {
+    "habilitado": true,
+    "direccionTexto": "Retiro gratis en Mendiolaza, de lunes a viernes de 9 a 18 h",
+    "direccionPrivada": "Cádiz 445, Mendiolaza, CP 5107",
+    "costo": 0
+  },
   "avanzado": {
-    "retiro": {
-      "habilitado": false,
-      "direccionTexto": "Retiro en Mendiolaza, Córdoba. Coordinamos el día por WhatsApp.",
-      "costo": 0
-    },
     "envioGratisDesde": null
   }
 }

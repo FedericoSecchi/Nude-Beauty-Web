@@ -3,13 +3,17 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import type { AjustesEnvios, AjustesTienda, Producto } from '../../../lib/types';
 
-interface Snapshot {
+export interface Snapshot {
   buildId: string;
   productos: Producto[];
   tienda: AjustesTienda;
   envios: AjustesEnvios;
   /** MP_ACCESS_TOKEN tenía valor en el build (scripts/prebuild.mjs). */
   mpHabilitado?: boolean;
+  /** ORDER_WEBHOOK_URL tenía valor en el build: sin eso no se cobra en la web (lib/modo-venta.mjs). */
+  webhookAviso?: boolean;
+  /** Dirección exacta del retiro. Solo para pedidos con retiro: nunca va al sitio estático. */
+  direccionRetiro?: string | null;
 }
 
 let cache: Snapshot | null = null;

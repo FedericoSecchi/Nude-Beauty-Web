@@ -170,6 +170,7 @@ collections:
                 step: 1
                 required: false
               - { name: plazoTexto, label: Plazo de entrega, hint: "Ejemplo: 3 a 5 días hábiles. Si lo dejás vacío no se muestra plazo.", widget: string, required: false }
+              - { name: aclaracion, label: Aclaración (debajo de la zona), hint: "Texto chico que se ve en el carrito debajo de esta zona. Puede quedar vacío.", widget: string, required: false }
               - name: avanzado
                 label: "Avanzado: no tocar (lo maneja Kosmos)"
                 widget: object
@@ -179,17 +180,19 @@ collections:
                   - { name: id, label: ID interno, widget: string, required: false }
                   - { name: provincias, label: Provincias, widget: list, required: false, field: { name: provincia, label: Provincia, widget: string } }
                   - { name: codigosPostales, label: Códigos postales, widget: list, required: false, field: { name: cp, label: Código postal, widget: string } }
+          - name: retiro
+            label: Retiro en Mendiolaza
+            widget: object
+            collapsed: false
+            fields:
+              - { name: habilitado, label: ¿Se puede retirar?, widget: boolean, default: false }
+              - { name: direccionTexto, label: Días y horario (se ve en la web), hint: "Ejemplo: Retiro gratis en Mendiolaza, de lunes a viernes de 9 a 18 h. No pongas la dirección acá: esto lo ve cualquiera.", widget: string, required: false }
+              - { name: direccionPrivada, label: Dirección exacta (no se ve en la web), hint: "Solo la ve quien ya hizo un pedido con retiro: en la página del pedido, en el mensaje de WhatsApp y en el aviso del pedido.", widget: string, required: false }
+              - { name: costo, label: Costo (0 si es gratis), widget: number, value_type: int, min: 0, required: false }
           - name: avanzado
             label: "Avanzado: no tocar (lo maneja Kosmos)"
             widget: object
             collapsed: true
             required: false
             fields:
-              - name: retiro
-                label: Retiro en Mendiolaza
-                widget: object
-                fields:
-                  - { name: habilitado, label: Habilitado, widget: boolean, default: false }
-                  - { name: direccionTexto, label: Texto del retiro, widget: text, required: false }
-                  - { name: costo, label: Costo (0 si es gratis), widget: number, value_type: int, min: 0, required: false }
               - { name: envioGratisDesde, label: Envío gratis desde (vacío = no hay), widget: number, value_type: int, required: false }

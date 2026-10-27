@@ -26,6 +26,8 @@ const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
 const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 const KEY = 'nude.carrito.v1';
+// El DNI no es obligatorio (Soledad, 27-10-2026): solo lo piden algunos envíos.
+const TEXTO_DNI = 'DNI (opcional, a veces lo pide el correo)';
 
 interface ProductoResumen {
   slug: string;
@@ -158,7 +160,6 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
   let subtotal = 0;
   let descuentos: { motivo: string; monto: number }[] = [];
   let costoEnvio = 0;
-  let plazoEnvioTexto = '';
   let errorPreview: string | null = null;
   try {
     const lineas = calcularLineas(
@@ -173,7 +174,6 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
       envios,
     );
     costoEnvio = envio.costo;
-    plazoEnvioTexto = envio.plazoTexto;
   } catch (err) {
     if (err instanceof PricingError || err instanceof ShippingError) {
       errorPreview = err.message;
@@ -193,8 +193,8 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
         itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
         productosCat,
         tienda,
-        { nombre: opcionElegida.nombre, costo: costoEnvio },
-        { nombre: comprador.nombre, telefono: comprador.telefono, email: comprador.email },
+        { nombre: opcionElegida.nombre, costo: costoEnvio, retiro: esRetiro },
+        { nombre: comprador.nombre, telefono: comprador.telefono, email: comprador.email, dni: comprador.dni },
       );
     } catch {
       pedidoWa = null;
@@ -227,6 +227,43 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
       } catch {
         /* opcional */
       }
+    }
+    if (esRetiro) {
+      // La dirección exacta del retiro no está en el sitio: el mensaje con la dirección lo arma la
+      // function pedido-whatsapp. Si no responde, sale el mismo mensaje sin la dirección y Soledad
+      // la pasa por el chat. La pestaña se abre ya (dentro del clic) para que no la bloqueen.
+      e.preventDefault();
+      const respaldo = waLink(pedidoWa.texto);
+      const ventana = window.open('', '_blank');
+      void (async () => {
+        let destino = respaldo;
+        try {
+          const res = await fetch('/.netlify/functions/pedido-whatsapp', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              items: itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+              comprador: {
+                nombre: comprador.nombre,
+                telefono: comprador.telefono,
+                email: comprador.email || undefined,
+                dni: comprador.dni || undefined,
+              },
+              entrega: { modo: 'retiro' },
+            }),
+          });
+          const data = res.ok ? ((await res.json()) as { url?: unknown }) : null;
+          if (typeof data?.url === 'string' && data.url.startsWith('https://wa.me/')) destino = data.url;
+        } catch {
+          /* sin function (o caída): mensaje sin dirección */
+        }
+        if (ventana) {
+          ventana.opener = null;
+          ventana.location.href = destino;
+        } else {
+          window.location.href = destino;
+        }
+      })();
     }
   };
 
@@ -403,12 +440,11 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
               />
               <span className="flex-1">
                 <span className="block font-medium">{o.nombre}</span>
-                <span className="block text-sm text-muted-ink">{o.plazoTexto}</span>
+                {o.plazoTexto ? <span className="block text-sm text-muted-ink">{o.plazoTexto}</span> : null}
+                {o.aclaracion ? <span className="block text-xs text-muted-ink mt-1">{o.aclaracion}</span> : null}
               </span>
               <span className="font-medium">
-                {o.modo === 'coordinar' || o.modo === 'retiro'
-                  ? 'a coordinar'
-                  : formatARS(o.costo)}
+                {o.modo === 'coordinar' ? 'a coordinar' : o.costo === 0 ? 'Gratis' : formatARS(o.costo)}
               </span>
             </label>
           ))}
@@ -431,7 +467,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
             <span>
               <span className="block font-medium">Transferencia (20% off)</span>
               <span className="block text-sm text-muted-ink">
-                Al confirmar el pedido te mostramos alias y CBU.
+                Al confirmar el pedido te mostramos los datos para transferir.
               </span>
             </span>
           </label>
@@ -464,8 +500,8 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
           </div>
         ))}
         <div className="flex justify-between">
-          <span>Envío</span>
-          <span>{costoEnvio === 0 ? plazoEnvioTexto : formatARS(costoEnvio)}</span>
+          <span>{esRetiro ? 'Retiro' : 'Envío'}</span>
+          <span>{costoEnvio > 0 ? formatARS(costoEnvio) : esRetiro ? 'Gratis' : 'a coordinar'}</span>
         </div>
         <div className="flex justify-between font-heading text-lg text-charcoal mt-2 pt-2 border-t border-border">
           <span>{modoWhatsapp ? 'Total con transferencia' : 'Total'}</span>
@@ -501,13 +537,23 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
                 className="w-full rounded border border-border bg-card px-3 py-2"
               />
             </label>
-            <label className="block sm:col-span-2">
+            <label className="block">
               <span className="block text-sm mb-1">Email (opcional)</span>
               <input
                 type="email"
                 autoComplete="email"
                 value={comprador.email}
                 onChange={(e) => setComprador({ ...comprador, email: e.target.value })}
+                className="w-full rounded border border-border bg-card px-3 py-2"
+              />
+            </label>
+            <label className="block">
+              <span className="block text-sm mb-1">{TEXTO_DNI}</span>
+              <input
+                autoComplete="off"
+                inputMode="numeric"
+                value={comprador.dni}
+                onChange={(e) => setComprador({ ...comprador, dni: e.target.value })}
                 className="w-full rounded border border-border bg-card px-3 py-2"
               />
             </label>
@@ -574,9 +620,10 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
               />
             </label>
             <label className="block">
-              <span className="block text-sm mb-1">DNI (opcional)</span>
+              <span className="block text-sm mb-1">{TEXTO_DNI}</span>
               <input
                 autoComplete="off"
+                inputMode="numeric"
                 value={comprador.dni}
                 onChange={(e) => setComprador({ ...comprador, dni: e.target.value })}
                 className="w-full rounded border border-border bg-card px-3 py-2"

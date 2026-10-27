@@ -57,6 +57,8 @@ export interface ZonaEnvio {
   codigosPostales?: string[];
   costo: number;
   plazoTexto: string;
+  /** Texto chico debajo de la zona en el carrito (ej. «Si tu dirección no está en esta zona…»). */
+  aclaracion: string;
   modo: 'fijo' | 'coordinar';
 }
 
@@ -64,6 +66,7 @@ export interface AjustesEnvios {
   zonas: ZonaEnvio[];
   retiro: {
     habilitado: boolean;
+    /** Texto público (días y horario). La dirección exacta NO va acá: ver leerDireccionRetiro. */
     direccionTexto: string;
     costo: number;
   };

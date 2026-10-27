@@ -1,6 +1,6 @@
 {
-  "alias": null,
-  "titularCuenta": null,
+  "alias": "NUDE.CLEAN.CARE",
+  "titularCuenta": "María Soledad Tarantelli",
   "cbu": null,
   "whatsapp": "+5493517033348",
   "avanzado": {
@@ -9,8 +9,8 @@
       "minUnidades": 2,
       "porcentaje": 0.05
     },
-    "descuentosAcumulables": false,
-    "cuotasTexto": "3 cuotas sin interés con tarjeta de crédito",
+    "descuentosAcumulables": true,
+    "cuotasTexto": "3 cuotas sin interés con Mercado Pago",
     "horasReservaTransferencia": 48,
     "emailTienda": "nudecosmeticaclean@gmail.com"
   }

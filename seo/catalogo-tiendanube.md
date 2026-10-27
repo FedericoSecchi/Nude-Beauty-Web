@@ -10,6 +10,15 @@
 - Nombre: NUDE Cosmética Clean · CUIT 23265636934 · Mendiolaza, Córdoba, Argentina
 - WhatsApp: +54 9 351 703 3348 · Email: nudecosmeticaclean@gmail.com · Instagram: @nude.cosmeticaclean
 - La tienda muestra: link a Defensa de las y los consumidores, botón de arrepentimiento y newsletter.
+
+## Datos confirmados por Soledad (Soledad, WhatsApp 27-10-2026)
+- Alias: NUDE.CLEAN.CARE · Titular: María Soledad Tarantelli · CBU: no lo pasó.
+- Descuentos acumulables: 5% por 2 o más unidades sobre la lista y después 20% por transferencia sobre el precio ya descontado (2 × $23.300 → $44.270 → $35.416). Con Mercado Pago, solo el 5%.
+- 3 cuotas sin interés por Mercado Pago (solo cuando MP esté habilitado en la web).
+- DNI opcional en el carrito.
+- Envío económico (Unquillo, Mendiolaza, Villa Allende y zona Norte de Córdoba): $3.500, sin plazo informado. Resto de Córdoba y resto del país: a coordinar por WhatsApp (depende del tamaño del paquete y el destino). Retiro gratis en Mendiolaza, lunes a viernes de 9 a 18 h (la dirección exacta no va en este repo).
+- Ingredientes: las etiquetas no los traen; valen los de este archivo.
+- Sin registro ANMAT. Creamy Gloss: «apto para niños» sin respaldo → no se publica.
 - Política de cambios y devoluciones: ver al final.
 
 ## Categorías
@@ -76,10 +85,10 @@
 
 ### creamy-gloss-blush-2-en-1 — Creamy Gloss & Blush Natural 2 en 1 — $16.250
 - URL Tiendanube: /productos/creamy-gloss-blush-natural-2-en-1-humectante-nutritivo-y-apto-para-ninos-4zick/
-- Por qué: gloss para labios y rubor en crema; acabado luminoso, no pegajoso. Sin fragancias ni alcoholes (dicho por ella). Ella lo presenta como apto para niños y todas las edades.
+- Por qué: gloss para labios y rubor en crema; acabado luminoso, no pegajoso. Sin fragancias ni alcoholes (dicho por ella). En Tiendanube lo presenta además con un claim de edad que no tiene respaldo (Soledad, WhatsApp 27-10-2026): no se publica.
 - Ingredientes: manteca de karité, manteca de mango, manteca de cacao, aceite de jojoba, aceite de ricino, fitoescualeno, vitamina E, aceite de coco, caprylic/capric triglyceride, pigmentos naturales y micas.
 - Variantes de color en la tienda (filtro): Champagne, Baby Pink, Bronze, Crystal, Strawberry → [CONFIRMAR cuáles son de este producto].
-- Tamaño: [CONFIRMAR] · Claim "apto para niños": [CONFIRMAR respaldo].
+- Tamaño: [CONFIRMAR] · Claim de edad: descartado, sin respaldo (Soledad, WhatsApp 27-10-2026).
 
 ### kit-facial-experiencia-completa — Kit Facial Experiencia Completa — $128.000
 - URL Tiendanube: /productos/kit-facial-experiencia-completa/

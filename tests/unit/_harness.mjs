@@ -5,10 +5,11 @@
 // - fetch falso: rutea la API de MP y ORDER_WEBHOOK_URL; cuenta los avisos.
 import { build } from 'esbuild';
 import { createHmac } from 'node:crypto';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+// Raíz del repo = cwd (npm test y Playwright corren desde ahí). Sin import.meta: Playwright pasa este
+// archivo a CommonJS cuando lo importa tests/e2e/checkout-local.spec.ts y ahí import.meta no existe.
+const root = process.cwd();
 
 const BLOBS_MOCK = `
 let n = 0;
@@ -54,7 +55,24 @@ const blobsMockPlugin = {
   },
 };
 
-export async function bundle(rel) {
+// Con `snapshot: true`, `_shared/catalogo` se reemplaza por uno que devuelve globalThis.__snapshot
+// (lo arma cada test con setSnapshot): así se prueba el modo de venta sin depender del último build.
+const snapshotMockPlugin = {
+  name: 'snapshot-mock',
+  setup(b) {
+    b.onResolve({ filter: /_shared\/catalogo$/ }, () => ({ path: 'catalogo', namespace: 'snapshot' }));
+    b.onLoad({ filter: /.*/, namespace: 'snapshot' }, () => ({
+      contents: 'export function loadSnapshot() { if (!globalThis.__snapshot) throw new Error("sin snapshot"); return globalThis.__snapshot; }',
+      loader: 'js',
+    }));
+  },
+};
+
+export function setSnapshot(snapshot) {
+  globalThis.__snapshot = snapshot;
+}
+
+export async function bundle(rel, opts = {}) {
   const out = await build({
     entryPoints: [join(root, rel)],
     bundle: true,
@@ -62,7 +80,7 @@ export async function bundle(rel) {
     platform: 'node',
     write: false,
     external: ['node:*'],
-    plugins: [blobsMockPlugin],
+    plugins: opts.snapshot ? [blobsMockPlugin, snapshotMockPlugin] : [blobsMockPlugin],
     logLevel: 'silent',
   });
   return import(

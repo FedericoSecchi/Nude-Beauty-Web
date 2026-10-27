@@ -42,7 +42,8 @@ netlify/
   functions/
     crear-pedido.ts        valida, recalcula totales y guarda en Blobs
     mp-webhook.ts          valida x-signature + consulta pago a MP
-    estado-pedido.ts       devuelve estado público (sin datos personales)
+    estado-pedido.ts       devuelve estado público (sin datos personales; dirección de retiro solo si es retiro)
+    pedido-whatsapp.ts     modo WhatsApp: arma el mensaje en el servidor (único lugar con la dirección de retiro)
     _data/catalogo.json    snapshot del build para las funciones
 scripts/
   verify.sh                gate obligatorio antes de pushear (ver §9 del PLAN)
@@ -87,7 +88,7 @@ Las carga Fede en Netlify. Si falta alguna: el código la tolera, el check que d
 |---|---|
 | `MP_ACCESS_TOKEN` | Mercado Pago (de prueba en deploy preview, de producción en producción) |
 | `MP_WEBHOOK_SECRET` | Secreto para validar `x-signature` del webhook de MP |
-| `ORDER_WEBHOOK_URL` | Endpoint de n8n al que se avisan los pedidos |
+| `ORDER_WEBHOOK_URL` | Endpoint de n8n al que se avisan los pedidos. **Sin esta variable en el build no se cobra en la web** (modo pedido por WhatsApp, `lib/modo-venta.mjs`) |
 | `ORDER_WEBHOOK_SECRET` | Secreto en el header `x-nude-secret` del aviso |
 | `E2E_TOKEN` | Habilita e2e remotos sin disparar avisos reales (header `x-e2e-token`) |
 | `NEXT_PUBLIC_GA_ID` | ID de GA4 (vacío = sin script) |

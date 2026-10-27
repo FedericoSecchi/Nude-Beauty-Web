@@ -40,42 +40,60 @@ fi
 
 # --- Build + typecheck ---
 step "typecheck (tsc --noEmit)" npx tsc --noEmit
-# Build de prueba "sin stock" (todos los productos en disponible:false) para el e2e de la ficha mobile.
-# Va antes del build real: out/ y el snapshot de las functions quedan siempre del contenido real.
+# Los 3 casos del modo de venta (lib/modo-venta.mjs) se buildean de verdad:
+#   caso 1 · sin alias ni CBU (aunque haya webhook) → out-sinstock/ → pedido por WhatsApp
+#   caso 2 · alias real sin ORDER_WEBHOOK_URL (como producción hoy) → out/ → pedido por WhatsApp
+#   caso 3 · alias real con ORDER_WEBHOOK_URL de prueba → out-webhook/ → checkout con transferencia
+# El webhook de prueba nunca se llama (dominio .invalid): solo prende el flag del build.
+WEBHOOK_PRUEBA="https://webhook.invalid/verify-nude"
+# Build "sin stock" (todos los productos en disponible:false) para el e2e de la ficha mobile; además es
+# el caso 1 (alias y CBU vacíos). Va antes del build real: out/ y el snapshot de las functions quedan
+# siempre del contenido real.
 build_sinstock() {
   local dir
   dir="$(mktemp -d)/content"
   node scripts/fixture-sin-stock.mjs "$dir" &&
-    NUDE_CONTENT_DIR="$dir" npm run build >/tmp/nude-build-sinstock.log 2>&1 &&
-    rm -rf out-sinstock && mv out out-sinstock
-}
-step "build fixture sin stock (out-sinstock/)" build_sinstock
-# Variante con Mercado Pago encendido (token de mentira: solo prende el flag del build, no se llama
-# a MP). El build real de abajo va con MP apagado, como está hoy producción.
-build_con_mp() {
-  MP_ACCESS_TOKEN=verify-flag-mp npm run build >/tmp/nude-build-mp.log 2>&1 &&
-    rm -rf out-mp && mv out out-mp
-}
-step "build con Mercado Pago encendido (out-mp/)" build_con_mp
-# Variante con un alias de prueba (copia del contenido en un dir temporal, nunca se commitea): con
-# medio de pago el sitio vuelve solo al checkout normal (lib/modo-venta.mjs).
-ALIAS_DIR="$(mktemp -d)/content"
-build_con_alias() {
-  cp -R content "$ALIAS_DIR" &&
     node -e '
       const fs = require("fs"); const f = process.argv[1];
-      const t = JSON.parse(fs.readFileSync(f, "utf8")); t.alias = "prueba.verify.nude";
-      fs.writeFileSync(f, JSON.stringify(t, null, 2));' "$ALIAS_DIR/ajustes/tienda.json" &&
-    env -u MP_ACCESS_TOKEN NUDE_CONTENT_DIR="$ALIAS_DIR" npm run build >/tmp/nude-build-alias.log 2>&1 &&
-    rm -rf out-alias && mv out out-alias
+      const t = JSON.parse(fs.readFileSync(f, "utf8")); t.alias = ""; t.cbu = "";
+      fs.writeFileSync(f, JSON.stringify(t, null, 2));' "$dir/ajustes/tienda.json" &&
+    env -u MP_ACCESS_TOKEN ORDER_WEBHOOK_URL="$WEBHOOK_PRUEBA" NUDE_CONTENT_DIR="$dir" npm run build >/tmp/nude-build-sinstock.log 2>&1 &&
+    rm -rf out-sinstock && mv out out-sinstock &&
+    grep -F 'modo de venta: pedido por WhatsApp · sin medio de pago' /tmp/nude-build-sinstock.log
 }
-step "build con alias de prueba (out-alias/, checkout normal)" build_con_alias
-step "build (next build + export, Mercado Pago apagado)" env -u MP_ACCESS_TOKEN npm run build
-# Modo del build real según la regla única (lib/modo-venta.mjs): hoy, sin alias ni CBU ni MP → whatsapp.
+step "caso 1 · sin alias ni CBU, con webhook: build sin stock en modo WhatsApp (out-sinstock/)" build_sinstock
+# Variante con Mercado Pago encendido (token de mentira: solo prende el flag del build, no se llama
+# a MP). Necesita el webhook: sin aviso a n8n tampoco se cobra con MP.
+build_con_mp() {
+  MP_ACCESS_TOKEN=verify-flag-mp ORDER_WEBHOOK_URL="$WEBHOOK_PRUEBA" npm run build >/tmp/nude-build-mp.log 2>&1 &&
+    rm -rf out-mp && mv out out-mp
+}
+step "build con Mercado Pago encendido y webhook (out-mp/)" build_con_mp
+build_con_webhook() {
+  env -u MP_ACCESS_TOKEN ORDER_WEBHOOK_URL="$WEBHOOK_PRUEBA" npm run build >/tmp/nude-build-webhook.log 2>&1 &&
+    rm -rf out-webhook && mv out out-webhook &&
+    grep -F '[prebuild] modo de venta: checkout' /tmp/nude-build-webhook.log &&
+    grep -F 'checkout normal' /tmp/nude-build-webhook.log
+}
+step "caso 3 · alias real con ORDER_WEBHOOK_URL de prueba: checkout (out-webhook/)" build_con_webhook
+# Caso 2 = el build real, como producción hoy: CONTEXT=production, sin MP y sin ORDER_WEBHOOK_URL.
+# Con alias cargado tiene que salir en modo WhatsApp y decir en el log que espera el webhook.
+ESPERA_LOG=$(node --input-type=module -e '
+  import { leerContenido } from "./lib/contenido.mjs"; import { motivoModoWhatsapp } from "./lib/modo-venta.mjs";
+  console.log((motivoModoWhatsapp(leerContenido("content").tienda, "", "") || "").split(" (")[0]);')
+build_real() {
+  local rc=0
+  env -u MP_ACCESS_TOKEN -u ORDER_WEBHOOK_URL CONTEXT=production npm run build >/tmp/nude-build-real.log 2>&1 || rc=$?
+  grep -E '^\[(prebuild|puerta)\]' /tmp/nude-build-real.log || true
+  [ $rc -eq 0 ] || { tail -30 /tmp/nude-build-real.log; return $rc; }
+  [ -z "$ESPERA_LOG" ] || grep -qF "$ESPERA_LOG" /tmp/nude-build-real.log || { echo "el log no dice «$ESPERA_LOG»"; return 1; }
+}
+step "caso 2 · build real CONTEXT=production sin MP ni ORDER_WEBHOOK_URL (log: ${ESPERA_LOG:-checkout})" build_real
+# Modo del build real según la regla única (lib/modo-venta.mjs): hoy, alias sin webhook → whatsapp.
 MODO_REAL=$(node --input-type=module -e '
   import { leerContenido } from "./lib/contenido.mjs"; import { modoVenta } from "./lib/modo-venta.mjs";
-  console.log(modoVenta(leerContenido("content").tienda, ""));')
-echo "INFO · modo del build real (MP apagado): $MODO_REAL" | tee -a "$RESULTS_FILE"
+  console.log(modoVenta(leerContenido("content").tienda, "", ""));')
+echo "INFO · modo del build real (sin MP ni ORDER_WEBHOOK_URL): $MODO_REAL" | tee -a "$RESULTS_FILE"
 
 # --- Unit tests (si existe el dir y tiene archivos) ---
 if [ -d tests/unit ] && [ -n "$(find tests/unit -maxdepth 1 -name '*.test.mjs' -print -quit)" ]; then
@@ -141,26 +159,54 @@ if [ -d out ]; then
     if [ -n "$hits" ]; then echo "con MP apagado aparecen:"; echo "$hits" | head -20; return 1; fi
   }
   step "MP apagado: sin cuotas/tarjeta/Mercado Pago en out/" check_sin_mp
-  check_sin_mp_alias() {
-    [ -d out-alias ] || return 1
-    local hits; hits=$(palabras_mp out-alias)
-    if [ -n "$hits" ]; then echo "con alias y MP apagado aparecen:"; echo "$hits" | head -20; return 1; fi
+  check_sin_mp_webhook() {
+    [ -d out-webhook ] || return 1
+    local hits; hits=$(palabras_mp out-webhook)
+    if [ -n "$hits" ]; then echo "con webhook y MP apagado aparecen:"; echo "$hits" | head -20; return 1; fi
   }
-  step "con alias y MP apagado: sin cuotas/tarjeta/Mercado Pago en out-alias/" check_sin_mp_alias
-  # El modo sale del contenido: el JS del carrito trae el botón de WhatsApp solo en modo WhatsApp
-  # (constante de build, el minificador saca la otra rama) y el checkout solo en modo normal.
+  step "con alias + webhook y MP apagado: sin cuotas/tarjeta/Mercado Pago en out-webhook/" check_sin_mp_webhook
+  # El modo sale del contenido y del webhook: el JS del carrito trae el botón de WhatsApp solo en modo
+  # WhatsApp (constante de build, el minificador saca la otra rama) y el checkout solo en modo normal.
   check_modo_builds() {
-    local wa='Enviar pedido por WhatsApp' co='Siguiente: tus datos'
-    if [ "$MODO_REAL" = "whatsapp" ]; then
-      grep -rqF --include='*.js' "$wa" out/_next || { echo "out/ (modo whatsapp) sin el botón de WhatsApp"; return 1; }
-      ! grep -rqF --include='*.js' "$co" out/_next || { echo "out/ (modo whatsapp) trae el checkout"; return 1; }
-    fi
-    grep -rqF --include='*.js' "$co" out-alias/_next || { echo "out-alias/ sin checkout"; return 1; }
-    ! grep -rqF --include='*.js' "$wa" out-alias/_next || { echo "out-alias/ trae el botón de WhatsApp"; return 1; }
-    grep -rqF --include='*.js' "$co" out-mp/_next || { echo "out-mp/ sin checkout"; return 1; }
-    ! grep -rqF --include='*.js' "$wa" out-mp/_next || { echo "out-mp/ trae el botón de WhatsApp"; return 1; }
+    local wa='Enviar pedido por WhatsApp' co='Siguiente: tus datos' d
+    es_whatsapp() {
+      grep -rqF --include='*.js' "$wa" "$1/_next" || { echo "$1/ (modo whatsapp) sin el botón de WhatsApp"; return 1; }
+      ! grep -rqF --include='*.js' "$co" "$1/_next" || { echo "$1/ (modo whatsapp) trae el checkout"; return 1; }
+    }
+    es_checkout() {
+      grep -rqF --include='*.js' "$co" "$1/_next" || { echo "$1/ sin checkout"; return 1; }
+      ! grep -rqF --include='*.js' "$wa" "$1/_next" || { echo "$1/ trae el botón de WhatsApp"; return 1; }
+    }
+    es_whatsapp out-sinstock || return 1
+    if [ "$MODO_REAL" = "whatsapp" ]; then es_whatsapp out || return 1; else es_checkout out || return 1; fi
+    for d in out-webhook out-mp; do es_checkout "$d" || return 1; done
   }
-  step "modo por build: out/ $MODO_REAL · out-alias/ y out-mp/ checkout normal" check_modo_builds
+  step "modo por build: caso 1 out-sinstock/ whatsapp · caso 2 out/ $MODO_REAL · caso 3 out-webhook/ y out-mp/ checkout" check_modo_builds
+  # Ni la dirección exacta del retiro ni partes de ella en ningún build (va solo en el snapshot de las
+  # functions). Se busca el literal y además la dirección cargada en el panel.
+  check_sin_direccion() {
+    local d hits=""
+    for d in out out-sinstock out-mp out-webhook; do
+      hits+=$(grep -rIilE 'c[aá]diz 445' "$d" 2>/dev/null || true)
+      node --input-type=module -e '
+        import { buscarDireccion } from "./scripts/puerta-publicacion.mjs";
+        import { leerDireccionRetiro } from "./lib/contenido.mjs";
+        const h = await buscarDireccion(process.argv[1], leerDireccionRetiro("content"));
+        if (h.length) { console.log(h.join("\n")); process.exit(1); }' "$d" || hits+=" $d (dirección del panel)"
+    done
+    if [ -n "$hits" ]; then echo "dirección del retiro en:"; echo "$hits" | head -20; return 1; fi
+    echo "grep -ri «Cádiz 445» en out/, out-sinstock/, out-mp/, out-webhook/: 0 archivos"
+  }
+  step "dirección exacta del retiro fuera de todos los builds (grep «Cádiz 445» = 0)" check_sin_direccion
+  # Claims sin respaldo (Soledad, 27-10-2026): nada de niñas/niños ni ANMAT en lo que se publica.
+  check_sin_claims() {
+    local d hits=""
+    for d in out out-webhook; do
+      hits+=$(grep -rIinoE 'ni[ñn][oa]s|niñ[oa]|anmat' "$d" 2>/dev/null | head -10 || true)
+    done
+    if [ -n "$hits" ]; then echo "aparecen:"; echo "$hits"; return 1; fi
+  }
+  step "sin «niños», «niñas» ni «ANMAT» en out/ y out-webhook/" check_sin_claims
   check_con_mp() {
     [ -d out-mp ] || return 1
     grep -q -i 'cuotas' out-mp/index.html && grep -q 'Mercado Pago' out-mp/terminos-y-condiciones/index.html
@@ -248,8 +294,19 @@ check_puerta_simulada() {
   echo "$out" | grep -q 'data.json:1  \[REVISAR LEGAL\]' || { echo "no detecta [REVISAR"; echo "$out"; return 1; }
   # Deploy preview con pendientes → solo avisa.
   CONTEXT=deploy-preview node scripts/puerta-publicacion.mjs "$sucio" "$sin_pago" >/dev/null 2>&1 || { echo "preview no debería fallar"; return 1; }
-  # Producción sin pendientes y con alias → pasa.
-  env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$con_pago" >/dev/null 2>&1 || { echo "producción limpia falló"; return 1; }
+  # Producción sin pendientes y con alias → pasa; sin webhook avisa que lo espera, con webhook es checkout.
+  rc=0; out=$(env -u MP_ACCESS_TOKEN -u ORDER_WEBHOOK_URL CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$con_pago" 2>&1) || rc=$?
+  [ "$rc" -eq 0 ] || { echo "producción limpia falló"; echo "$out"; return 1; }
+  echo "$out" | grep -q 'alias cargado, esperando ORDER_WEBHOOK_URL' || { echo "no avisa que espera el webhook"; echo "$out"; return 1; }
+  out=$(env -u MP_ACCESS_TOKEN ORDER_WEBHOOK_URL=https://webhook.invalid/x CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$con_pago" 2>&1) || { echo "producción con webhook falló"; return 1; }
+  echo "$out" | grep -q 'checkout normal' || { echo "con alias y webhook no dice checkout normal"; echo "$out"; return 1; }
+  # La dirección exacta del retiro en el sitio generado → falla en cualquier contexto.
+  local con_dir="$tmp/con-dir"; mkdir -p "$con_dir"
+  node --input-type=module -e '
+    import { leerDireccionRetiro } from "./lib/contenido.mjs"; import { writeFileSync } from "node:fs";
+    writeFileSync(process.argv[1] + "/index.html", "<p>" + leerDireccionRetiro("content").toUpperCase() + "</p>");' "$con_dir"
+  rc=0; CONTEXT=deploy-preview node scripts/puerta-publicacion.mjs "$con_dir" content >/dev/null 2>&1 || rc=$?
+  [ "$rc" -ne 0 ] || { echo "la dirección del retiro en el sitio no frenó el build"; return 1; }
   # Producción limpia pero sin alias ni CBU y con MP apagado → pasa en modo pedido por WhatsApp y lo avisa.
   rc=0; out=$(env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$sin_pago" 2>&1) || rc=$?
   [ "$rc" -eq 0 ] || { echo "producción sin medio de pago no debería bloquear"; echo "$out"; return 1; }
@@ -261,7 +318,7 @@ check_puerta_simulada() {
   MP_ACCESS_TOKEN=verify-flag-mp CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$sin_pago" >/dev/null 2>&1 || { echo "con MP encendido no debería exigir alias"; return 1; }
   rm -rf "$tmp"
 }
-step "puerta de publicación simulada (CONTEXT=production bloquea [CONFIRMAR]/[REVISAR], sin pago avisa)" check_puerta_simulada
+step "puerta de publicación simulada ([CONFIRMAR]/[REVISAR] y dirección del retiro bloquean; sin pago o sin webhook avisa)" check_puerta_simulada
 
 if [ -d out ]; then
   # Lo que diría la puerta de un build de producción con este contenido (no hace fallar verify:
@@ -345,7 +402,7 @@ fi
 
 # --- E2E local (Playwright contra out/ servido estáticamente) ---
 if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
-  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && [ -d out-alias ] && command -v npx >/dev/null 2>&1; then
+  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && [ -d out-webhook ] && command -v npx >/dev/null 2>&1; then
     serve_dir() {  # serve_dir <dir> <port> → deja el pid en SERVE_PID
       pkill -f "serve.*$1.*$2" >/dev/null 2>&1 || true
       # serve fijo en devDependencies: con `npx --yes serve` sin instalar, npx resolvía el paquete
@@ -369,12 +426,13 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
           npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
         # Contenido real (hoy modo WhatsApp): ficha → carrito → wa.me con el total, sin selector de pago.
         E2E_BASE_URL="http://127.0.0.1:4123" E2E_MP=0 E2E_MODO="$MODO_REAL" \
-          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts --project=desktop --project=mobile || rc=$?
-        # Checkout normal: con alias de prueba (un solo medio, transferencia) y con MP (dos medios).
+          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts tests/e2e/checkout-local.spec.ts --project=desktop --project=mobile || rc=$?
+        # Checkout normal: alias real + webhook de prueba (un solo medio, transferencia; /pedido/ con
+        # alias y 5% + 20% contra las functions corriendo en el proceso del test) y con MP (dos medios).
         serve_dir out-mp 4126 || rc=1; pid3=$SERVE_PID
-        serve_dir out-alias 4127 || rc=1; pid4=$SERVE_PID
-        E2E_BASE_URL="http://127.0.0.1:4127" E2E_MP=0 E2E_MODO=checkout E2E_CONTENT_DIR="$ALIAS_DIR" \
-          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts --project=desktop || rc=$?
+        serve_dir out-webhook 4127 || rc=1; pid4=$SERVE_PID
+        E2E_BASE_URL="http://127.0.0.1:4127" E2E_MP=0 E2E_MODO=checkout \
+          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts tests/e2e/checkout-local.spec.ts --project=desktop || rc=$?
         E2E_BASE_URL="http://127.0.0.1:4127" \
           npx playwright test --grep "home \+ ficha" --project=desktop || rc=$?
         E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 E2E_MODO=checkout \
@@ -417,9 +475,16 @@ fi
 
 # --- E2E remoto contra el deploy preview (requiere E2E_TOKEN y que el preview sirva este commit) ---
 # El token va solo en el header x-e2e-token de los pedidos de prueba; nunca se imprime.
-REMOTE_URL="${E2E_REMOTE_URL:-https://deploy-preview-2--nude-beauty-web.netlify.app}"
+# Sin E2E_REMOTE_URL se usa el preview del PR abierto de esta rama (gh); si no hay PR, queda SKIP.
+if [ -z "${E2E_REMOTE_URL:-}" ] && command -v gh >/dev/null 2>&1; then
+  PR_NUM=$(gh pr view --json number -q .number 2>/dev/null || true)
+  [ -n "$PR_NUM" ] && E2E_REMOTE_URL="https://deploy-preview-$PR_NUM--nude-beauty-web.netlify.app"
+fi
+REMOTE_URL="${E2E_REMOTE_URL:-}"
 if [ -z "${E2E_TOKEN:-}" ]; then
   skip "e2e remoto" "E2E_TOKEN no configurado"
+elif [ -z "$REMOTE_URL" ]; then
+  skip "e2e remoto" "sin PR abierto para esta rama (o pasá E2E_REMOTE_URL)"
 else
   SERVIDO=$(/usr/bin/curl -sL --max-time 20 "$REMOTE_URL/" | grep -oE 'build-id" content="[^"]+"' | head -1 | sed 's/build-id" content="//;s/"$//' || true)
   HEAD_SHA=$(git rev-parse HEAD)
@@ -432,12 +497,12 @@ else
     run_e2e_remoto() {
       local rc=0
       bash scripts/preview-check.sh "$REMOTE_URL" "$HEAD_SHA" || rc=1
-      # Sin reintentos (playwright.config.ts: retries 0). E2E_MP: lo que el preview tiene que ofrecer;
-      # el modo sale de la misma regla (contenido + MP del preview).
+      # Sin reintentos (playwright.config.ts: retries 0). E2E_MP_REMOTO / E2E_WEBHOOK_REMOTO: si el
+      # preview tiene MP_ACCESS_TOKEN / ORDER_WEBHOOK_URL (hoy no: 0). El modo sale de la misma regla.
       local modo_remoto
-      modo_remoto=$(E2E_MP_REMOTO="${E2E_MP_REMOTO:-0}" node --input-type=module -e '
+      modo_remoto=$(E2E_MP_REMOTO="${E2E_MP_REMOTO:-0}" E2E_WEBHOOK_REMOTO="${E2E_WEBHOOK_REMOTO:-0}" node --input-type=module -e '
         import { leerContenido } from "./lib/contenido.mjs"; import { modoVenta } from "./lib/modo-venta.mjs";
-        console.log(modoVenta(leerContenido("content").tienda, process.env.E2E_MP_REMOTO === "1"));')
+        console.log(modoVenta(leerContenido("content").tienda, process.env.E2E_MP_REMOTO === "1", process.env.E2E_WEBHOOK_REMOTO === "1"));')
       echo "INFO · modo esperado en el preview: $modo_remoto"
       E2E_BASE_URL="$REMOTE_URL" E2E_MP="${E2E_MP_REMOTO:-0}" E2E_MODO="$modo_remoto" \
         npx playwright test tests/e2e/compra.spec.ts tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts --project=desktop --retries=0 || rc=$?

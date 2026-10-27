@@ -11,6 +11,8 @@ export function organizationJsonLd() {
     url: site.url,
     description: site.description,
     sameAs: [site.contact.instagramUrl],
+    // Solo el nombre: quiere aparecer, sin biografía (Soledad, WhatsApp 27-10-2026).
+    founder: { '@type': 'Person', name: 'Soledad' },
     contactPoint: [
       {
         '@type': 'ContactPoint',

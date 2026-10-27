@@ -82,21 +82,69 @@ test('carrito 2 · tres productos (uno ×2), descuentos no acumulables: solo 20%
   assert.ok(!r.texto.includes('Total con transferencia y envío'));
 });
 
-test('carrito 3 · acumulables + zona con costo: 20% + 5% y total con envío', () => {
+test('carrito 3 · acumulables + zona con costo: 5% y después 20% sobre lo descontado, más envío', () => {
   const r = wa.armarPedidoWhatsapp(
     [{ slug: 'crema', cantidad: 3 }], PRODUCTOS, tienda(true),
     { nombre: 'Resto del país', costo: 4500 }, COMPRADORA,
   );
-  // 56700 − 5% (2835) − 20% (11340) = 42525; + envío 4500 = 47025.
+  // 56700 − 5% (2835) = 53865 → − 20% (10773) = 43092; + envío 4500 = 47592.
   assert.equal(r.subtotalLista, 56700);
-  assert.equal(r.totalTransferencia, 47025);
+  assert.equal(r.totalTransferencia, 47592);
   const lineas = r.texto.split('\n');
   assert.ok(lineas.includes('• 3 × Crema Facial Porcelain ($ 18.900 c/u)'));
   assert.ok(lineas.includes('Subtotal de lista: $ 56.700'));
-  assert.ok(lineas.includes('Con transferencia: $ 42.525 (20% off + 5% por cantidad)'));
+  assert.ok(lineas.includes('Con transferencia: $ 43.092 (5% por cantidad + 20% off)'));
   assert.ok(lineas.includes('Entrega: Resto del país · $ 4.500'));
-  assert.ok(lineas.includes('Total con transferencia y envío: $ 47.025'));
+  assert.ok(lineas.includes('Total con transferencia y envío: $ 47.592'));
   assert.ok(!/cuotas|tarjeta|mercado ?pago/i.test(r.texto));
+});
+
+// Ejemplo de Soledad (WhatsApp 27-10-2026) con el alias real y retiro.
+const PAGO = { alias: 'NUDE.CLEAN.CARE', titularCuenta: 'María Soledad Tarantelli', cbu: null };
+
+test('ejemplo de Soledad · 2 × $23.300 → $35.416, con alias y envío económico', () => {
+  const r = wa.armarPedidoWhatsapp(
+    [{ slug: 'serum', cantidad: 2 }], PRODUCTOS, { ...tienda(true), ...PAGO },
+    { nombre: 'Envío económico', costo: 3500 }, { ...COMPRADORA, dni: ' 00000000 ' },
+  );
+  assert.equal(r.totalTransferencia, 35416 + 3500);
+  assert.equal(r.texto, [
+    'Hola! Quiero hacer este pedido:',
+    '',
+    '• 2 × Serum Multi Active ($ 23.300 c/u)',
+    '',
+    'Subtotal de lista: $ 46.600',
+    'Con transferencia: $ 35.416 (5% por cantidad + 20% off)',
+    'Entrega: Envío económico · $ 3.500',
+    'Total con transferencia y envío: $ 38.916',
+    '',
+    'Alias para transferir: NUDE.CLEAN.CARE (María Soledad Tarantelli)',
+    '',
+    'Nombre: Clienta Prueba',
+    'Teléfono: 351 000 0000',
+    'DNI: 00000000',
+  ].join('\n'));
+});
+
+test('retiro · gratis; la dirección va solo si la pasa el servidor', () => {
+  const sinDireccion = wa.armarPedidoWhatsapp(
+    [{ slug: 'serum', cantidad: 1 }], PRODUCTOS, { ...tienda(true), ...PAGO },
+    { nombre: 'Retiro en Mendiolaza', costo: 0, retiro: true }, COMPRADORA,
+  );
+  assert.ok(sinDireccion.texto.includes('Entrega: Retiro en Mendiolaza · gratis'));
+  assert.ok(!sinDireccion.texto.includes('Dirección de retiro'));
+  // Dirección inventada: la real solo está en el panel y en el snapshot de las functions.
+  const conDireccion = wa.armarPedidoWhatsapp(
+    [{ slug: 'serum', cantidad: 1 }], PRODUCTOS, { ...tienda(true), ...PAGO },
+    { nombre: 'Retiro en Mendiolaza', costo: 0, retiro: true, direccionRetiro: 'Calle Falsa 123, Mendiolaza' }, COMPRADORA,
+  );
+  assert.ok(conDireccion.texto.includes('Entrega: Retiro en Mendiolaza · gratis\nDirección de retiro: Calle Falsa 123, Mendiolaza'));
+  assert.equal(conDireccion.totalTransferencia, 18640);
+});
+
+test('sin alias ni CBU: no hay línea de datos para transferir', () => {
+  const r = wa.armarPedidoWhatsapp([{ slug: 'serum', cantidad: 1 }], PRODUCTOS, tienda(), { nombre: 'x', costo: 0 }, COMPRADORA);
+  assert.ok(!/Alias|CBU/.test(r.texto));
 });
 
 test('sin stock o producto inexistente: no arma mensaje', () => {

@@ -138,8 +138,8 @@ export default function HomePage() {
       <section className="bg-bg py-16 md:py-24">
         <div className="container max-w-3xl text-center">
           <p className="font-heading text-2xl leading-snug text-charcoal md:text-3xl">
-            NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano, en
-            pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido
+            NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano por
+            Soledad, en pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido
             hialurónico, péptidos. Sin parabenos.
           </p>
         </div>

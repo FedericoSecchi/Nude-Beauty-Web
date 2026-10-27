@@ -155,7 +155,7 @@ export default async function ProductoPage({
                     rel="noopener noreferrer"
                     className="link-ghost"
                   >
-                    ¿Dudas? Escribinos por WhatsApp
+                    ¿Dudas? Soledad te responde por WhatsApp
                   </a>
                 </p>
               </div>

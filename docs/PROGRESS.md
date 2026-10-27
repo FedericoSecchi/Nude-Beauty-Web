@@ -2,6 +2,7 @@
 
 > Avance por etapa del `seo/PLAN.md`. Si la sesión se corta: **leé este archivo primero** y retomá desde la primera ⬜.
 > Rama: `kosmos/nude-tienda` · PR: borrador hasta E6 · Nunca push a `main`.
+> Último trabajo: datos de Soledad en `kosmos/datos-soledad` (PR #3), ver «Reporte · datos de Soledad» al final.
 
 ## Resumen por etapa
 | Etapa | Estado | Fecha | Deploy preview |
@@ -380,3 +381,77 @@ Se abre en `https://wa.me/5493517033348?text=Hola!%20Quiero%20hacer%20este%20ped
 2. ⬜ Pedido de prueba real en nudecosmetica.com: carrito → «Enviar pedido por WhatsApp» → que llegue al WhatsApp de la tienda (+54 9 351 703-3348) con el total correcto.
 3. ⬜ Alias / titular / CBU de Soledad → cargarlos en el panel y confirmar que el siguiente deploy dice «checkout normal». Después, compra de prueba por transferencia (checklist de salida anterior, punto 3).
 4. ⬜ Mercado Pago (opcional), revisión de abogado de términos y privacidad, Instagram y Tiendanube: siguen como en el checklist de salida anterior.
+### Reporte · datos de Soledad (2026-10-27) · rama `kosmos/datos-soledad` · PR #3
+
+**Estado: ✅ listo para mergear.** Producción sigue en **modo pedido por WhatsApp** hasta que Fede cargue `ORDER_WEBHOOK_URL` en Netlify: el alias ya está cargado, pero sin aviso a n8n la web no cobra. Fuente de todos los datos: Soledad, WhatsApp 27-10-2026 (anotado en `seo/00-contexto.md` y `seo/catalogo-tiendanube.md`, sin la dirección exacta).
+
+#### 1. Checks con evidencia
+| Check | Resultado | Evidencia |
+|---|---|---|
+| `verify.sh` | ✅ PASS=27 FAIL=0 SKIP=0 | commit `43e675806292`, con e2e remoto incluido |
+| Descuentos 5% → 20% sobre lo descontado | ✅ | `lib/pricing.ts` (`calcularDescuentos`). Unit: 2 × $23.300 = **$35.416** (montos 2.330 y 8.854), 1 unidad = $18.640 (solo 20%), MP 2 unidades = $44.270 (solo 5%), envío después de los descuentos, mensaje de WhatsApp «$ 35.416 (5% por cantidad + 20% off)». `crear-pedido`, la preferencia de MP (`itemsPreferencia`, test de 500 carritos sin precios ≤ 0), el carrito y el mensaje usan `calcularTotal` |
+| Modo de venta: 3 casos en unit | ✅ | `tests/unit/contenido.test.mjs`: sin alias → WhatsApp (aunque haya webhook) · alias sin webhook → WhatsApp con motivo «alias cargado, esperando ORDER_WEBHOOK_URL» · alias + webhook → checkout. También en las functions: `tests/unit/pedido-flujo.test.mjs` (crear-pedido 409 sin webhook o sin alias) |
+| Modo de venta: 3 casos en build | ✅ | caso 1 `out-sinstock/` (alias y CBU vacíos, con webhook) → WhatsApp; caso 2 `out/` = build real `CONTEXT=production` sin MP ni webhook → WhatsApp; caso 3 `out-webhook/` (alias real + webhook de prueba `.invalid`) → checkout. Se comprueba en el log y en el JS (botón de WhatsApp sí/no) |
+| Build `CONTEXT=production` con el contenido real, sin `ORDER_WEBHOOK_URL` | ✅ rc=0, modo WhatsApp | `[prebuild] modo de venta: pedido por WhatsApp · alias cargado, esperando ORDER_WEBHOOK_URL (sin aviso de pedidos a n8n no se cobra en la web)` · `[puerta] AVISO: … el sitio sale en MODO PEDIDO POR WHATSAPP. Cargá ORDER_WEBHOOK_URL (y ORDER_WEBHOOK_SECRET) en Netlify y redeployá…` |
+| Build con `ORDER_WEBHOOK_URL` de prueba | ✅ checkout | `[puerta] … con medio de pago y aviso a n8n (checkout normal)`. E2E local `checkout-local.spec.ts` sobre `out-webhook/` (la interfaz real contra `crear-pedido` y `estado-pedido` corriendo en el proceso del test): retiro con 2 serums → /pedido/ con alias **NUDE.CLEAN.CARE**, titular, sin CBU, monto **$ 35.416** y la dirección del retiro; envío económico → $ 38.916 sin dirección. El preview no tiene la variable, así que esto quedó cubierto en local |
+| Dirección exacta fuera de lo público | ✅ | `grep -ri` de la calle y el número del retiro (criterio de la tarea) en `out/`, `out-sinstock/`, `out-mp/` y `out-webhook/` = **0 archivos**. Además, la puerta bloquea el build si aparece la dirección del panel (prueba simulada en `verify.sh`). En el preview: 0 apariciones en las 20 URLs del sitemap + /carrito/ + /pedido/ y en su JS |
+| Dirección donde corresponde | ✅ | aviso a n8n `entrega.direccionRetiro` y /pedido/ solo si es retiro (unit + e2e local); mensaje de WhatsApp con retiro **en el preview**: la function `pedido-whatsapp` agrega «Dirección de retiro: …» (e2e remoto) |
+| Sin «niños», «niñas» ni «ANMAT» en `out/` | ✅ | grep en `out/` y `out-webhook/` (incluye la variante sin tilde «ninos»). Además se sacó la URL de Tiendanube del gloss, que decía «apto-para-ninos» |
+| Preview | ✅ build-id `43e675806292` · 20/20 URLs del sitemap en 200 · 404 real | `scripts/preview-check.sh` |
+| E2E remoto sin reintentos | ✅ 10 passed, 1 skipped (`--retries=0`) | el skip es la compra por transferencia de `compra.spec.ts`: el preview no tiene `ORDER_WEBHOOK_URL` (modo WhatsApp). Corre sola cuando la tenga |
+| Conflictos con main | ✅ | rama creada desde `origin/main` (`b671793`). GitHub: MERGEABLE |
+
+#### 2. Ejemplo del mensaje de WhatsApp (contenido real, 2 serums, retiro)
+```
+Hola! Quiero hacer este pedido:
+
+• 2 × Serum Multi Active ($ 23.300 c/u)
+
+Subtotal de lista: $ 46.600
+Con transferencia: $ 35.416 (5% por cantidad + 20% off)
+Entrega: Retiro en Mendiolaza · gratis
+Dirección de retiro: [dirección del panel]
+
+Alias para transferir: NUDE.CLEAN.CARE (María Soledad Tarantelli)
+
+Nombre: Clienta Prueba
+Teléfono: 351 000 0000
+Email: prueba@example.com
+```
+Con envío económico, la entrega dice «Envío económico · Unquillo, Mendiolaza, Villa Allende y zona Norte de Córdoba · $ 3.500» y se agrega «Total con transferencia y envío: $ 38.916». Si la clienta completa el DNI (opcional), va al final. En este reporte la dirección está tapada porque el PR es público. En el mensaje real va completa, y solo cuando la clienta elige retiro.
+
+#### 3. Cómo se activa el cobro por transferencia
+1. Fede carga en Netlify (Site configuration → Environment variables, contexto **Production**) `ORDER_WEBHOOK_URL` (el webhook de n8n) y `ORDER_WEBHOOK_SECRET`.
+2. Redeploy de producción (Deploys → Trigger deploy). La variable se lee **en el build**: sin redeploy no cambia nada.
+3. En el log del deploy tiene que aparecer `[prebuild] modo de venta: checkout` y `[puerta] … (checkout normal)`. Si aparece «esperando ORDER_WEBHOOK_URL», la variable no llegó al build.
+4. Compra de prueba real: retiro, transferencia, 2 unidades. Tiene que mostrar en /pedido/ el alias, el total con 5% + 20% y la dirección del retiro, y tiene que llegar el aviso a n8n con `entrega.direccionRetiro`. Después, cancelarla.
+5. Si se borra la variable (o el alias y el CBU), el próximo build vuelve solo al modo WhatsApp.
+
+#### 4. Qué cambió
+- **Envíos** (`content/ajustes/envios.json`): «Envío económico · Unquillo, Mendiolaza, Villa Allende y zona Norte de Córdoba» $3.500 fijo, sin plazo, con la aclaración «Si tu dirección no está en esta zona, te avisamos el costo por WhatsApp.». «Resto de Córdoba» y «Resto del país» quedan a coordinar: «A coordinar por WhatsApp (depende del tamaño del paquete y el destino)». Retiro habilitado, gratis: «Retiro gratis en Mendiolaza, de lunes a viernes de 9 a 18 h». La dirección exacta va en `retiro.direccionPrivada`, que lee solo `leerDireccionRetiro` para el snapshot de las functions.
+- **Proveedor de envíos** (`lib/shipping.ts`): interfaz `ProveedorEnvio` + `cotizarEnvio`. `crear-pedido` ya la usa. Hoy no hay ningún proveedor cargado y el resultado es el mismo que antes. Para Correo Argentino o Andreani alcanza con implementar `cotizar()` y sumarlo a `PROVEEDORES_ENVIO`.
+- **Tienda**: alias, titular, `descuentosAcumulables: true`, cuotas «3 cuotas sin interés con Mercado Pago» (solo se muestra con MP habilitado).
+- **Textos**: «hecha a mano por Soledad» (home y pie), «¿Dudas? Soledad te responde por WhatsApp» (ficha), `founder: Soledad` en el JSON-LD de Organization (solo el nombre). Pie legal: «NUDE Cosmética Clean · CUIT 23265636934 · Mendiolaza, Córdoba», más Defensa de las y los consumidores y el botón de arrepentimiento, sin IVA. DNI: «DNI (opcional, a veces lo pide el correo)» en el checkout y también en el modo WhatsApp. Términos: el orden de los descuentos y los envíos salen del panel. Gloss: fuera la línea de keywords descartada y la URL de Tiendanube. ANMAT: no había ninguna mención y quedó el check.
+- **Guía de Soledad**: cómo cambiar el costo del envío económico, el horario de retiro, la dirección privada y los descuentos.
+
+#### 5. Decisiones tomadas sin consultar
+- 2026-10-27 · **La regla del webhook vale también para Mercado Pago**: con token de MP y sin `ORDER_WEBHOOK_URL`, la web sigue en modo WhatsApp y el flag de MP del sitio queda apagado (no se muestran cuotas que no se pueden pagar). Mismo motivo: ningún pedido cobrado sin aviso a Soledad.
+- 2026-10-27 · **La dirección exacta quedó en `content/ajustes/envios.json`**, como pedía la tarea (campo de ajustes que el build estático no renderiza, editable por Soledad en el panel). **Ojo: el repo es público**, así que la dirección se ve en GitHub, aunque no en el sitio. Si se prefiere que no esté en el repo, la alternativa es una variable de entorno de Netlify (`RETIRO_DIRECCION`) que lea el prebuild. Es un cambio chico, pero Soledad ya no la podría editar desde el panel.
+- 2026-10-27 · En modo WhatsApp, el mensaje con retiro lo arma la function nueva `pedido-whatsapp`, que es la única que conoce la dirección: recalcula con el snapshot y devuelve el texto y el link de wa.me. Con envío el link se sigue armando en el navegador, como hoy. Si la function no responde, sale el mismo mensaje sin la dirección y Soledad la pasa por el chat. La pestaña se abre dentro del clic para que el navegador no la bloquee. Cualquiera que mande un carrito válido con retiro puede obtener la dirección: es el mismo nivel de reserva que tenía Tiendanube con el retiro.
+- 2026-10-27 · `retiro` salió del grupo «Avanzado» del panel, para que Soledad pueda cambiar el horario y la dirección.
+- 2026-10-27 · La puerta de publicación **bloquea el build en cualquier contexto** si la dirección del panel aparece en `out/`, aunque sea sin tildes ni mayúsculas. Así un error en el panel (la dirección en el campo público) no llega al sitio.
+- 2026-10-27 · La zona de envío económico cambió de id (`gran-cordoba` → `envio-economico`). No hay códigos postales cargados: no los dio y no se inventaron.
+- 2026-10-27 · `tests/unit/_harness.mjs` toma la raíz del repo de `process.cwd()` en lugar de `import.meta`. Causa raíz: Playwright transpila a CommonJS lo que importa un spec, y ahí `import.meta` es un error de sintaxis. Era lo que hizo fallar la primera corrida del e2e local.
+- 2026-10-27 · `verify.sh` arma la URL del preview con el número del PR abierto de la rama (`gh pr view`), y agrega `E2E_WEBHOOK_REMOTO` (default 0) para cuando el preview tenga la variable.
+
+#### 6. Pendiente
+**De Fede**
+1. ⬜ Revisar el PR #3 y mergear (lo hace el planificador). En el deploy de producción tiene que salir «alias cargado, esperando ORDER_WEBHOOK_URL» y modo WhatsApp.
+2. ⬜ Cargar `ORDER_WEBHOOK_URL` y `ORDER_WEBHOOK_SECRET` en Netlify (Production) cuando n8n esté listo, redeployar y hacer la compra de prueba (§3).
+3. ⬜ Decidir si la dirección del retiro queda en el repo público o pasa a una variable de entorno (§5).
+
+**De Soledad**
+1. ⬜ Plazo del envío económico (hoy no se muestra plazo).
+2. ⬜ CBU (opcional: con el alias alcanza).
+3. ⬜ Códigos postales o barrios de la «zona Norte de Córdoba», si quiere que la zona se ofrezca automáticamente.
+4. ⬜ Siguen los de antes: tamaños, ingredientes del óleo, lista final del Serum Transformación, variantes de color del gloss, respaldo de cualquier claim sobre acné.

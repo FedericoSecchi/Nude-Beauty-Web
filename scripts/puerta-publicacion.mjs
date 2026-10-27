@@ -59,7 +59,7 @@ export function avisoModoWhatsapp(tienda, mpToken, webhook) {
 export async function buscarDireccion(dir, direccion) {
   if (!direccion) return [];
   const plano = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  // Con la calle y el número alcanza: «Cádiz 445» sola ya es la dirección.
+  // Con la calle y el número alcanza (lo que va antes de la primera coma).
   const aguja = plano(direccion.split(',')[0].trim());
   const hallazgos = [];
   for await (const file of archivos(dir)) {

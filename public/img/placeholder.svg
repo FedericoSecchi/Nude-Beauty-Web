@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3e9db"/>
+      <stop offset="1" stop-color="#d9c3a5"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g)"/>
+  <text x="400" y="500" font-family="serif" font-size="60" fill="#6b4a2b" text-anchor="middle" dominant-baseline="middle">NUDE</text>
+  <text x="400" y="570" font-family="sans-serif" font-size="24" fill="#6b4a2b" text-anchor="middle">foto en camino</text>
+</svg>

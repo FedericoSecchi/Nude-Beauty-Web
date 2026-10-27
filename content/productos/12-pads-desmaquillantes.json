@@ -1,0 +1,40 @@
+{
+  "nombre": "Pads Desmaquillantes",
+  "precio": 15000,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/pads-desmaquillantes/01.webp"
+  ],
+  "tamano": "10 cm · 2 unidades con bolsita",
+  "resumen": "Dos pads desmaquillantes reutilizables de 10 cm de diámetro, con bolsita. Cada pad tiene un lado de polar soft y el otro de microfibra. Se usan con el limpiador, como el Agua Micelar Bifásica.",
+  "ingredientes": "Polar soft y microfibra.",
+  "modoDeUso": "Humedecé el pad con el limpiador (por ejemplo, el Agua Micelar Bifásica) y pasalo por el rostro.",
+  "avanzado": {
+    "slug": "pads-desmaquillantes",
+    "categoria": "accesorios",
+    "h1": "Pads Desmaquillantes reutilizables · 2 unidades de 10 cm",
+    "activos": [],
+    "pasoRutina": null,
+    "beneficios": [
+      "Reutilizables",
+      "Dos caras: polar soft y microfibra",
+      "Vienen con bolsita"
+    ],
+    "faq": [
+      {
+        "q": "¿Con qué los uso?",
+        "a": "Se usan con el limpiador; van con el Agua Micelar Bifásica, que se aplica con un pad."
+      }
+    ],
+    "relacionados": [
+      "agua-micelar-bifasica",
+      "nude-bag"
+    ],
+    "seo": {
+      "title": "Pads Desmaquillantes reutilizables · 2 unidades",
+      "description": "Pads reutilizables de 10 cm, con un lado de polar soft y otro de microfibra. Dos unidades con bolsita. Para usar con el agua micelar bifásica."
+    },
+    "fichaCorta": true,
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/pads-desmaquillantes/"
+  }
+}

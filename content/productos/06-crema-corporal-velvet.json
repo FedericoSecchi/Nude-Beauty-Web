@@ -1,0 +1,64 @@
+{
+  "nombre": "Crema corporal y de manos Velvet",
+  "precio": 40500,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/crema-corporal-velvet/01.webp"
+  ],
+  "tamano": null,
+  "resumen": "Crema corporal reafirmante, también para manos. Lleva manteca de karité, urea, alantoína, centella asiática, ginkgo biloba, aceite de rosa mosqueta y liposomas de cafeína-carnitina. Deja la piel más tersa y flexible, y ayuda a mejorar la apariencia de estrías y celulitis. Aroma a azahar, palmarosa y lavanda.",
+  "ingredientes": "Manteca de karité, centella asiática, liposomas de cafeína-carnitina, urea, alantoína, aceite de rosa mosqueta, provitamina B5, vit E, aceites de jojoba, coco cáprico caprílico y palta, agua de rosas, aloe vera, caléndula, manzanilla, glicerina vegetal, neroli, palmarosa, lavanda.",
+  "modoDeUso": "Aplicá en cuerpo y manos al menos dos veces por día, mejor después de la ducha. Día y noche.",
+  "avanzado": {
+    "slug": "crema-corporal-velvet",
+    "categoria": "body",
+    "h1": "Crema corporal y de manos Velvet · crema corporal reafirmante natural",
+    "activos": [
+      {
+        "nombre": "Manteca de karité",
+        "queHace": "Ayuda a dejar la piel más tersa y flexible."
+      },
+      {
+        "nombre": "Urea y alantoína",
+        "queHace": "Hidratan y ayudan a mantener la barrera de la piel."
+      },
+      {
+        "nombre": "Centella asiática y ginkgo biloba",
+        "queHace": "El ginkgo biloba aporta acción antioxidante."
+      },
+      {
+        "nombre": "Liposomas de cafeína-carnitina",
+        "queHace": "Trabajan sobre la apariencia de la celulitis."
+      },
+      {
+        "nombre": "Aceite de rosa mosqueta",
+        "queHace": "Ayuda a mejorar la apariencia de estrías."
+      }
+    ],
+    "pasoRutina": null,
+    "beneficios": [
+      "Humecta cuerpo y manos",
+      "Ayuda a mejorar la apariencia de estrías y celulitis",
+      "Para todo tipo de piel"
+    ],
+    "faq": [
+      {
+        "q": "¿Sirve como crema para estrías y celulitis?",
+        "a": "Trabaja sobre la apariencia de estrías y celulitis con rosa mosqueta, cafeína-carnitina en liposomas y centella asiática. Los resultados dependen de cada piel y de la constancia."
+      },
+      {
+        "q": "¿Sirve para todo tipo de piel?",
+        "a": "Sí, es apta para todo tipo de pieles. La urea y la alantoína aportan humectación y ayudan a la función barrera. Antes de la primera aplicación, hacé la prueba de parche."
+      }
+    ],
+    "relacionados": [
+      "oleo-corporal-autobronceante"
+    ],
+    "seo": {
+      "title": "Crema corporal reafirmante natural Velvet · manos y cuerpo",
+      "description": "Crema clean con manteca de karité, urea, alantoína, centella asiática y liposomas de cafeína. Para cuerpo y manos. 20% off por transferencia y envíos a todo el país."
+    },
+    "avisoPatch": true,
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/crema-corporal-y-de-manos-velvet/"
+  }
+}

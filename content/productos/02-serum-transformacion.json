@@ -1,0 +1,72 @@
+{
+  "nombre": "Serum Transformación",
+  "precio": 34550,
+  "disponible": true,
+  "imagenes": [
+    "/img/productos/serum-transformacion/01.webp"
+  ],
+  "tamano": null,
+  "resumen": "Serum de noche con bakuchiol, liposomas de retinoides (retinyl acetate), ácido hialurónico al 1% y péptidos Matrixil-Syn Coll. Pensado para arrugas y líneas de expresión, manchas y luminosidad, y para fortalecer la barrera de la piel. Aroma a azahar y palmarosa.",
+  "ingredientes": "Bakuchiol, liposomas de retinoides (retinyl acetate), Matrixil-Syn Coll (palmitoyl tripeptide-5), ácido hialurónico de alto y bajo peso molecular, aceite de pepitas de uva (resveratrol), jojoba, coco fraccionado, hidrolato de lavanda, centella asiática, aloe vera, hamamelis, extracto de avena, vit E, pro-vit B5, neroli y palmarosa.",
+  "modoDeUso": "Usalo solo de noche. Después del agua micelar y el contorno de ojos, ponete 3 gotas en rostro, cuello y escote. Al día siguiente usá protector solar y evitá exponerte al sol.",
+  "avanzado": {
+    "slug": "serum-transformacion",
+    "categoria": "face",
+    "h1": "Serum Transformación · serum de noche con bakuchiol y retinoides",
+    "activos": [
+      {
+        "nombre": "Bakuchiol",
+        "queHace": "Activo principal del tratamiento de noche: ayuda a reducir arrugas y líneas de expresión."
+      },
+      {
+        "nombre": "Liposomas de retinoides (retinyl acetate)",
+        "queHace": "Trabajan de noche, junto con el bakuchiol, sobre arrugas, manchas y luminosidad."
+      },
+      {
+        "nombre": "Ácido hialurónico al 1%",
+        "queHace": "Hidrata y aporta efecto relleno."
+      },
+      {
+        "nombre": "Aceite de pepitas de uva con resveratrol",
+        "queHace": "Aporta resveratrol, de acción antioxidante."
+      }
+    ],
+    "pasoRutina": 3,
+    "beneficios": [
+      "Bakuchiol + retinoides en liposomas",
+      "Trabaja sobre arrugas, líneas de expresión, manchas y luminosidad",
+      "Aroma a azahar y palmarosa"
+    ],
+    "faq": [
+      {
+        "q": "¿Sirve para piel sensible?",
+        "a": "Sí: está indicado para pieles sensibles. Igual, hacé la prueba de parche antes de la primera aplicación."
+      },
+      {
+        "q": "¿Lo puedo usar de día?",
+        "a": "No. Es un serum de noche antiage: al día siguiente, siempre protector solar."
+      },
+      {
+        "q": "¿Puedo combinarlo con el Serum Multi Active?",
+        "a": "Vienen juntos en el Kit Facial Experiencia Completa. El Transformación va solo de noche; el Multi Active, de día y de noche."
+      },
+      {
+        "q": "¿Sirve para líneas de expresión?",
+        "a": "Sí: es un serum pensado para reducir arrugas y líneas de expresión, con efecto relleno, según lo presenta la marca. También ayuda a unificar el tono y reducir manchas."
+      }
+    ],
+    "relacionados": [
+      "agua-micelar-bifasica",
+      "contorno-de-ojos-gleaming-eyes",
+      "crema-facial-porcelain",
+      "serum-multi-active",
+      "kit-facial-experiencia-completa"
+    ],
+    "seo": {
+      "title": "Serum Transformación · bakuchiol y retinoides de noche",
+      "description": "Serum nocturno con bakuchiol, retinoides en liposomas y ácido hialurónico al 1%. Para arrugas, líneas de expresión y manchas. 20% off por transferencia y envíos a todo el país."
+    },
+    "avisoPatch": true,
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/serum-transformacion/"
+  }
+}

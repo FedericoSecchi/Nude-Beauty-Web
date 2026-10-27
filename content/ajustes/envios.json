@@ -1,0 +1,70 @@
+{
+  "zonas": [
+    {
+      "nombre": "Gran Córdoba",
+      "costo": 0,
+      "plazoTexto": "",
+      "avanzado": {
+        "id": "gran-cordoba",
+        "provincias": [
+          "Córdoba"
+        ],
+        "codigosPostales": []
+      }
+    },
+    {
+      "nombre": "Resto de Córdoba",
+      "costo": 0,
+      "plazoTexto": "",
+      "avanzado": {
+        "id": "resto-cordoba",
+        "provincias": [
+          "Córdoba"
+        ],
+        "codigosPostales": []
+      }
+    },
+    {
+      "nombre": "Resto del país",
+      "costo": 0,
+      "plazoTexto": "",
+      "avanzado": {
+        "id": "resto-pais",
+        "provincias": [
+          "Buenos Aires",
+          "Ciudad Autónoma de Buenos Aires",
+          "Catamarca",
+          "Chaco",
+          "Chubut",
+          "Corrientes",
+          "Entre Ríos",
+          "Formosa",
+          "Jujuy",
+          "La Pampa",
+          "La Rioja",
+          "Mendoza",
+          "Misiones",
+          "Neuquén",
+          "Río Negro",
+          "Salta",
+          "San Juan",
+          "San Luis",
+          "Santa Cruz",
+          "Santa Fe",
+          "Santiago del Estero",
+          "Tierra del Fuego",
+          "Tucumán"
+        ],
+        "codigosPostales": []
+      }
+    }
+  ],
+  "avanzado": {
+    "retiro": {
+      "habilitado": false,
+      "direccionTexto": "Retiro en Mendiolaza, Córdoba. Coordinamos el día por WhatsApp.",
+      "costo": 0
+    },
+    "envioGratisDesde": null
+  }
+}

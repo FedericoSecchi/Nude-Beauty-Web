@@ -19,3 +19,27 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.netlify/
+.env*.local
+coverage/
+playwright-report/
+test-results/
+
+# Build artifacts
+netlify/functions/_data/
+tsconfig.tsbuildinfo
+verify-results.txt
+.env.production.local
+out-sinstock/
+out-mp/
+out-alias/
+
+# Miniaturas generadas en el build (scripts/miniaturas.mjs)
+public/img/productos/**/*-480w.webp
+public/img/productos/**/*-768w.webp
+lighthouse-home.json

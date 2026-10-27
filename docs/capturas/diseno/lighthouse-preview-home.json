@@ -1,0 +1,28 @@
+{
+  "url": "https://deploy-preview-2--nude-beauty-web.netlify.app/",
+  "fecha": "2026-10-26T20:26:10.425Z",
+  "lcpMedianaMs": 2254,
+  "fcpMs": 975,
+  "clsMax": 0,
+  "performance": 0.96,
+  "corridas": [
+    {
+      "performance": 0.99,
+      "lcp": 1952.8535000000002,
+      "cls": 0,
+      "fcp": 842.8535
+    },
+    {
+      "performance": 0.96,
+      "lcp": 2254.1684999999998,
+      "cls": 0,
+      "fcp": 974.6685
+    },
+    {
+      "performance": 0.96,
+      "lcp": 2323.402,
+      "cls": 0,
+      "fcp": 1039.402
+    }
+  ]
+}

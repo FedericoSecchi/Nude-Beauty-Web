@@ -1,0 +1,17 @@
+{
+  "alias": null,
+  "titularCuenta": null,
+  "cbu": null,
+  "whatsapp": "+5493517033348",
+  "avanzado": {
+    "descuentoTransferencia": 0.2,
+    "descuentoCantidad": {
+      "minUnidades": 2,
+      "porcentaje": 0.05
+    },
+    "descuentosAcumulables": false,
+    "cuotasTexto": "3 cuotas sin interés con tarjeta de crédito",
+    "horasReservaTransferencia": 48,
+    "emailTienda": "nudecosmeticaclean@gmail.com"
+  }
+}

@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 40 30% 96%;
+  --foreground: 25 25% 18%;
+  --card: 35 35% 94%;
+  --card-foreground: 25 25% 18%;
+  --primary: 28 30% 50%;
+  --primary-foreground: 40 30% 96%;
+  --secondary: 35 25% 88%;
+  --secondary-foreground: 25 25% 25%;
+  --muted: 30 20% 90%;
+  --muted-foreground: 25 15% 45%;
+  --accent: 20 35% 42%;
+  --accent-foreground: 40 30% 96%;
+  --border: 30 20% 85%;
+  --input: 30 20% 85%;
+  --ring: 28 30% 50%;
+  --radius: 0.25rem;
+
+  --nude-cream: 38 40% 94%;
+  --nude-sand: 32 30% 78%;
+  /* Terracota del botón viejo (18 35% 48%) oscurecido 1 punto: con texto blanco da 4,58:1 (AA).
+     El original daba 4,42:1. Hover: 42% (5,50:1). Ver docs/PROGRESS.md › Decisiones (diseño). */
+  --nude-terracotta: 18 35% 47%;
+  --nude-terracotta-hover: 18 35% 42%;
+  --nude-charcoal: 25 20% 22%;
+  --nude-soft: 35 25% 92%;
+
+  --shadow-soft: 0 4px 20px -4px hsl(25 20% 22% / 0.08);
+  --shadow-card: 0 2px 12px -2px hsl(25 20% 22% / 0.06);
+
+  /* Las fuentes las sirve next/font desde el propio sitio (app/layout.tsx): sin @import a Google
+     Fonts, que bloqueaba el primer render y atrasaba el LCP del hero. */
+  --font-heading: var(--font-cormorant), Georgia, serif;
+  --font-body: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg text-ink font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading text-charcoal;
+  }
+  h1 { @apply text-3xl md:text-4xl leading-tight; }
+  h2 { @apply text-2xl md:text-3xl leading-tight; }
+  h3 { @apply text-xl md:text-2xl leading-snug; }
+  a { @apply underline-offset-4; }
+  a:hover { @apply underline; }
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded px-5 py-3 font-medium transition;
+  }
+  /* Botón principal: terracota con texto blanco, como el sitio viejo (.btn-nude). */
+  .btn-primary {
+    @apply btn bg-terracotta text-white shadow-soft hover:bg-terracotta-hover hover:no-underline no-underline disabled:opacity-60;
+  }
+  /* Secundario: borde, como .btn-nude-outline del sitio viejo. */
+  .btn-outline {
+    @apply btn border-2 border-ink/20 bg-transparent text-charcoal hover:bg-ink/5 hover:no-underline no-underline;
+  }
+  .link-ghost {
+    @apply text-charcoal underline underline-offset-4 hover:text-terracotta;
+  }
+  .card {
+    @apply bg-card rounded-md shadow-card p-6 transition-shadow hover:shadow-soft;
+  }
+}

@@ -14,10 +14,16 @@ import {
 } from '@/lib/pricing';
 import { calcularEnvio, listarOpciones, ShippingError } from '@/lib/shipping';
 import type { AjustesEnvios, AjustesTienda, Producto } from '@/lib/types';
+import { armarPedidoWhatsapp, type PedidoWhatsapp } from '@/lib/pedido-whatsapp';
+import { waLink } from '@/lib/whatsapp';
 
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+// Sin ningún medio de pago (lib/modo-venta.mjs) el carrito no hace checkout: arma el pedido y lo
+// manda por WhatsApp. Mismo criterio que el flag de MP: constante local para que el minificador
+// saque el checkout del bundle (y viceversa).
+const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 const KEY = 'nude.carrito.v1';
 
@@ -177,6 +183,52 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
   }
   const totalDescuentos = descuentos.reduce((s, d) => s + d.monto, 0);
   const total = subtotal - totalDescuentos + costoEnvio;
+
+  // Modo WhatsApp: el mensaje sale del mismo cálculo (lib/pricing) que el checkout.
+  let pedidoWa: PedidoWhatsapp | null = null;
+  const opcionElegida = opcionesEnvio.find((o) => o.id === opcionId);
+  if (modoWhatsapp && !errorPreview && opcionElegida && todosDisponibles) {
+    try {
+      pedidoWa = armarPedidoWhatsapp(
+        itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+        productosCat,
+        tienda,
+        { nombre: opcionElegida.nombre, costo: costoEnvio },
+        { nombre: comprador.nombre, telefono: comprador.telefono, email: comprador.email },
+      );
+    } catch {
+      pedidoWa = null;
+    }
+  }
+
+  const enviarWhatsapp = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!pedidoWa) {
+      e.preventDefault();
+      return;
+    }
+    if (!comprador.nombre.trim() || !comprador.telefono.trim()) {
+      e.preventDefault();
+      setError('Completá tu nombre y tu teléfono para mandar el pedido.');
+      return;
+    }
+    setError(null);
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      try {
+        (window as unknown as { gtag: (...a: unknown[]) => void }).gtag('event', 'click_whatsapp', {
+          currency: 'ARS',
+          value: pedidoWa.totalTransferencia,
+          items: itemsNormalizados.map((i) => ({
+            item_id: i.slug,
+            item_name: i.nombre,
+            price: i.precio,
+            quantity: i.cantidad,
+          })),
+        });
+      } catch {
+        /* opcional */
+      }
+    }
+  };
 
   const cambiarCantidad = (slug: string, cantidad: number) => {
     const siguiente = items
@@ -363,6 +415,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
         </div>
       </section>
 
+      {modoWhatsapp ? null : (
       <section>
         <h2 className="font-heading text-xl mb-3">Pago</h2>
         <div className="grid gap-2 sm:grid-cols-2">
@@ -400,6 +453,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
           ) : null}
         </div>
       </section>
+      )}
 
       <section className="rounded-md bg-soft p-5 text-sm">
         <div className="flex justify-between"><span>Subtotal</span><span>{formatARS(subtotal)}</span></div>
@@ -414,14 +468,68 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
           <span>{costoEnvio === 0 ? plazoEnvioTexto : formatARS(costoEnvio)}</span>
         </div>
         <div className="flex justify-between font-heading text-lg text-charcoal mt-2 pt-2 border-t border-border">
-          <span>Total</span><span>{formatARS(total)}</span>
+          <span>{modoWhatsapp ? 'Total con transferencia' : 'Total'}</span>
+          <span data-testid="total-carrito">{formatARS(total)}</span>
         </div>
         {errorPreview ? (
           <p className="mt-2 text-destructive">{errorPreview}</p>
         ) : null}
       </section>
 
-      {!begin ? (
+      {modoWhatsapp ? (
+        <section className="space-y-4">
+          <h2 className="font-heading text-xl">Tus datos</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block">
+              <span className="block text-sm mb-1">Nombre y apellido</span>
+              <input
+                required
+                autoComplete="name"
+                value={comprador.nombre}
+                onChange={(e) => setComprador({ ...comprador, nombre: e.target.value })}
+                className="w-full rounded border border-border bg-card px-3 py-2"
+              />
+            </label>
+            <label className="block">
+              <span className="block text-sm mb-1">Teléfono (WhatsApp)</span>
+              <input
+                required
+                type="tel"
+                autoComplete="tel"
+                value={comprador.telefono}
+                onChange={(e) => setComprador({ ...comprador, telefono: e.target.value })}
+                className="w-full rounded border border-border bg-card px-3 py-2"
+              />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="block text-sm mb-1">Email (opcional)</span>
+              <input
+                type="email"
+                autoComplete="email"
+                value={comprador.email}
+                onChange={(e) => setComprador({ ...comprador, email: e.target.value })}
+                className="w-full rounded border border-border bg-card px-3 py-2"
+              />
+            </label>
+          </div>
+
+          {error ? <p role="status" className="text-destructive text-sm">{error}</p> : null}
+
+          <a
+            href={pedidoWa ? waLink(pedidoWa.texto) : undefined}
+            onClick={enviarWhatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled={!pedidoWa}
+            className={`btn-primary w-full ${pedidoWa ? '' : 'pointer-events-none opacity-50'}`}
+          >
+            Enviar pedido por WhatsApp
+          </a>
+          <p className="text-sm text-muted-ink text-center">
+            Soledad te responde por WhatsApp con los datos para pagar y el envío.
+          </p>
+        </section>
+      ) : !begin ? (
         <button
           type="button"
           onClick={empezarCheckout}

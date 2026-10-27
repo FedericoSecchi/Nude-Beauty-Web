@@ -57,7 +57,25 @@ build_con_mp() {
     rm -rf out-mp && mv out out-mp
 }
 step "build con Mercado Pago encendido (out-mp/)" build_con_mp
+# Variante con un alias de prueba (copia del contenido en un dir temporal, nunca se commitea): con
+# medio de pago el sitio vuelve solo al checkout normal (lib/modo-venta.mjs).
+ALIAS_DIR="$(mktemp -d)/content"
+build_con_alias() {
+  cp -R content "$ALIAS_DIR" &&
+    node -e '
+      const fs = require("fs"); const f = process.argv[1];
+      const t = JSON.parse(fs.readFileSync(f, "utf8")); t.alias = "prueba.verify.nude";
+      fs.writeFileSync(f, JSON.stringify(t, null, 2));' "$ALIAS_DIR/ajustes/tienda.json" &&
+    env -u MP_ACCESS_TOKEN NUDE_CONTENT_DIR="$ALIAS_DIR" npm run build >/tmp/nude-build-alias.log 2>&1 &&
+    rm -rf out-alias && mv out out-alias
+}
+step "build con alias de prueba (out-alias/, checkout normal)" build_con_alias
 step "build (next build + export, Mercado Pago apagado)" env -u MP_ACCESS_TOKEN npm run build
+# Modo del build real según la regla única (lib/modo-venta.mjs): hoy, sin alias ni CBU ni MP → whatsapp.
+MODO_REAL=$(node --input-type=module -e '
+  import { leerContenido } from "./lib/contenido.mjs"; import { modoVenta } from "./lib/modo-venta.mjs";
+  console.log(modoVenta(leerContenido("content").tienda, ""));')
+echo "INFO · modo del build real (MP apagado): $MODO_REAL" | tee -a "$RESULTS_FILE"
 
 # --- Unit tests (si existe el dir y tiene archivos) ---
 if [ -d tests/unit ] && [ -n "$(find tests/unit -maxdepth 1 -name '*.test.mjs' -print -quit)" ]; then
@@ -123,6 +141,26 @@ if [ -d out ]; then
     if [ -n "$hits" ]; then echo "con MP apagado aparecen:"; echo "$hits" | head -20; return 1; fi
   }
   step "MP apagado: sin cuotas/tarjeta/Mercado Pago en out/" check_sin_mp
+  check_sin_mp_alias() {
+    [ -d out-alias ] || return 1
+    local hits; hits=$(palabras_mp out-alias)
+    if [ -n "$hits" ]; then echo "con alias y MP apagado aparecen:"; echo "$hits" | head -20; return 1; fi
+  }
+  step "con alias y MP apagado: sin cuotas/tarjeta/Mercado Pago en out-alias/" check_sin_mp_alias
+  # El modo sale del contenido: el JS del carrito trae el botón de WhatsApp solo en modo WhatsApp
+  # (constante de build, el minificador saca la otra rama) y el checkout solo en modo normal.
+  check_modo_builds() {
+    local wa='Enviar pedido por WhatsApp' co='Siguiente: tus datos'
+    if [ "$MODO_REAL" = "whatsapp" ]; then
+      grep -rqF --include='*.js' "$wa" out/_next || { echo "out/ (modo whatsapp) sin el botón de WhatsApp"; return 1; }
+      ! grep -rqF --include='*.js' "$co" out/_next || { echo "out/ (modo whatsapp) trae el checkout"; return 1; }
+    fi
+    grep -rqF --include='*.js' "$co" out-alias/_next || { echo "out-alias/ sin checkout"; return 1; }
+    ! grep -rqF --include='*.js' "$wa" out-alias/_next || { echo "out-alias/ trae el botón de WhatsApp"; return 1; }
+    grep -rqF --include='*.js' "$co" out-mp/_next || { echo "out-mp/ sin checkout"; return 1; }
+    ! grep -rqF --include='*.js' "$wa" out-mp/_next || { echo "out-mp/ trae el botón de WhatsApp"; return 1; }
+  }
+  step "modo por build: out/ $MODO_REAL · out-alias/ y out-mp/ checkout normal" check_modo_builds
   check_con_mp() {
     [ -d out-mp ] || return 1
     grep -q -i 'cuotas' out-mp/index.html && grep -q 'Mercado Pago' out-mp/terminos-y-condiciones/index.html
@@ -212,15 +250,18 @@ check_puerta_simulada() {
   CONTEXT=deploy-preview node scripts/puerta-publicacion.mjs "$sucio" "$sin_pago" >/dev/null 2>&1 || { echo "preview no debería fallar"; return 1; }
   # Producción sin pendientes y con alias → pasa.
   env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$con_pago" >/dev/null 2>&1 || { echo "producción limpia falló"; return 1; }
-  # Producción limpia pero sin alias ni CBU y con MP apagado → falla (no hay medio de pago).
+  # Producción limpia pero sin alias ni CBU y con MP apagado → pasa en modo pedido por WhatsApp y lo avisa.
   rc=0; out=$(env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$sin_pago" 2>&1) || rc=$?
-  [ "$rc" -ne 0 ] || { echo "producción sin medio de pago no falló"; return 1; }
-  echo "$out" | grep -q 'sin medio de pago' || { echo "no explica que falta el medio de pago"; echo "$out"; return 1; }
+  [ "$rc" -eq 0 ] || { echo "producción sin medio de pago no debería bloquear"; echo "$out"; return 1; }
+  echo "$out" | grep -q 'MODO PEDIDO POR WHATSAPP' || { echo "no avisa el modo WhatsApp"; echo "$out"; return 1; }
+  # Con [CONFIRMAR] y sin medio de pago → sigue bloqueando.
+  rc=0; env -u MP_ACCESS_TOKEN CONTEXT=production node scripts/puerta-publicacion.mjs "$sucio" "$sin_pago" >/dev/null 2>&1 || rc=$?
+  [ "$rc" -ne 0 ] || { echo "producción con [CONFIRMAR] en modo WhatsApp no falló"; return 1; }
   # Lo mismo con MP encendido → pasa (MP alcanza como medio de pago).
   MP_ACCESS_TOKEN=verify-flag-mp CONTEXT=production node scripts/puerta-publicacion.mjs "$limpio" "$sin_pago" >/dev/null 2>&1 || { echo "con MP encendido no debería exigir alias"; return 1; }
   rm -rf "$tmp"
 }
-step "puerta de publicación simulada (CONTEXT=production bloquea, preview avisa)" check_puerta_simulada
+step "puerta de publicación simulada (CONTEXT=production bloquea [CONFIRMAR]/[REVISAR], sin pago avisa)" check_puerta_simulada
 
 if [ -d out ]; then
   # Lo que diría la puerta de un build de producción con este contenido (no hace fallar verify:
@@ -230,7 +271,7 @@ if [ -d out ]; then
     echo "INFO · puerta: un build de producción con MP apagado hoy fallaría por:"; echo "$PUERTA"
     echo "INFO · puerta (producción, MP apagado) bloquearía:" >> "$RESULTS_FILE"; echo "$PUERTA" >> "$RESULTS_FILE"
   else
-    echo "INFO · puerta: un build de producción pasaría" >> "$RESULTS_FILE"
+    echo "INFO · puerta: un build de producción pasaría (modo $MODO_REAL)" >> "$RESULTS_FILE"
   fi
 fi
 
@@ -304,7 +345,7 @@ fi
 
 # --- E2E local (Playwright contra out/ servido estáticamente) ---
 if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
-  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && command -v npx >/dev/null 2>&1; then
+  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && [ -d out-alias ] && command -v npx >/dev/null 2>&1; then
     serve_dir() {  # serve_dir <dir> <port> → deja el pid en SERVE_PID
       pkill -f "serve.*$1.*$2" >/dev/null 2>&1 || true
       # serve fijo en devDependencies: con `npx --yes serve` sin instalar, npx resolvía el paquete
@@ -320,19 +361,25 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
       return 1
     }
     run_e2e_local() {
-      local rc=0 pid1 pid2 pid3
+      local rc=0 pid1 pid2 pid3 pid4
       serve_dir out 4123 || rc=1; pid1=$SERVE_PID
       serve_dir out-sinstock 4124 || rc=1; pid2=$SERVE_PID
       if [ $rc -eq 0 ]; then
         E2E_BASE_URL="http://127.0.0.1:4123" \
           npx playwright test --grep "home \+ ficha" --project=mobile --project=desktop || rc=$?
-        # Carrito con un solo medio de pago (MP apagado) y con dos (out-mp/).
+        # Contenido real (hoy modo WhatsApp): ficha → carrito → wa.me con el total, sin selector de pago.
+        E2E_BASE_URL="http://127.0.0.1:4123" E2E_MP=0 E2E_MODO="$MODO_REAL" \
+          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts --project=desktop --project=mobile || rc=$?
+        # Checkout normal: con alias de prueba (un solo medio, transferencia) y con MP (dos medios).
         serve_dir out-mp 4126 || rc=1; pid3=$SERVE_PID
-        E2E_BASE_URL="http://127.0.0.1:4123" E2E_MP=0 \
+        serve_dir out-alias 4127 || rc=1; pid4=$SERVE_PID
+        E2E_BASE_URL="http://127.0.0.1:4127" E2E_MP=0 E2E_MODO=checkout E2E_CONTENT_DIR="$ALIAS_DIR" \
+          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts --project=desktop || rc=$?
+        E2E_BASE_URL="http://127.0.0.1:4127" \
+          npx playwright test --grep "home \+ ficha" --project=desktop || rc=$?
+        E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 E2E_MODO=checkout \
           npx playwright test tests/e2e/medios-pago.spec.ts --project=desktop || rc=$?
-        E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 \
-          npx playwright test tests/e2e/medios-pago.spec.ts --project=desktop || rc=$?
-        kill $pid3 >/dev/null 2>&1 || true
+        kill $pid3 $pid4 >/dev/null 2>&1 || true
         # Hero de la home visible sin scroll en 390×844 y 1366×850.
         E2E_BASE_URL="http://127.0.0.1:4123" \
           npx playwright test tests/e2e/home-hero.spec.ts --project=desktop || rc=$?
@@ -376,15 +423,24 @@ if [ -z "${E2E_TOKEN:-}" ]; then
 else
   SERVIDO=$(/usr/bin/curl -sL --max-time 20 "$REMOTE_URL/" | grep -oE 'build-id" content="[^"]+"' | head -1 | sed 's/build-id" content="//;s/"$//' || true)
   HEAD_SHA=$(git rev-parse HEAD)
-  if [ -z "$SERVIDO" ] || [ "${HEAD_SHA#"$SERVIDO"}" = "$HEAD_SHA" ]; then
+  # Con cambios sin commitear el preview no sirve lo que se está probando, aunque el sha coincida.
+  if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+    skip "e2e remoto" "hay cambios sin commitear: el preview no sirve este código"
+  elif [ -z "$SERVIDO" ] || [ "${HEAD_SHA#"$SERVIDO"}" = "$HEAD_SHA" ]; then
     skip "e2e remoto" "el preview sirve ${SERVIDO:-?} y HEAD es ${HEAD_SHA:0:12}: correr verify.sh de nuevo cuando termine el deploy"
   else
     run_e2e_remoto() {
       local rc=0
       bash scripts/preview-check.sh "$REMOTE_URL" "$HEAD_SHA" || rc=1
-      # Sin reintentos (playwright.config.ts: retries 0). E2E_MP: lo que el preview tiene que ofrecer.
-      E2E_BASE_URL="$REMOTE_URL" E2E_MP="${E2E_MP_REMOTO:-0}" \
-        npx playwright test tests/e2e/compra.spec.ts tests/e2e/medios-pago.spec.ts --project=desktop --retries=0 || rc=$?
+      # Sin reintentos (playwright.config.ts: retries 0). E2E_MP: lo que el preview tiene que ofrecer;
+      # el modo sale de la misma regla (contenido + MP del preview).
+      local modo_remoto
+      modo_remoto=$(E2E_MP_REMOTO="${E2E_MP_REMOTO:-0}" node --input-type=module -e '
+        import { leerContenido } from "./lib/contenido.mjs"; import { modoVenta } from "./lib/modo-venta.mjs";
+        console.log(modoVenta(leerContenido("content").tienda, process.env.E2E_MP_REMOTO === "1"));')
+      echo "INFO · modo esperado en el preview: $modo_remoto"
+      E2E_BASE_URL="$REMOTE_URL" E2E_MP="${E2E_MP_REMOTO:-0}" E2E_MODO="$modo_remoto" \
+        npx playwright test tests/e2e/compra.spec.ts tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts --project=desktop --retries=0 || rc=$?
       E2E_BASE_URL="$REMOTE_URL" \
         npx playwright test tests/e2e/ficha-mobile.spec.ts --project=mobile --grep-invert "sin stock" --retries=0 || rc=$?
       E2E_BASE_URL="$REMOTE_URL" \

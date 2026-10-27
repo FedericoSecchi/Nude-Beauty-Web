@@ -11,7 +11,8 @@ import {
   slugDeArchivo,
   validarProductos,
 } from '../../lib/contenido.mjs';
-import { faltaMedioDePago } from '../../scripts/puerta-publicacion.mjs';
+import { avisoModoWhatsapp } from '../../scripts/puerta-publicacion.mjs';
+import { hayMedioDePago, modoVenta } from '../../lib/modo-venta.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -81,10 +82,20 @@ test('tienda: alias/CBU vacíos ("" de Decap) cuentan como sin dato', () => {
   assert.equal(t.descuentoTransferencia, 0.2);
 });
 
-test('puerta: sin MP y sin alias ni CBU no hay medio de pago', () => {
-  assert.match(faltaMedioDePago({ alias: null, cbu: null }, ''), /sin medio de pago/);
-  assert.equal(faltaMedioDePago({ alias: 'nude.mp', cbu: null }, ''), null);
-  assert.equal(faltaMedioDePago({ alias: null, cbu: '0'.repeat(22) }, undefined), null);
-  assert.equal(faltaMedioDePago({ alias: null, cbu: null }, 'APP_USR-x'), null);
-  assert.match(faltaMedioDePago({ alias: null, cbu: null }, '   '), /sin medio de pago/);
+test('modo de venta: sin MP y sin alias ni CBU → pedido por WhatsApp', () => {
+  assert.equal(modoVenta({ alias: null, cbu: null }, ''), 'whatsapp');
+  assert.equal(modoVenta({ alias: '', cbu: '  ' }, undefined), 'whatsapp');
+  assert.equal(modoVenta({ alias: null, cbu: null }, '   '), 'whatsapp');
+  assert.equal(modoVenta({ alias: null, cbu: null }, false), 'whatsapp');
+  assert.equal(modoVenta({ alias: 'nude.mp', cbu: null }, ''), 'checkout');
+  assert.equal(modoVenta({ alias: null, cbu: '0'.repeat(22) }, undefined), 'checkout');
+  assert.equal(modoVenta({ alias: null, cbu: null }, 'APP_USR-x'), 'checkout');
+  assert.equal(modoVenta({ alias: null, cbu: null }, true), 'checkout');
+  assert.equal(hayMedioDePago({ alias: null, cbu: null }, ''), false);
+});
+
+test('puerta: sin medio de pago avisa (modo WhatsApp), no bloquea', () => {
+  assert.match(avisoModoWhatsapp({ alias: null, cbu: null }, ''), /MODO PEDIDO POR WHATSAPP/);
+  assert.equal(avisoModoWhatsapp({ alias: 'nude.mp', cbu: null }, ''), null);
+  assert.equal(avisoModoWhatsapp({ alias: null, cbu: null }, 'APP_USR-x'), null);
 });

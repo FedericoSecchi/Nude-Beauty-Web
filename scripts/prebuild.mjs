@@ -5,6 +5,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { leerContenido, validarProductos } from '../lib/contenido.mjs';
+import { modoVenta } from '../lib/modo-venta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -49,7 +50,9 @@ if (process.env.NUDE_CONTENT_DIR) {
     process.exit(1);
   }
   await mkdir(outDir, { recursive: true });
-  const snapshot = { buildId: shortSha, productos, tienda, envios };
+  // Las functions deciden el modo con lo mismo que vio el build (no con el entorno de runtime).
+  const mpHabilitado = Boolean((process.env.MP_ACCESS_TOKEN || '').trim());
+  const snapshot = { buildId: shortSha, productos, tienda, envios, mpHabilitado };
   await writeFile(join(outDir, 'catalogo.json'), JSON.stringify(snapshot), 'utf8');
-  console.log(`[prebuild] catálogo snapshot: ${productos.length} productos`);
+  console.log(`[prebuild] catálogo snapshot: ${productos.length} productos · modo ${modoVenta(tienda, mpHabilitado)}`);
 }

@@ -37,6 +37,7 @@ verify-results.txt
 .env.production.local
 out-sinstock/
 out-mp/
+out-alias/
 
 # Miniaturas generadas en el build (scripts/miniaturas.mjs)
 public/img/productos/**/*-480w.webp

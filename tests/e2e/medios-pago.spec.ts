@@ -3,18 +3,26 @@ import { test, expect } from '@playwright/test';
 // Medios de pago según el flag de Mercado Pago del build (NEXT_PUBLIC_MP_HABILITADO, next.config.mjs).
 // E2E_MP=0 → carrito con un solo medio (transferencia) y ni "cuotas", ni "tarjeta", ni "Mercado Pago"
 // en las páginas públicas. E2E_MP=1 → transferencia y Mercado Pago, como antes.
+// E2E_MODO=whatsapp → sin medio de pago: el carrito no muestra selector (manda el pedido por WhatsApp).
 const MP = process.env.E2E_MP === '1';
+const WHATSAPP = process.env.E2E_MODO === 'whatsapp';
 const PALABRAS = /cuotas|tarjeta|mercado ?pago/i;
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/.netlify/scripts/cdp*', (route) => route.abort());
 });
 
-test(`carrito con ${MP ? 'transferencia y Mercado Pago' : 'un solo medio de pago'}`, async ({ page }) => {
+test(`carrito con ${WHATSAPP ? 'pedido por WhatsApp, sin selector de pago' : MP ? 'transferencia y Mercado Pago' : 'un solo medio de pago'}`, async ({ page }) => {
   await page.goto('/productos/serum-multi-active/');
   await page.getByRole('button', { name: /agregá al carrito/i }).first().click();
   await page.goto('/carrito/');
   const medios = page.locator('input[name="medio"]');
+  if (WHATSAPP) {
+    await expect(page.getByRole('link', { name: 'Enviar pedido por WhatsApp' })).toBeVisible();
+    await expect(medios).toHaveCount(0);
+    expect(await page.locator('body').innerText()).not.toMatch(PALABRAS);
+    return;
+  }
   await expect(medios.first()).toBeVisible();
   if (MP) {
     await expect(medios).toHaveCount(2);

@@ -6,6 +6,8 @@ import { site } from '@/lib/site';
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+// Sin medio de pago la tienda toma pedidos por WhatsApp (lib/modo-venta.mjs).
+const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 export const metadata: Metadata = {
   title: 'Política de privacidad',
@@ -31,6 +33,12 @@ export default function PrivacidadPage() {
           Información del pedido y del pago (manejada por{' '}
           {mpHabilitado ? 'Mercado Pago o por transferencia bancaria' : 'transferencia bancaria'}).
         </li>
+        {modoWhatsapp ? (
+          <li>
+            Si hacés el pedido por WhatsApp, los datos que escribís en el carrito viajan en tu
+            mensaje: los recibimos en el WhatsApp de la tienda y no se guardan en este sitio.
+          </li>
+        ) : null}
         <li>Datos técnicos (navegador, dispositivo) para que el sitio funcione.</li>
       </ul>
 
@@ -44,7 +52,8 @@ export default function PrivacidadPage() {
       <h2 className="font-heading text-2xl mt-8 mb-3">Con quién compartimos tus datos</h2>
       <p className="text-ink/80">
         Compartimos tus datos solo con quienes hacen falta para que el pedido llegue a tu casa:
-        {mpHabilitado ? ' Mercado Pago (procesamiento de pago),' : ''} la empresa de envíos y, si
+        {mpHabilitado ? ' Mercado Pago (procesamiento de pago),' : ''}
+        {modoWhatsapp ? ' WhatsApp (el canal por el que nos mandás el pedido),' : ''} la empresa de envíos y, si
         corresponde, la autoridad fiscal. No vendemos tus datos a terceros.
       </p>
 

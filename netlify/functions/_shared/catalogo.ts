@@ -8,6 +8,8 @@ interface Snapshot {
   productos: Producto[];
   tienda: AjustesTienda;
   envios: AjustesEnvios;
+  /** MP_ACCESS_TOKEN tenía valor en el build (scripts/prebuild.mjs). */
+  mpHabilitado?: boolean;
 }
 
 let cache: Snapshot | null = null;

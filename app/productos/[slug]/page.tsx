@@ -15,6 +15,8 @@ import { AddToCart } from './AddToCart';
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+// Sin medio de pago la tienda toma pedidos por WhatsApp (lib/modo-venta.mjs).
+const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 interface Params {
   slug: string;
@@ -127,10 +129,17 @@ export default async function ProductoPage({
                 {formatARS(p.precio)}
               </span>
             </div>
-            <p className="mt-1 text-sm text-muted-ink">
-              {formatARS(precioTransfer)} con transferencia (20% off) ·{' '}
-              {mpHabilitado ? `${tienda.cuotasTexto} · ` : ''}envíos a todo el país.
-            </p>
+            {modoWhatsapp ? (
+              <p className="mt-1 text-sm text-muted-ink">
+                20% off pagando con transferencia ({formatARS(precioTransfer)}) · envíos a todo el
+                país.
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-muted-ink">
+                {formatARS(precioTransfer)} con transferencia (20% off) ·{' '}
+                {mpHabilitado ? `${tienda.cuotasTexto} · ` : ''}envíos a todo el país.
+              </p>
+            )}
 
             {p.disponible ? (
               <div className="mt-3 md:mt-6">

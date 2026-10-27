@@ -6,6 +6,8 @@ import { site } from '@/lib/site';
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+// Sin medio de pago la tienda toma pedidos por WhatsApp (lib/modo-venta.mjs).
+const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 export const metadata: Metadata = {
   title: 'Términos y condiciones',
@@ -45,10 +47,19 @@ export default function TerminosPage() {
         {mpHabilitado ? (
           <li>Mercado Pago (tarjeta de crédito o débito y otros medios habilitados).</li>
         ) : null}
-        <li>
-          Transferencia bancaria con 20% off: al confirmar el pedido te mostramos los datos para
-          transferir.
-        </li>
+        {modoWhatsapp ? (
+          <li>
+            Por ahora los pedidos se hacen por WhatsApp: armás el carrito en la web y nos lo mandás
+            con el botón «Enviar pedido por WhatsApp». Te respondemos con los datos para pagar por
+            transferencia bancaria (20% off sobre el precio de lista) y coordinamos la entrega. El
+            pedido queda confirmado cuando recibimos el pago.
+          </li>
+        ) : (
+          <li>
+            Transferencia bancaria con 20% off: al confirmar el pedido te mostramos los datos para
+            transferir.
+          </li>
+        )}
       </ul>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Envíos</h2>

@@ -5,12 +5,16 @@ import { CarritoCliente } from './CarritoCliente';
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+// Sin medio de pago la tienda toma pedidos por WhatsApp (lib/modo-venta.mjs).
+const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 export const metadata: Metadata = {
   title: 'Carrito',
-  description: mpHabilitado
-    ? 'Revisá tu pedido, elegí la entrega y pagá con transferencia o Mercado Pago.'
-    : 'Revisá tu pedido, elegí la entrega y pagá con transferencia.',
+  description: modoWhatsapp
+    ? 'Revisá tu pedido, elegí la entrega y mandalo por WhatsApp.'
+    : mpHabilitado
+      ? 'Revisá tu pedido, elegí la entrega y pagá con transferencia o Mercado Pago.'
+      : 'Revisá tu pedido, elegí la entrega y pagá con transferencia.',
   robots: { index: false, follow: false },
 };
 

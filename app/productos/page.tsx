@@ -10,6 +10,8 @@ import { CategoryFilter } from './CategoryFilter';
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
+// Sin medio de pago la tienda toma pedidos por WhatsApp (lib/modo-venta.mjs).
+const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
 
 export const metadata: Metadata = {
   title: 'Productos de cosmética natural',
@@ -53,9 +55,10 @@ export default function ProductosPage() {
         </h1>
         <p className="mt-4 text-ink/80 max-w-prose">
           Todo el skincare natural de NUDE, en catorce productos: la rutina facial en orden —agua
-          micelar, contorno, sérum, crema—, cuidado corporal, kits y accesorios. Elegís, pagás con
-          transferencia{mpHabilitado ? ' o Mercado Pago' : ''} y te lo enviamos a cualquier punto del
-          país.
+          micelar, contorno, sérum, crema—, cuidado corporal, kits y accesorios.{' '}
+          {modoWhatsapp
+            ? 'Elegís, nos mandás el pedido por WhatsApp y te lo enviamos a cualquier punto del país.'
+            : `Elegís, pagás con transferencia${mpHabilitado ? ' o Mercado Pago' : ''} y te lo enviamos a cualquier punto del país.`}
         </p>
         <p className="mt-3 text-sm text-muted-ink">
           Precios en pesos argentinos. 20% off pagando con transferencia ·{' '}

@@ -8,6 +8,7 @@ import { validarPayload } from './_shared/validar';
 import { createPreference } from './_shared/mp';
 import { calcularTotal, PricingError, type MedioPago } from '../../lib/pricing';
 import { calcularEnvio, ShippingError } from '../../lib/shipping';
+import { modoVenta } from '../../lib/modo-venta.mjs';
 
 interface CarritoItemInput {
   slug: string;
@@ -84,6 +85,15 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     snapshot = loadSnapshot();
   } catch (err) {
     return serverError(`catálogo no disponible: ${(err as Error).message}`);
+  }
+
+  // Sin medio de pago el sitio está en modo pedido por WhatsApp: no se guardan pedidos ni se avisa
+  // a n8n (misma regla que el build, con lo que vio el build).
+  if (modoVenta(snapshot.tienda, snapshot.mpHabilitado ?? false) === 'whatsapp') {
+    return new Response(
+      JSON.stringify({ error: 'La tienda toma los pedidos por WhatsApp por ahora.' }),
+      { status: 409, headers: { 'content-type': 'application/json' } },
+    );
   }
 
   let totales;

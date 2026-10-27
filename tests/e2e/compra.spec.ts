@@ -27,6 +27,7 @@ test('e2e remoto: ficha → carrito → zona → transferencia → /pedido/ (req
   page,
   baseURL,
 }) => {
+  test.skip(process.env.E2E_MODO === 'whatsapp', 'modo pedido por WhatsApp: no se crean pedidos (pedido-whatsapp.spec.ts)');
   const token = process.env.E2E_TOKEN;
   if (!token || !baseURL?.startsWith('https://')) {
     test.skip(true, 'sin E2E_TOKEN o sin preview remoto');

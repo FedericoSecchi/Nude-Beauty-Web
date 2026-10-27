@@ -242,8 +242,9 @@ Capturas: `docs/capturas/revision-post-e6/`.
 ## Salida a producción (2026-10-26)
 | Bloque | Estado | Fecha | Evidencia |
 |---|---|---|---|
-| Medio de pago para producción | ⛔ bloqueado: faltan ALIAS y CBU | 2026-10-26 | la puerta frena el build de producción con «sin medio de pago» |
+| Medio de pago para producción | ✅ modo pedido por WhatsApp hasta que llegue el alias | 2026-10-27 | la puerta avisa y no bloquea; con alias vuelve el checkout normal |
 | MP por flag, puerta, panel, legales, Serum, e2e remoto | ✅ | 2026-10-26 | preview build-id `163a872bd43d` · verify.sh PASS=22 FAIL=0 SKIP=0 |
+| Modo «pedido por WhatsApp» automático | ✅ | 2026-10-27 | preview build-id `50e5e00f3d44` · verify.sh PASS=25 FAIL=0 SKIP=0 · ver reporte abajo |
 
 ### Reporte · salida a producción
 
@@ -315,3 +316,67 @@ Capturas: `docs/capturas/revision-post-e6/`.
 6. ⬜ Tiendanube: banner «Nos mudamos» con link a la web nueva. Apagarla cuando la web venda sin problemas.
 7. ⬜ (Opcional) Costos y plazos de envío por zona en el panel; Mercado Pago según §3.
 8. ⬜ (Pendiente) Revisión de abogado de términos y privacidad.
+
+### Reporte · modo «pedido por WhatsApp» (2026-10-27)
+
+**Estado: ✅ se puede publicar hoy.** Con alias, CBU y Mercado Pago vacíos, la puerta ya no frena producción: el build sale en **modo pedido por WhatsApp** y el log lo avisa. Quien compra arma el carrito en la web y lo manda por WhatsApp. Soledad le responde con los datos para pagar. Cuando se cargue el alias (o el CBU) en el panel, o el token de MP en Netlify, el próximo build vuelve solo al checkout normal, sin tocar código.
+
+#### 1. Checks con evidencia
+| Check | Resultado | Evidencia |
+|---|---|---|
+| `verify.sh` | ✅ PASS=25 FAIL=0 SKIP=0 | commit `50e5e00f3d44`, con e2e remoto incluido |
+| Regla única | ✅ | `lib/modo-venta.mjs` (`hayMedioDePago` / `modoVenta`). La usan `next.config.mjs` (`NEXT_PUBLIC_MODO_VENTA`), `scripts/prebuild.mjs` (snapshot con `mpHabilitado` del build), `crear-pedido` y la puerta. Unit test con alias / CBU / token / vacíos / espacios |
+| Mensaje de WhatsApp (unit, 3 carritos) | ✅ | `tests/unit/pedido-whatsapp.test.mjs`: 1 ítem con envío a coordinar; 3 productos (uno ×2) sin descuentos acumulables (solo 20%); acumulables y zona con costo (20% + 5% + envío). Se verifican todos los ítems, los precios de lista, el subtotal y el total con transferencia. Si un producto no tiene stock o no existe, no se arma el mensaje |
+| Sin «cuotas», «tarjeta» ni «Mercado Pago» en `out/` | ✅ | grep sobre HTML, RSC, JS, JSON y XML (sin `/admin/`) en `out/` (modo WhatsApp) y en `out-alias/` (checkout con alias). En el preview, e2e `medios-pago.spec.ts` sobre las 20 URLs del sitemap + /carrito/ + /pedido/ |
+| Carrito sin selector de pago | ✅ | e2e: 0 `input[name="medio"]`, sin «Pago», sin «Siguiente: tus datos» ni «Confirmar pedido». Además el JS de `out/` no trae el checkout y el de `out-alias/` y `out-mp/` no trae el botón de WhatsApp (constante de build) |
+| E2E ficha → carrito → wa.me con el total | ✅ local (mobile + desktop) y remoto | `pedido-whatsapp.spec.ts`: 2 unidades → el href es `https://wa.me/5493517033348?text=…` y el texto decodificado es **igual** al que arma `lib/pedido-whatsapp.ts` sobre el contenido real (total `$ 37.280`). Sin nombre ni teléfono, el botón no abre WhatsApp y pide los datos |
+| No se crean pedidos ni avisos | ✅ remoto | POST a `/.netlify/functions/crear-pedido` en el preview → **409** «La tienda toma los pedidos por WhatsApp por ahora.», antes de leer el body. No se escribe en Blobs ni se llama a n8n |
+| `CONTEXT=production npm run build` con el contenido real | ✅ rc=0, modo WhatsApp | `[puerta] AVISO: sin medio de pago … el sitio sale en MODO PEDIDO POR WHATSAPP …` · `[puerta] sin [CONFIRMAR] ni [REVISAR] en el sitio generado · modo pedido por WhatsApp` |
+| Build con alias de prueba (`out-alias/`, alias en un dir temporal, nunca commiteado) | ✅ checkout normal | `[puerta] … con medio de pago (checkout normal)`. Tests actuales en verde: carrito con 1 medio (transferencia), «home + ficha + add to cart», sin palabras de MP. `git grep prueba.verify.nude -- content` → vacío |
+| MP encendido (`out-mp/`) | ✅ sin cambios | 2 medios en el carrito, vuelven cuotas y Mercado Pago |
+| La puerta sigue bloqueando [CONFIRMAR] / [REVISAR] | ✅ | simulación en `verify.sh`: producción con `[CONFIRMAR]` falla también en modo WhatsApp; sin medio de pago y limpio pasa con aviso |
+| Preview | ✅ build-id `50e5e00f3d44` · 20/20 URLs del sitemap en 200 · 404 real | `scripts/preview-check.sh` |
+| E2E remoto sin reintentos | ✅ 5 passed, 1 skipped (`--retries=0`) | el skip es la compra por transferencia de `compra.spec.ts`, que en modo WhatsApp no corre. Vuelve a correr sola cuando haya alias |
+| Conflictos con main | ✅ | `origin/main` (`bfd9000`) ya está en la rama; no hizo falta rebase. GitHub: MERGEABLE |
+
+#### 2. Ejemplo real del mensaje (contenido actual: Serum ×2 + Crema, Gran Córdoba)
+```
+Hola! Quiero hacer este pedido:
+
+• 2 × Serum Multi Active ($ 23.300 c/u)
+• 1 × Crema Facial Porcelain ($ 23.450 c/u)
+
+Subtotal de lista: $ 70.050
+Con transferencia: $ 56.040 (20% off)
+Entrega: Gran Córdoba · a coordinar
+
+Nombre: Clienta Prueba
+Teléfono: 351 000 0000
+```
+Se abre en `https://wa.me/5493517033348?text=Hola!%20Quiero%20hacer%20este%20pedido%3A…` (el número es el del panel). Si la zona tiene costo, se suma la línea «Total con transferencia y envío». Si los descuentos acumulan, el texto dice «(20% off + 5% por cantidad)». El email va solo si lo completan. Debajo del botón dice: «Soledad te responde por WhatsApp con los datos para pagar y el envío.» Al tocar el botón se mide `click_whatsapp` en GA4 (si hay ID), con `value` igual al total con transferencia.
+
+#### 3. Cómo se pasa al checkout normal
+1. Soledad (o Fede) entra a `/admin/` → **Ajustes → Pagos y WhatsApp**, carga **Alias** (y **Titular**; CBU opcional) → **Publicar** → **Publicar ahora**.
+2. Decap commitea a `main` y Netlify redeploya. En ese build la regla da `checkout`: vuelven «Confirmar pedido», /pedido/ con alias y total, el pedido en Blobs y el aviso a n8n. El log de la puerta dice «con medio de pago (checkout normal)».
+3. Con Mercado Pago pasa lo mismo: token en Netlify (scope Builds + Functions) y redeploy (ver §3 del reporte anterior).
+4. Si se borran el alias y el CBU, la web vuelve sola al modo WhatsApp. Está explicado en `docs/guia-soledad.md` › «Cómo cargar el alias».
+
+#### 4. Qué cambió en textos
+- **Ficha:** precio de lista + «20% off pagando con transferencia ($ X) · envíos a todo el país». El CTA sigue siendo «Agregá al carrito».
+- **Catálogo:** «Elegís, nos mandás el pedido por WhatsApp y te lo enviamos…» (solo en modo WhatsApp).
+- **Términos › Medios de pago:** en modo WhatsApp explica que el pedido se manda por WhatsApp, que se paga por transferencia con 20% off con los datos que manda la tienda y que el pedido queda confirmado cuando se recibe el pago. En checkout, el texto de siempre.
+- **Privacidad:** en modo WhatsApp aclara que los datos viajan en el mensaje (no se guardan en el sitio) y suma WhatsApp como canal.
+- **Guía de Soledad:** «Mientras no haya alias: pedidos por WhatsApp» y «Cómo cargar el alias». No hay página de FAQ general; las FAQ de producto no hablan del medio de pago.
+
+#### 5. Decisiones tomadas sin consultar
+- 2026-10-27 · El modo se decide **en el build**, igual que el flag de MP: constante local `modoWhatsapp` en cada archivo, para que el minificador saque la rama que no se usa. `crear-pedido` decide con lo que vio el build (`mpHabilitado` en el snapshot), no con el entorno de runtime. Así sitio y functions no pueden quedar desfasados.
+- 2026-10-27 · En modo WhatsApp, `crear-pedido` responde 409 **antes** de leer el body. El primer e2e remoto detectó que validaba antes (400 con items vacío); se corrigió el orden, no el test.
+- 2026-10-27 · El botón es un link (`<a href="https://wa.me/…" target="_blank">`), así en el celular abre la app y el carrito queda abierto. Nombre y teléfono son obligatorios (si faltan, no abre); email opcional. El carrito no se vacía al mandar, por si hay que volver.
+- 2026-10-27 · En el mensaje, los montos usan espacio común en lugar del no separable de `Intl` (se lee igual y se puede buscar).
+- 2026-10-27 · `verify.sh`: build `out-alias/` con el alias en un directorio temporal (`NUDE_CONTENT_DIR`, no pisa el snapshot ni el contenido). El modo esperado del preview sale de la misma regla. El e2e remoto queda SKIP si hay cambios sin commitear: en la primera corrida se ejecutó contra el preview viejo porque el sha de HEAD coincidía.
+
+#### 6. Pendiente
+1. ⬜ Mergear el PR #2 (Fede). El deploy de producción tiene que mostrar en el log `[puerta] AVISO: … MODO PEDIDO POR WHATSAPP` y terminar bien.
+2. ⬜ Pedido de prueba real en nudecosmetica.com: carrito → «Enviar pedido por WhatsApp» → que llegue al WhatsApp de la tienda (+54 9 351 703-3348) con el total correcto.
+3. ⬜ Alias / titular / CBU de Soledad → cargarlos en el panel y confirmar que el siguiente deploy dice «checkout normal». Después, compra de prueba por transferencia (checklist de salida anterior, punto 3).
+4. ⬜ Mercado Pago (opcional), revisión de abogado de términos y privacidad, Instagram y Tiendanube: siguen como en el checklist de salida anterior.

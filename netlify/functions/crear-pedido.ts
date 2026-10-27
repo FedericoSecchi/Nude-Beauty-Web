@@ -58,6 +58,23 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     return new Response('method not allowed', { status: 405 });
   }
 
+  let snapshot;
+  try {
+    snapshot = loadSnapshot();
+  } catch (err) {
+    return serverError(`catálogo no disponible: ${(err as Error).message}`);
+  }
+
+  // Sin medio de pago el sitio está en modo pedido por WhatsApp: no se procesa ni se guarda ningún
+  // pedido ni se avisa a n8n (misma regla que el build, con lo que vio el build). Va antes de leer
+  // el body: en este modo cualquier POST se rechaza igual.
+  if (modoVenta(snapshot.tienda, snapshot.mpHabilitado ?? false) === 'whatsapp') {
+    return new Response(
+      JSON.stringify({ error: 'La tienda toma los pedidos por WhatsApp por ahora.' }),
+      { status: 409, headers: { 'content-type': 'application/json' } },
+    );
+  }
+
   let payload: Payload;
   try {
     payload = (await req.json()) as Payload;
@@ -80,21 +97,6 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
   }
 
   // Recálculo server-side desde el snapshot del build.
-  let snapshot;
-  try {
-    snapshot = loadSnapshot();
-  } catch (err) {
-    return serverError(`catálogo no disponible: ${(err as Error).message}`);
-  }
-
-  // Sin medio de pago el sitio está en modo pedido por WhatsApp: no se guardan pedidos ni se avisa
-  // a n8n (misma regla que el build, con lo que vio el build).
-  if (modoVenta(snapshot.tienda, snapshot.mpHabilitado ?? false) === 'whatsapp') {
-    return new Response(
-      JSON.stringify({ error: 'La tienda toma los pedidos por WhatsApp por ahora.' }),
-      { status: 409, headers: { 'content-type': 'application/json' } },
-    );
-  }
 
   let totales;
   let envio;

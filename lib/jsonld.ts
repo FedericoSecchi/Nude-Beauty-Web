@@ -1,5 +1,5 @@
 import { site } from './site';
-import type { Producto, AjustesTienda } from './types';
+import type { Producto, AjustesTienda, AjustesEnvios } from './types';
 import { absolute, urls } from './urls';
 import { precioConTransferencia } from './pricing';
 
@@ -45,7 +45,39 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
   };
 }
 
-export function productJsonLd(p: Producto, tienda: AjustesTienda) {
+// Política de cambios publicada en /cambios-y-devoluciones/ (10 días corridos, sellos intactos).
+// Google la busca dentro de `offers` (Search Console, 28-10-2026).
+const politicaDevolucion = {
+  '@type': 'MerchantReturnPolicy',
+  applicableCountry: 'AR',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+  merchantReturnDays: 10,
+  returnMethod: 'https://schema.org/ReturnByMail',
+  // Política de Soledad: el envío del cambio lo paga quien compra si es decisión propia.
+  returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+  itemCondition: 'https://schema.org/UnopenedCondition',
+};
+
+/**
+ * Solo zonas con costo fijo y códigos postales cargados: es lo único que se puede declarar sin
+ * mentirle a Google. Las zonas «a coordinar» no tienen precio, así que no van.
+ */
+export function shippingDetailsJsonLd(envios: AjustesEnvios) {
+  return envios.zonas
+    .filter((z) => z.modo === 'fijo' && z.costo > 0 && (z.codigosPostales?.length ?? 0) > 0)
+    .map((z) => ({
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: z.costo, currency: site.currency },
+      shippingDestination: {
+        '@type': 'DefinedRegion',
+        addressCountry: 'AR',
+        postalCode: z.codigosPostales,
+      },
+    }));
+}
+
+export function productJsonLd(p: Producto, tienda: AjustesTienda, envios: AjustesEnvios) {
+  const shippingDetails = shippingDetailsJsonLd(envios);
   const image = p.imagenes.map((img) =>
     img.startsWith('http') ? img : absolute(img),
   );
@@ -84,16 +116,8 @@ export function productJsonLd(p: Producto, tienda: AjustesTienda) {
           description: 'Pagando con transferencia (20% off)',
         },
       ],
-    },
-    hasMerchantReturnPolicy: {
-      '@type': 'MerchantReturnPolicy',
-      applicableCountry: 'AR',
-      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-      merchantReturnDays: 10,
-      returnMethod: 'https://schema.org/ReturnByMail',
-      // Política de Soledad: el envío del cambio lo paga quien compra si es decisión propia.
-      returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
-      itemCondition: 'https://schema.org/UnopenedCondition',
+      ...(shippingDetails.length > 0 ? { shippingDetails } : {}),
+      hasMerchantReturnPolicy: politicaDevolucion,
     },
   };
 }

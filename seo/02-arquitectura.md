@@ -60,7 +60,7 @@ Argentina: la Fase 2 la revalida por página.
 ## Clusters descartados o al backlog (y por qué)
 - "qué es la cosmética clean", "niacinamida para qué sirve", "bakuchiol vs retinol": informacionales → backlog de
   guías (etapa 3). Mientras, una pregunta corta en la FAQ de la ficha correspondiente.
-- "cosmética natural córdoba": se menciona en home y pie (origen Mendiolaza), sin página propia (no hay local a la calle).
+- Mercado = todo el país (decisión de Fede, 28-10-2026): Córdoba/Mendiolaza no van en title, H1 ni meta. El origen queda una sola vez en el cuerpo de la home (confianza: hecho a mano por Soledad), en la línea legal del pie y en el JSON-LD Organization.
 - Keywords con "acné", "estrías y celulitis" como tratamiento: solo si Soledad confirma respaldo (ver riesgo de claims).
 
 ## Páginas por zona

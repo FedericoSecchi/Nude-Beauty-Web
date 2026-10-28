@@ -23,7 +23,7 @@ export function Footer() {
         <div>
           <p className="font-heading text-2xl text-charcoal">nude</p>
           <p className="mt-3 text-sm text-muted-ink max-w-xs">
-            Cosmética natural hecha a mano por Soledad, en pequeños lotes, en Mendiolaza (Córdoba).
+            Cosmética natural hecha a mano por Soledad, en pequeños lotes. Envíos a todo el país.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export function Footer() {
       </div>
       <div className="border-t border-border py-4">
         <p className="container text-xs text-muted-ink">
-          © {new Date().getFullYear()} {site.name}. Hecho con cariño en Córdoba.
+          © {new Date().getFullYear()} {site.name}. Hecho con cariño en Argentina.
         </p>
       </div>
     </footer>

@@ -10,7 +10,11 @@
         "provincias": [
           "Córdoba"
         ],
-        "codigosPostales": []
+        "codigosPostales": [
+          "5105",
+          "5107",
+          "5109"
+        ]
       }
     },
     {

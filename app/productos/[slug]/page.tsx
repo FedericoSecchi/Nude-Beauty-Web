@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAjustesTienda, getProducto, getProductos, slugsIndexables } from '@/lib/catalogo';
+import { getAjustesEnvios, getAjustesTienda, getProducto, getProductos, slugsIndexables } from '@/lib/catalogo';
 import { formatARS } from '@/lib/format';
 import { precioConTransferencia } from '@/lib/pricing';
 import { JsonLd } from '@/components/JsonLd';
@@ -79,7 +79,7 @@ export default async function ProductoPage({
             { name: 'Productos', url: urls.productos },
             { name: p.nombre, url: urls.producto(p.slug) },
           ]),
-          productJsonLd(p, tienda),
+          productJsonLd(p, tienda, getAjustesEnvios()),
           ...(p.faq.length ? [faqJsonLd(p.faq)] : []),
         ]}
       />

@@ -5,9 +5,9 @@ const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
 export const site = {
   name: 'NUDE Cosmética Clean',
   shortName: 'NUDE',
-  tagline: 'Cosmética natural hecha a mano en Mendiolaza, Córdoba',
+  tagline: 'Cosmética natural hecha a mano, con envíos a todo el país',
   description:
-    'Cosmética natural y clean hecha a mano en pequeños lotes en Mendiolaza (Córdoba). Fórmulas con activos nombrados: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. ' +
+    'Cosmética natural y clean hecha a mano en pequeños lotes. Fórmulas con activos nombrados: niacinamida al 5%, bakuchiol, ácido hialurónico, péptidos. ' +
     (mpHabilitado
       ? '20% off por transferencia, 3 cuotas sin interés con Mercado Pago y envíos a todo el país.'
       : '20% off por transferencia y envíos a todo el país.'),

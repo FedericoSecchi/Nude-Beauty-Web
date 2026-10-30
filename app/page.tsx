@@ -13,10 +13,10 @@ import { waLink, waMessages } from '@/lib/whatsapp';
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
 
 export const metadata: Metadata = {
-  title: `${site.name} · cosmética clean hecha a mano en Córdoba`,
+  title: `${site.name} · cosmética natural hecha a mano`,
   description: site.description,
   openGraph: {
-    title: `${site.name} · cosmética clean hecha a mano en Córdoba`,
+    title: `${site.name} · cosmética natural hecha a mano`,
     description: site.description,
   },
 };
@@ -46,7 +46,7 @@ const porQueClean = [
   },
   {
     titulo: 'Hecho a mano, en pequeños lotes',
-    texto: 'Todo se hace a mano, en pequeños lotes, en Mendiolaza (Córdoba), y se envía a todo el país.',
+    texto: 'Todo se hace a mano, en pequeños lotes, y se envía a todo el país.',
     icono: (
       // Mano
       <path d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 1 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002" />
@@ -110,7 +110,7 @@ export default function HomePage() {
             nude
           </p>
           <h1 className="mt-4 font-heading text-2xl leading-tight text-charcoal md:text-4xl">
-            Cosmética clean hecha a mano en Córdoba
+            Cosmética natural y clean, hecha a mano
           </h1>
           <p className="mx-auto mt-3 max-w-md text-base text-ink/80 md:max-w-xl md:text-lg">
             Tu piel no necesita veinte productos: necesita los correctos, en orden.
@@ -138,8 +138,8 @@ export default function HomePage() {
       <section className="bg-bg py-16 md:py-24">
         <div className="container max-w-3xl text-center">
           <p className="font-heading text-2xl leading-snug text-charcoal md:text-3xl">
-            NUDE es cosmética clean de Mendiolaza, Córdoba: cosmética natural hecha a mano por
-            Soledad, en pequeños lotes. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido
+            NUDE es cosmética clean argentina: cosmética natural hecha a mano por Soledad, en
+            pequeños lotes en Mendiolaza (Córdoba), con envíos a todo el país. Cada activo va con su nombre: niacinamida al 5%, bakuchiol, ácido
             hialurónico, péptidos. Sin parabenos.
           </p>
         </div>

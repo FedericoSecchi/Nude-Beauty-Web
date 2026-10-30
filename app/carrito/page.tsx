@@ -25,6 +25,7 @@ export default function CarritoPage() {
     precio: p.precio,
     disponible: p.disponible,
     imagen: p.imagenes[0] ?? null,
+    variantes: p.variantes ?? [],
   }));
   // Con Mercado Pago apagado el texto de cuotas no viaja al navegador (ni el nombre del campo).
   const { cuotasTexto, ...tienda } = getAjustesTienda();

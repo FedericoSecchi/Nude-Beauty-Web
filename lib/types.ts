@@ -18,6 +18,8 @@ export interface Producto {
   disponible: boolean;
   imagenes: string[];
   tamano: string | null;
+  /** Tonos (o variantes) a elegir antes de agregar al carrito. Vacío = sin opciones. */
+  variantes?: string[];
   h1: string;
   resumen: string;
   activos: Activo[];

@@ -331,3 +331,38 @@ test('listarOpciones · aclaración de la zona y retiro gratis con el texto púb
   assert.equal(ops[0].aclaracion, 'Si no estás en la zona…');
   assert.deepEqual([ops[1].id, ops[1].costo, ops[1].plazoTexto], ['retiro', 0, 'Retiro gratis']);
 });
+
+// Tonos (gloss, Soledad 29-10-2026): con variantes el tono es obligatorio y tiene que existir.
+test('calcularLineas · con tonos exige uno válido y lo suma al nombre de la línea', () => {
+  const gloss = { ...producto('g', 16250), nombre: 'Gloss', variantes: ['Bronze', 'Crystal'] };
+  const [l] = pricing.calcularLineas([{ slug: 'g', cantidad: 1, variante: 'Bronze' }], [gloss]);
+  assert.equal(l.nombre, 'Gloss · Tono Bronze');
+  assert.equal(l.variante, 'Bronze');
+  assert.throws(() => pricing.calcularLineas([{ slug: 'g', cantidad: 1 }], [gloss]), /elegí el tono/);
+  assert.throws(
+    () => pricing.calcularLineas([{ slug: 'g', cantidad: 1, variante: 'Violeta' }], [gloss]),
+    /elegí el tono/,
+  );
+});
+
+test('calcularTotal · el mismo producto en dos tonos cuenta para el 5% por cantidad', () => {
+  const gloss = { ...producto('g', 10000), variantes: ['Bronze', 'Crystal'] };
+  const t = pricing.calcularTotal(
+    [
+      { slug: 'g', cantidad: 1, variante: 'Bronze' },
+      { slug: 'g', cantidad: 1, variante: 'Crystal' },
+    ],
+    [gloss],
+    tienda({ descuentosAcumulables: true }),
+    'transferencia',
+    0,
+  );
+  assert.equal(t.lineas.length, 2);
+  assert.equal(t.total, 15200); // 20.000 − 5% = 19.000 − 20% = 15.200
+});
+
+test('calcularLineas · sin tonos en el catálogo, un tono que mande el navegador se ignora', () => {
+  const [l] = pricing.calcularLineas([{ slug: 'a', cantidad: 1, variante: 'X' }], [producto('a', 5000)]);
+  assert.equal(l.nombre, producto('a', 5000).nombre);
+  assert.equal(l.variante, undefined);
+});

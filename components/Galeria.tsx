@@ -36,7 +36,7 @@ export function Galeria({ imagenes, alt }: Props) {
         ) : null}
       </div>
       {fotos.length > 1 ? (
-        <ul className="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="Fotos del producto">
+        <ul className="mt-2 flex gap-2 overflow-x-auto md:mt-3" aria-label="Fotos del producto">
           {fotos.map((src, i) => (
             <li key={src} className="shrink-0">
               <button
@@ -44,7 +44,7 @@ export function Galeria({ imagenes, alt }: Props) {
                 onClick={() => setActiva(i)}
                 aria-label={`Ver foto ${i + 1} de ${fotos.length}`}
                 aria-current={i === activa ? 'true' : undefined}
-                className={`block h-16 w-16 overflow-hidden rounded border-2 bg-soft ${
+                className={`block h-11 w-11 md:h-16 md:w-16 overflow-hidden rounded border-2 bg-soft ${
                   i === activa ? 'border-charcoal' : 'border-transparent opacity-80 hover:opacity-100'
                 }`}
               >

@@ -10,7 +10,7 @@ import { modoVenta } from '../../lib/modo-venta.mjs';
 import { CANTIDAD_MAX } from './_shared/validar';
 
 interface Payload {
-  items: { slug: string; cantidad: number }[];
+  items: { slug: string; cantidad: number; variante?: string }[];
   comprador: { nombre: string; telefono: string; email?: string; dni?: string };
   entrega: { modo: 'retiro' } | { modo: 'envio'; zonaId: string };
 }
@@ -45,6 +45,9 @@ function validar(p: any): Payload {
     if (!it || typeof it.slug !== 'string') throw new Error('item sin slug válido');
     if (!Number.isInteger(it.cantidad) || it.cantidad < 1 || it.cantidad > CANTIDAD_MAX) {
       throw new Error(`cantidad inválida para ${it.slug}: entre 1 y ${CANTIDAD_MAX}`);
+    }
+    if (it.variante !== undefined && (typeof it.variante !== 'string' || it.variante.length > 60)) {
+      throw new Error(`tono inválido para ${it.slug}`);
     }
   }
   const comprador = {
@@ -88,7 +91,7 @@ export default async (req: Request): Promise<Response> => {
       snapshot.envios,
     );
     const pedido = armarPedidoWhatsapp(
-      payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+      payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
       snapshot.productos,
       snapshot.tienda,
       {

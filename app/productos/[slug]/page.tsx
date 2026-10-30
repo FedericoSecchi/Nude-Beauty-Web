@@ -134,7 +134,7 @@ export default async function ProductoPage({
 
             {p.disponible ? (
               <div className="mt-3 md:mt-6">
-                <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} />
+                <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} variantes={p.variantes} />
                 <p className="mt-2 text-xs text-muted-ink">
                   Elegís la entrega en el paso siguiente.
                 </p>

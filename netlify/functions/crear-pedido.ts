@@ -13,6 +13,7 @@ import { modoVenta } from '../../lib/modo-venta.mjs';
 interface CarritoItemInput {
   slug: string;
   cantidad: number;
+  variante?: string;
 }
 
 interface Payload {
@@ -113,12 +114,12 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
             cp: payload.entrega.cp,
             localidad: payload.entrega.localidad,
             provincia: payload.entrega.provincia,
-            items: payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+            items: payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
           }
         : null,
     );
     totales = calcularTotal(
-      payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+      payload.items.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
       snapshot.productos,
       snapshot.tienda,
       payload.medioPago,
@@ -168,6 +169,7 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     items: totales.lineas.map((l) => ({
       slug: l.slug,
       nombre: l.nombre,
+      ...(l.variante ? { variante: l.variante } : {}),
       cantidad: l.cantidad,
       precioUnitario: l.precioUnitario,
     })),

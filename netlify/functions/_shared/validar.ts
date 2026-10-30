@@ -29,6 +29,9 @@ export function validarPayload(payload: any): void {
     if (!Number.isInteger(it.cantidad) || it.cantidad < 1 || it.cantidad > CANTIDAD_MAX) {
       throw new Error(`cantidad inválida para ${it.slug}: entre 1 y ${CANTIDAD_MAX}`);
     }
+    if (it.variante !== undefined && (typeof it.variante !== 'string' || it.variante.length > 60)) {
+      throw new Error(`tono inválido para ${it.slug}`);
+    }
   }
   assertString(payload.comprador?.nombre, 'nombre', 120);
   assertEmail(payload.comprador?.email);

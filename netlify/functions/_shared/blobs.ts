@@ -78,6 +78,7 @@ export interface PedidoGuardado extends SeguimientoAviso {
   items: {
     slug: string;
     nombre: string;
+    variante?: string;
     cantidad: number;
     precioUnitario: number;
   }[];

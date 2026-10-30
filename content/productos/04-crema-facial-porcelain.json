@@ -3,9 +3,10 @@
   "precio": 23450,
   "disponible": true,
   "imagenes": [
-    "/img/productos/crema-facial-porcelain/01.webp"
+    "/img/productos/crema-facial-porcelain/01.webp",
+    "/img/productos/crema-facial-porcelain/02.webp"
   ],
-  "tamano": null,
+  "tamano": "50 ml",
   "resumen": "Crema facial natural para todo tipo de piel, hidratante y antiage. Lleva células madre vegetales Green Cell (Camellia sinensis), alantoína, proteína de trigo hidrolizada, liposomas de colágeno y elastina, y aceites de rosa mosqueta, argán y jojoba. Se usa de día y de noche. Textura ligera, aroma a azahar, palmarosa y vainilla. Contiene trigo.",
   "ingredientes": "Células madre, centella asiática, proteína de trigo hidrolizada, liposomas de colágeno y elastina, provitamina B5, vit E, aceites de pepita de uva, jojoba, argán, rosa mosqueta, agua de rosas, aloe vera, té verde, manzanilla, hamamelis, lavanda, neroli, palmarosa, vainilla. Contiene trigo (proteína de trigo hidrolizada).",
   "modoDeUso": "Aplicá en rostro, cuello y escote después del serum. Si es de día, seguí con protector solar. Para todo tipo de piel.",

@@ -3,7 +3,8 @@
   "precio": 8200,
   "disponible": true,
   "imagenes": [
-    "/img/productos/vincha-con-velcro/01.webp"
+    "/img/productos/vincha-con-velcro/01.webp",
+    "/img/productos/vincha-con-velcro/02.webp"
   ],
   "tamano": null,
   "resumen": "Vincha ajustable con velcro: sujeta el pelo mientras hacés la rutina o te lavás la cara.",

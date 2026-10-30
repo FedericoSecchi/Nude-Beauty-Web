@@ -3,9 +3,11 @@
   "precio": 16250,
   "disponible": true,
   "imagenes": [
-    "/img/productos/creamy-gloss-blush-2-en-1/01.webp"
+    "/img/productos/creamy-gloss-blush-2-en-1/01.webp",
+    "/img/productos/creamy-gloss-blush-2-en-1/02.webp",
+    "/img/productos/creamy-gloss-blush-2-en-1/03.webp"
   ],
-  "tamano": null,
+  "tamano": "10 ml",
   "resumen": "Gloss para labios y rubor en crema en un mismo envase. Acabado luminoso, no pegajoso. Sin fragancias ni alcoholes, con mantecas de karité, mango y cacao, aceites de jojoba, ricino y coco, fitoescualeno, vitamina E, pigmentos naturales y micas.",
   "ingredientes": "Manteca de karité, manteca de mango, manteca de cacao, aceite de jojoba, aceite de ricino, fitoescualeno, vitamina E, aceite de coco, caprylic/capric triglyceride, pigmentos naturales y micas.",
   "modoDeUso": "Usalo como gloss en los labios o como rubor en crema en las mejillas.",
@@ -40,7 +42,7 @@
       },
       {
         "q": "¿Qué colores hay?",
-        "a": "Consultá los colores disponibles por WhatsApp antes de comprar."
+        "a": "Hay 5 tonos: Baby Pink, Strawberry, Bronze, Champagne y Crystal."
       }
     ],
     "relacionados": [],

@@ -3,7 +3,10 @@
   "precio": 159400,
   "disponible": true,
   "imagenes": [
-    "/img/productos/nude-bag/01.webp"
+    "/img/productos/nude-bag/01.webp",
+    "/img/productos/nude-bag/02.webp",
+    "/img/productos/nude-bag/03.webp",
+    "/img/productos/nude-bag/04.webp"
   ],
   "tamano": null,
   "resumen": "Set de regalo con la rutina facial completa y sus accesorios: Agua Micelar Bifásica, Crema Facial Porcelain, Contorno de ojos Gleaming Eyes, Serum Transformación, Serum Multi Active, Pads Desmaquillantes (x2), Vincha con velcro y Toalla Microfibra.",

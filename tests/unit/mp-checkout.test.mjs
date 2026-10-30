@@ -85,7 +85,9 @@ test('preferencia · 500 carritos al azar: siempre suma exacta y precios > 0', (
     const carrito = [];
     for (let j = 0; j < lineas; j++) {
       const p = disponibles[rnd(disponibles.length)];
-      if (!carrito.some((c) => c.slug === p.slug)) carrito.push({ slug: p.slug, cantidad: 1 + rnd(20) });
+      // Con tonos (gloss), uno al azar: el servidor lo exige.
+      const variante = p.variantes?.length ? p.variantes[rnd(p.variantes.length)] : undefined;
+      if (!carrito.some((c) => c.slug === p.slug)) carrito.push({ slug: p.slug, cantidad: 1 + rnd(20), variante });
     }
     chequear(itemsDe(carrito, rnd(3) * 3000), JSON.stringify(carrito));
   }

@@ -35,6 +35,7 @@ interface ProductoResumen {
   precio: number;
   disponible: boolean;
   imagen: string | null;
+  variantes: string[];
 }
 
 interface Props {
@@ -49,7 +50,11 @@ interface CartItem {
   cantidad: number;
   nombre: string;
   precio: number;
+  variante?: string;
 }
+
+// Una línea por producto y tono: el mismo gloss en dos tonos son dos líneas.
+const claveItem = (it: { slug: string; variante?: string }) => `${it.slug}|${it.variante ?? ''}`;
 
 function readCart(): CartItem[] {
   try {
@@ -145,6 +150,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
     disponible: i.disponible,
     imagenes: [],
     tamano: null,
+    variantes: productosPorSlug.get(i.slug)?.variantes ?? [],
     h1: '',
     resumen: '',
     activos: [],
@@ -163,7 +169,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
   let errorPreview: string | null = null;
   try {
     const lineas = calcularLineas(
-      itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+      itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
       productosCat,
     );
     const dres = calcularDescuentos(lineas, tienda, medio);
@@ -190,7 +196,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
   if (modoWhatsapp && !errorPreview && opcionElegida && todosDisponibles) {
     try {
       pedidoWa = armarPedidoWhatsapp(
-        itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+        itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
         productosCat,
         tienda,
         { nombre: opcionElegida.nombre, costo: costoEnvio, retiro: esRetiro },
@@ -220,6 +226,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
           items: itemsNormalizados.map((i) => ({
             item_id: i.slug,
             item_name: i.nombre,
+            ...(i.variante ? { item_variant: i.variante } : {}),
             price: i.precio,
             quantity: i.cantidad,
           })),
@@ -242,7 +249,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
-              items: itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+              items: itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
               comprador: {
                 nombre: comprador.nombre,
                 telefono: comprador.telefono,
@@ -267,16 +274,16 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
     }
   };
 
-  const cambiarCantidad = (slug: string, cantidad: number) => {
+  const cambiarCantidad = (clave: string, cantidad: number) => {
     const siguiente = items
-      .map((it) => (it.slug === slug ? { ...it, cantidad } : it))
+      .map((it) => (claveItem(it) === clave ? { ...it, cantidad } : it))
       .filter((it) => it.cantidad > 0);
     setItems(siguiente);
     writeCart(siguiente);
   };
 
-  const quitar = (slug: string) => {
-    const siguiente = items.filter((it) => it.slug !== slug);
+  const quitar = (clave: string) => {
+    const siguiente = items.filter((it) => claveItem(it) !== clave);
     setItems(siguiente);
     writeCart(siguiente);
   };
@@ -311,7 +318,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
     setEnviando(true);
 
     const payload = {
-      items: itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad })),
+      items: itemsNormalizados.map((i) => ({ slug: i.slug, cantidad: i.cantidad, variante: i.variante })),
       comprador: {
         nombre: comprador.nombre,
         email: comprador.email,
@@ -368,7 +375,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
       <section>
         <ul className="divide-y divide-border border-y border-border">
           {itemsNormalizados.map((it) => (
-            <li key={it.slug} className="py-4 flex items-center gap-4">
+            <li key={claveItem(it)} className="py-4 flex items-center gap-4">
               <div className="relative w-16 h-20 bg-soft rounded overflow-hidden flex-shrink-0">
                 {it.imagen ? (
                   <Image
@@ -384,6 +391,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
                 <Link href={urls.producto(it.slug)} className="link-ghost">
                   {it.nombre}
                 </Link>
+                {it.variante ? <p className="text-sm text-ink/80">Tono: {it.variante}</p> : null}
                 {!it.disponible ? (
                   <p className="text-xs text-destructive mt-1">Sin stock</p>
                 ) : (
@@ -393,21 +401,21 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <label htmlFor={`q-${it.slug}`} className="sr-only">Cantidad</label>
+                <label htmlFor={`q-${claveItem(it)}`} className="sr-only">Cantidad</label>
                 <input
-                  id={`q-${it.slug}`}
+                  id={`q-${claveItem(it)}`}
                   type="number"
                   min={0}
                   max={20}
                   value={it.cantidad}
                   onChange={(e) =>
-                    cambiarCantidad(it.slug, Math.min(20, Math.max(0, Math.floor(Number(e.target.value)) || 0)))
+                    cambiarCantidad(claveItem(it), Math.min(20, Math.max(0, Math.floor(Number(e.target.value)) || 0)))
                   }
                   className="w-16 rounded border border-border bg-card px-3 py-2 text-center"
                 />
                 <button
                   type="button"
-                  onClick={() => quitar(it.slug)}
+                  onClick={() => quitar(claveItem(it))}
                   className="text-sm text-muted-ink hover:text-destructive underline underline-offset-2"
                   aria-label={`Quitar ${it.nombre}`}
                 >

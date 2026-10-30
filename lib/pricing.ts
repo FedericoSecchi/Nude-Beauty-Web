@@ -11,11 +11,15 @@ export type MedioPago = 'mercadopago' | 'transferencia';
 export interface CarritoItem {
   slug: string;
   cantidad: number;
+  /** Tono elegido, si el producto tiene variantes (ej. los colores del gloss). */
+  variante?: string;
 }
 
 export interface LineaCalculada {
   slug: string;
+  /** Incluye el tono: «Creamy Gloss… · Tono Strawberry». Así llega igual al mensaje, a MP y al aviso. */
   nombre: string;
+  variante?: string;
   cantidad: number;
   precioUnitario: number;
   subtotal: number;
@@ -68,9 +72,19 @@ export function calcularLineas(
     if (!Number.isFinite(prod.precio) || prod.precio <= 0) {
       throw new PricingError(`precio inválido en catálogo: ${item.slug}`, item.slug);
     }
+    // Con variantes, el tono es obligatorio y tiene que existir en el catálogo. Sin variantes, se ignora.
+    const variantes = prod.variantes ?? [];
+    let variante: string | undefined;
+    if (variantes.length > 0) {
+      if (typeof item.variante !== 'string' || !variantes.includes(item.variante)) {
+        throw new PricingError(`elegí el tono de ${prod.nombre}`, item.slug);
+      }
+      variante = item.variante;
+    }
     lineas.push({
       slug: prod.slug,
-      nombre: prod.nombre,
+      nombre: variante ? `${prod.nombre} · Tono ${variante}` : prod.nombre,
+      ...(variante ? { variante } : {}),
       cantidad,
       precioUnitario: prod.precio,
       subtotal: prod.precio * cantidad,

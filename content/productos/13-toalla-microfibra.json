@@ -3,7 +3,9 @@
   "precio": 8200,
   "disponible": true,
   "imagenes": [
-    "/img/productos/toalla-microfibra/01.webp"
+    "/img/productos/toalla-microfibra/01.webp",
+    "/img/productos/toalla-microfibra/02.webp",
+    "/img/productos/toalla-microfibra/03.webp"
   ],
   "tamano": null,
   "resumen": "Toalla de microfibra para secar el rostro después de la rutina de skincare. Absorbe rápido, así no hace falta frotar la piel: la apoyás y la levantás. Para uso diario.",

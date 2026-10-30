@@ -64,6 +64,7 @@ collections:
         max: 10
         field: { name: imagen, label: Foto, widget: image }
       - { name: tamano, label: Tamaño, hint: "Ejemplo: 30 ml. Si no lo sabés, dejalo vacío.", widget: string, required: false }
+      - { name: variantes, label: Tonos, hint: "Solo si el producto viene en varios tonos (como el gloss): agregá uno por cada tono. Si no tiene, dejalo vacío.", widget: list, required: false, field: { name: tono, label: Tono, widget: string } }
       - { name: resumen, label: Descripción corta, widget: text }
       - { name: ingredientes, label: Ingredientes, widget: text }
       - { name: modoDeUso, label: Cómo se usa, widget: text }

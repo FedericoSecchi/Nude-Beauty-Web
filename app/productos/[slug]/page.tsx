@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { getAjustesEnvios, getAjustesTienda, getProducto, getProductos, slugsIndexables } from '@/lib/catalogo';
 import { formatARS } from '@/lib/format';
 import { precioConTransferencia } from '@/lib/pricing';
@@ -11,6 +10,7 @@ import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from '@/lib/jsonld';
 import { urls } from '@/lib/urls';
 import { waLink, waMessages } from '@/lib/whatsapp';
 import { AddToCart } from './AddToCart';
+import { Galeria } from '@/components/Galeria';
 
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
@@ -108,16 +108,7 @@ export default async function ProductoPage({
             ) : null}
           </h1>
 
-          <div className="order-2 md:order-none md:col-start-1 md:row-start-1 md:row-span-4 md:self-start mt-3 md:mt-0 relative h-[30vh] md:h-auto md:aspect-[4/5] bg-soft rounded-lg overflow-hidden md:shadow-soft">
-            <Image
-              src={p.imagenes[0]}
-              alt={p.nombre}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-contain md:object-cover"
-              priority
-            />
-          </div>
+          <Galeria imagenes={p.imagenes} alt={p.nombre} />
 
           <p className="order-4 md:order-none md:col-start-2 md:row-start-2 mt-6 md:mt-3 text-ink/80">
             {p.resumen}
@@ -143,7 +134,7 @@ export default async function ProductoPage({
 
             {p.disponible ? (
               <div className="mt-3 md:mt-6">
-                <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} />
+                <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} variantes={p.variantes} />
                 <p className="mt-2 text-xs text-muted-ink">
                   Elegís la entrega en el paso siguiente.
                 </p>

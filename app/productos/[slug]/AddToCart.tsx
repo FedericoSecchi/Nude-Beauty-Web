@@ -10,6 +10,8 @@ interface Props {
   slug: string;
   nombre: string;
   precio: number;
+  /** Tonos a elegir (ej. gloss). Vacío = sin selector. */
+  variantes?: string[];
 }
 
 const KEY = 'nude.carrito.v1';
@@ -19,6 +21,7 @@ interface CartItem {
   cantidad: number;
   nombre: string;
   precio: number;
+  variante?: string;
 }
 
 function readCart(): CartItem[] {
@@ -44,8 +47,10 @@ function writeCart(items: CartItem[]) {
   }
 }
 
-export function AddToCart({ slug, nombre, precio }: Props) {
+export function AddToCart({ slug, nombre, precio, variantes = [] }: Props) {
   const [cantidad, setCantidad] = useState(1);
+  const [variante, setVariante] = useState<string | null>(null);
+  const [faltaTono, setFaltaTono] = useState(false);
   const [agregado, setAgregado] = useState(false);
   const [ctaFuera, setCtaFuera] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -60,12 +65,19 @@ export function AddToCart({ slug, nombre, precio }: Props) {
   }, []);
 
   const agregar = () => {
+    // Con tonos, hay que elegir uno antes de agregar (el servidor también lo exige).
+    if (variantes.length > 0 && !variante) {
+      setFaltaTono(true);
+      ctaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const v = variantes.length > 0 && variante ? variante : undefined;
     const items = readCart();
-    const existente = items.find((i) => i.slug === slug);
+    const existente = items.find((i) => i.slug === slug && (i.variante ?? undefined) === v);
     if (existente) {
       existente.cantidad = Math.min(20, existente.cantidad + cantidad);
     } else {
-      items.push({ slug, cantidad, nombre, precio });
+      items.push({ slug, cantidad, nombre, precio, ...(v ? { variante: v } : {}) });
     }
     writeCart(items);
     setAgregado(true);
@@ -77,7 +89,15 @@ export function AddToCart({ slug, nombre, precio }: Props) {
           {
             currency: 'ARS',
             value: precio * cantidad,
-            items: [{ item_id: slug, item_name: nombre, price: precio, quantity: cantidad }],
+            items: [
+              {
+                item_id: slug,
+                item_name: nombre,
+                ...(v ? { item_variant: v } : {}),
+                price: precio,
+                quantity: cantidad,
+              },
+            ],
           },
         );
       } catch {
@@ -88,6 +108,39 @@ export function AddToCart({ slug, nombre, precio }: Props) {
 
   return (
     <div>
+      {variantes.length > 0 ? (
+        <fieldset className="mb-3 md:mb-4">
+          <legend className="text-sm font-medium text-charcoal">
+            Tono{variante ? `: ${variante}` : ''}
+          </legend>
+          <div className="mt-1.5 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+            {variantes.map((t) => (
+              <label key={t} className="shrink-0 cursor-pointer">
+                <input
+                  type="radio"
+                  name="tono"
+                  value={t}
+                  checked={variante === t}
+                  onChange={() => {
+                    setVariante(t);
+                    setFaltaTono(false);
+                    setAgregado(false);
+                  }}
+                  className="peer sr-only"
+                />
+                <span className="inline-block rounded-full border border-border bg-card px-3 py-1 text-sm whitespace-nowrap peer-checked:border-charcoal peer-checked:bg-charcoal peer-checked:text-bg peer-focus-visible:ring-2 peer-focus-visible:ring-charcoal">
+                  {t}
+                </span>
+              </label>
+            ))}
+          </div>
+          {faltaTono ? (
+            <p role="alert" className="mt-2 text-sm text-destructive">
+              Elegí un tono para agregarlo al carrito.
+            </p>
+          ) : null}
+        </fieldset>
+      ) : null}
       <div ref={ctaRef} data-testid="cta-principal" className="flex items-center gap-3">
         <label htmlFor="cantidad" className="sr-only">
           Cantidad

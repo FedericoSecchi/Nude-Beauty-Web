@@ -3,7 +3,11 @@
   "precio": 15000,
   "disponible": true,
   "imagenes": [
-    "/img/productos/pads-desmaquillantes/01.webp"
+    "/img/productos/pads-desmaquillantes/01.webp",
+    "/img/productos/pads-desmaquillantes/02.webp",
+    "/img/productos/pads-desmaquillantes/03.webp",
+    "/img/productos/pads-desmaquillantes/04.webp",
+    "/img/productos/pads-desmaquillantes/05.webp"
   ],
   "tamano": "10 cm · 2 unidades con bolsita",
   "resumen": "Dos pads desmaquillantes reutilizables de 10 cm de diámetro, con bolsita. Cada pad tiene un lado de polar soft y el otro de microfibra. Se usan con el limpiador, como el Agua Micelar Bifásica.",

@@ -3,9 +3,12 @@
   "precio": 40500,
   "disponible": true,
   "imagenes": [
-    "/img/productos/crema-corporal-velvet/01.webp"
+    "/img/productos/crema-corporal-velvet/01.webp",
+    "/img/productos/crema-corporal-velvet/02.webp",
+    "/img/productos/crema-corporal-velvet/03.webp",
+    "/img/productos/crema-corporal-velvet/04.webp"
   ],
-  "tamano": null,
+  "tamano": "250 ml",
   "resumen": "Crema corporal reafirmante, también para manos. Lleva manteca de karité, urea, alantoína, centella asiática, ginkgo biloba, aceite de rosa mosqueta y liposomas de cafeína-carnitina. Deja la piel más tersa y flexible, y ayuda a mejorar la apariencia de estrías y celulitis. Aroma a azahar, palmarosa y lavanda.",
   "ingredientes": "Manteca de karité, centella asiática, liposomas de cafeína-carnitina, urea, alantoína, aceite de rosa mosqueta, provitamina B5, vit E, aceites de jojoba, coco cáprico caprílico y palta, agua de rosas, aloe vera, caléndula, manzanilla, glicerina vegetal, neroli, palmarosa, lavanda.",
   "modoDeUso": "Aplicá en cuerpo y manos al menos dos veces por día, mejor después de la ducha. Día y noche.",

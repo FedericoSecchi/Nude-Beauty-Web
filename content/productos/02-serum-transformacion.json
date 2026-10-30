@@ -3,9 +3,12 @@
   "precio": 34550,
   "disponible": true,
   "imagenes": [
-    "/img/productos/serum-transformacion/01.webp"
+    "/img/productos/serum-transformacion/01.webp",
+    "/img/productos/serum-transformacion/02.webp",
+    "/img/productos/serum-transformacion/03.webp",
+    "/img/productos/serum-transformacion/04.webp"
   ],
-  "tamano": null,
+  "tamano": "30 ml",
   "resumen": "Serum de noche con bakuchiol, liposomas de retinoides (retinyl acetate), ácido hialurónico al 1% y péptidos Matrixil-Syn Coll. Pensado para arrugas y líneas de expresión, manchas y luminosidad, y para fortalecer la barrera de la piel. Aroma a azahar y palmarosa.",
   "ingredientes": "Bakuchiol, liposomas de retinoides (retinyl acetate), Matrixil-Syn Coll (palmitoyl tripeptide-5), ácido hialurónico de alto y bajo peso molecular, aceite de pepitas de uva (resveratrol), jojoba, coco fraccionado, hidrolato de lavanda, centella asiática, aloe vera, hamamelis, extracto de avena, vit E, pro-vit B5, neroli y palmarosa.",
   "modoDeUso": "Usalo solo de noche. Después del agua micelar y el contorno de ojos, ponete 3 gotas en rostro, cuello y escote. Al día siguiente usá protector solar y evitá exponerte al sol.",

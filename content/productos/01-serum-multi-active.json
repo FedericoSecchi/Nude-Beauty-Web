@@ -1,18 +1,14 @@
 {
-  "nombre": "Serum Multi Active",
-  "precio": 23300,
-  "disponible": true,
+  "resumen": "Serum 5 en 1 que trabaja sobre manchas, poros, hidratación y luminosidad. Formulado con niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico de alto y bajo peso molecular, Centella asiática y pro-vitamina B5. La vitamina C es estable y no irritante, y el serum está indicado para piel sensible. Textura ligera, aroma a azahar. Día y noche.",
   "imagenes": [
     "/img/productos/serum-multi-active/01.webp"
   ],
   "tamano": "30 ml",
-  "resumen": "Serum 5 en 1 que trabaja sobre manchas, poros, hidratación y luminosidad. Lleva niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico de alto y bajo peso molecular, péptidos Matrixil-Syn Coll y pro-vitamina B5. La vitamina C es estable y no irritante, y el serum está indicado para piel sensible. Textura ligera, aroma a azahar y palmarosa. Día y noche.",
-  "ingredientes": "Niacinamida (vit B3), liposomas de vitamina C estable (sodium ascorbate), Matrixil-Syn Coll (palmitoyl tripeptide-5), elastina, ácido hialurónico de alto y bajo peso molecular, pro-vitamina B5, centella asiática, aloe vera, hamamelis, aceites esenciales de neroli (azahar) y palmarosa.",
   "modoDeUso": "Después de limpiar la piel con el agua micelar, ponete 3 gotas en el rostro (frente y mejillas), dejá secar unos segundos y seguí con la crema facial y el protector solar. También va en cuello y escote. Día y noche.",
+  "precio": 23300,
+  "nombre": "Serum Multi-Active",
+  "disponible": true,
   "avanzado": {
-    "slug": "serum-multi-active",
-    "categoria": "face",
-    "h1": "Serum Multi Active con niacinamida y vitamina C, apto para piel sensible",
     "activos": [
       {
         "nombre": "Niacinamida al 5%",
@@ -31,12 +27,22 @@
         "queHace": "Acompañan el efecto del serum sobre rojeces e hinchazón."
       }
     ],
-    "pasoRutina": 3,
     "beneficios": [
       "Textura ligera, se absorbe rápido",
       "Aroma a azahar y palmarosa",
       "Pensado para piel sensible",
       "Hidrata, da luminosidad y empareja el tono"
+    ],
+    "h1": "Serum Multi Active con niacinamida y vitamina C, apto para piel sensible",
+    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/serum-multi-active/",
+    "slug": "serum-multi-active",
+    "categoria": "face",
+    "relacionados": [
+      "agua-micelar-bifasica",
+      "contorno-de-ojos-gleaming-eyes",
+      "crema-facial-porcelain",
+      "serum-transformacion",
+      "kit-facial-new-skin"
     ],
     "faq": [
       {
@@ -60,18 +66,12 @@
         "a": "Después del agua micelar y el contorno de ojos, antes de la crema facial. De día, terminá con protector solar."
       }
     ],
-    "relacionados": [
-      "agua-micelar-bifasica",
-      "contorno-de-ojos-gleaming-eyes",
-      "crema-facial-porcelain",
-      "serum-transformacion",
-      "kit-facial-new-skin"
-    ],
+    "avisoPatch": true,
+    "pasoRutina": 3,
     "seo": {
       "title": "Serum Multi Active con niacinamida 5% y vitamina C",
       "description": "Serum clean con niacinamida al 5%, vitamina C estable en liposomas, ácido hialurónico y péptidos. Para rostro, cuello y escote. 20% off por transferencia y envíos a todo el país."
-    },
-    "avisoPatch": true,
-    "tiendanubeUrl": "https://nudecosmeticaclean.mitiendanube.com/productos/serum-multi-active/"
-  }
+    }
+  },
+  "ingredientes": "Niacinamida (vit B3), liposomas de vitamina C estable (sodium ascorbate), ácido hialurónico de alto y bajo peso molecular, pro-vitamina B5, centella asiática, aloe vera, rosa mosqueta, manzanilla y aceite esencial de neroli (azahar)."
 }

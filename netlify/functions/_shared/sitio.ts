@@ -1,4 +1,4 @@
-// URL base para back_urls y notification_url de Mercado Pago.
+// URL base para las URLs de retorno de la order de Mercado Pago (config.online.*_url).
 // Producción: URL (dominio principal, nudecosmetica.com). Previews / branch deploys / dev:
 // DEPLOY_PRIME_URL. Así la clienta vuelve al mismo dominio donde dejó el carrito.
 const DOMINIO = 'https://nudecosmetica.com';

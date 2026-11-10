@@ -76,3 +76,23 @@ test('verifyXSignature · falta header', () => {
   const r = mp.verifyXSignature({ signature: null, requestId: 'r', dataId: 'd', secret: 's' });
   assert.equal(r.ok, false);
 });
+
+// Orders: el data.id (ORD01…) entra al manifest en minúsculas (doc oficial de notificaciones de
+// Checkout Pro vía Orders). Ejemplo con la forma documentada.
+test('verifyXSignature · order ORD… se firma con el id en minúsculas', () => {
+  const secret = 'super-secreto';
+  const ts = '1742505638683';
+  const reqId = '2066ca19-c6f1-498a-be75-1923005edd06';
+  const id = 'ORD01JQ4S4KY8HWQ6NA5PXB65B3D3';
+  const ok = mp.verifyXSignature({ signature: firmar(secret, ts, id.toLowerCase(), reqId), requestId: reqId, dataId: id, secret });
+  assert.equal(ok.ok, true);
+  const mal = mp.verifyXSignature({ signature: firmar(secret, ts, id, reqId), requestId: reqId, dataId: id, secret });
+  assert.equal(mal.ok, false);
+});
+
+test('verifyXSignature · sin x-request-id se saca del manifest', () => {
+  const secret = 's';
+  const ts = '1';
+  const v1 = createHmac('sha256', secret).update(`id:ord1;ts:${ts};`).digest('hex');
+  assert.equal(mp.verifyXSignature({ signature: `ts=${ts},v1=${v1}`, requestId: null, dataId: 'ORD1', secret }).ok, true);
+});

@@ -203,10 +203,25 @@ export function PedidoCliente() {
         </section>
       ) : null}
 
+      {mpHabilitado && estado.estado === 'reembolsado' ? (
+        <section className="card">
+          <h2 className="font-heading text-xl mb-2">Pago devuelto</h2>
+          <p className="text-ink/80">
+            Mercado Pago nos informó la devolución del pago de este pedido. Si tenés dudas,{' '}
+            <a data-wa-ubicacion="pedido_reembolsado" href={waLink(waMessages.generica)} target="_blank" rel="noopener noreferrer" className="link-ghost">
+              escribinos por WhatsApp
+            </a>.
+          </p>
+        </section>
+      ) : null}
+
       {estado.estado === 'cancelado' ? (
         <section className="card">
           <h2 className="font-heading text-xl mb-2">Pedido cancelado</h2>
           <p className="text-ink/80">
+            {mpHabilitado && estado.medio === 'mercadopago'
+              ? 'Mercado Pago no aprobó el pago o la operación venció. Podés hacer el pedido de nuevo. '
+              : null}
             Si creés que fue un error,{' '}
             <a data-wa-ubicacion="pedido_cancelado" href={waLink(waMessages.generica)} target="_blank" rel="noopener noreferrer" className="link-ghost">
               escribinos por WhatsApp
@@ -215,7 +230,7 @@ export function PedidoCliente() {
         </section>
       ) : null}
 
-      {estado.entrega.modo === 'retiro' && estado.estado !== 'cancelado' ? (
+      {estado.entrega.modo === 'retiro' && estado.estado !== 'cancelado' && estado.estado !== 'reembolsado' ? (
         <section className="card mt-6">
           <h2 className="font-heading text-xl mb-2">Retiro en Mendiolaza</h2>
           {estado.entrega.direccionRetiro ? (

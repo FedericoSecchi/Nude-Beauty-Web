@@ -2,7 +2,7 @@
 // - bundle(entry): compila un .ts con esbuild y lo importa. `@netlify/blobs` se reemplaza por un
 //   store en memoria (global, compartido entre bundles) que respeta onlyIfNew / onlyIfMatch con ETag,
 //   igual que el real; así los handlers corren tal cual se despliegan.
-// - fetch falso: rutea la API de MP y ORDER_WEBHOOK_URL; cuenta los avisos.
+// - fetch falso: rutea la API de Orders de MP y ORDER_WEBHOOK_URL; cuenta los avisos.
 import { build } from 'esbuild';
 import { createHmac } from 'node:crypto';
 import { join } from 'node:path';
@@ -106,9 +106,12 @@ export function putBlob(store, key, value) {
 
 export const ORDER_URL = 'https://n8n.test/webhook/pedidos';
 
-// fetch falso. `estado.aviso` = status HTTP que devuelve n8n; `estado.pagos[id]` = respuesta de MP.
+// fetch falso. `estado.aviso` = status HTTP que devuelve n8n; `estado.orders[id]` = respuesta de
+// GET /v1/orders/{id}; `estado.ordersCreadas` = cada POST /v1/orders ({ body, headers }).
+// Cualquier otra URL (incluida la API vieja de Preferences o /v1/payments) hace fallar el test.
+export const CHECKOUT_URL = 'https://www.mercadopago.com.ar/checkout/v1/redirect?order_id=';
 export function fakeFetch() {
-  const estado = { aviso: 200, avisos: [], avisosOk: [], pagos: {}, preferencias: [] };
+  const estado = { aviso: 200, avisos: [], avisosOk: [], orders: {}, ordersCreadas: [], consultas: [] };
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
     if (u === ORDER_URL) {
@@ -117,39 +120,91 @@ export function fakeFetch() {
       if (estado.aviso >= 200 && estado.aviso < 300) estado.avisosOk.push(body);
       return new Response('', { status: estado.aviso });
     }
-    const m = u.match(/api\.mercadopago\.com\/v1\/payments\/(\w+)/);
-    if (m) {
-      const p = estado.pagos[m[1]];
-      return p
-        ? new Response(JSON.stringify(p), { status: 200 })
-        : new Response('not found', { status: 404 });
-    }
-    if (u.includes('api.mercadopago.com/checkout/preferences')) {
+    if (u === 'https://api.mercadopago.com/v1/orders' && init.method === 'POST') {
       const body = JSON.parse(init.body);
-      estado.preferencias.push(body);
-      return new Response(JSON.stringify({ id: 'pref-1', init_point: 'https://mp.test/init' }), {
-        status: 201,
-      });
+      estado.ordersCreadas.push({ body, headers: { ...init.headers } });
+      const id = `ORDTST01E2E${String(estado.ordersCreadas.length).padStart(4, '0')}`;
+      const order = { id, type: 'online', status: 'created', status_detail: 'created', ...body, checkout_url: CHECKOUT_URL + id };
+      estado.orders[id] = { ...order, total_paid_amount: '0.00', currency: 'ARS' };
+      return new Response(JSON.stringify(order), { status: 201 });
+    }
+    const m = u.match(/^https:\/\/api\.mercadopago\.com\/v1\/orders\/([\w-]+)$/);
+    if (m && (init.method ?? 'GET') === 'GET') {
+      estado.consultas.push(m[1]);
+      const o = estado.orders[m[1]];
+      return o
+        ? new Response(JSON.stringify(o), { status: 200 })
+        : new Response('not found', { status: 404 });
     }
     throw new Error(`fetch inesperado: ${u}`);
   };
   return estado;
 }
 
+/** Order como la devuelve GET /v1/orders/{id} (forma de la doc oficial), con lo que cambie `over`. */
+export function orderFixture(over = {}) {
+  return {
+    id: 'ORD01JQ4S4KY8HWQ6NA5PXB65B3D3',
+    type: 'online',
+    processing_mode: 'manual',
+    status: 'processed',
+    status_detail: 'accredited',
+    external_reference: 'NUDE-20261026-e2e001',
+    total_amount: '23300.00',
+    total_paid_amount: '23300.00',
+    currency: 'ARS',
+    transactions: {
+      payments: [{ id: 'PAY01J67CQQH5904WDBVZEM4JMEP3', amount: '23300.00', paid_amount: '23300.00', status: 'processed', status_detail: 'accredited' }],
+    },
+    ...over,
+  };
+}
+
 export function ctx(context = 'production') {
   return { log: () => {}, deploy: { context, id: 'd', published: true } };
 }
 
-export function webhookRequest(dataId, secret, requestId = 'req-' + dataId) {
-  const ts = String(Date.now());
-  const manifest = `id:${dataId};request-id:${requestId};ts:${ts};`;
-  const v1 = createHmac('sha256', secret).update(manifest).digest('hex');
+/**
+ * Notificación de order como la documenta MP (Checkout Pro vía Orders · notificaciones):
+ * POST ?data.id=ORD…&type=order, body { action, type: "order", data: { id } } y x-signature con el
+ * manifest `id:<data.id en minúsculas>;request-id:<x-request-id>;ts:<ts>;`.
+ */
+export function webhookRequest(orderId, secret, opts = {}) {
+  const requestId = opts.requestId ?? 'req-' + orderId;
+  const ts = opts.ts ?? String(Date.now());
+  const manifest = `id:${orderId.toLowerCase()};request-id:${requestId};ts:${ts};`;
+  const v1 = opts.v1 ?? createHmac('sha256', secret).update(manifest).digest('hex');
   return new Request(
-    `https://nudecosmetica.com/.netlify/functions/mp-webhook?data.id=${dataId}&type=payment`,
+    `https://nudecosmetica.com/.netlify/functions/mp-webhook?data.id=${orderId}&type=order`,
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-signature': `ts=${ts},v1=${v1}`, 'x-request-id': requestId },
+      body: JSON.stringify({
+        action: opts.action ?? 'order.processed',
+        api_version: 'v1',
+        application_id: '123456',
+        date_created: '2026-11-10T12:00:00.000Z',
+        id: '123456',
+        live_mode: true,
+        type: 'order',
+        user_id: 123456,
+        data: { id: opts.bodyId ?? orderId },
+      }),
+    },
+  );
+}
+
+/** Notificación vieja de Preferences (type=payment), firmada igual: se ignora sin tocar pedidos. */
+export function webhookPaymentRequest(paymentId, secret) {
+  const requestId = 'req-' + paymentId;
+  const ts = String(Date.now());
+  const v1 = createHmac('sha256', secret).update(`id:${paymentId};request-id:${requestId};ts:${ts};`).digest('hex');
+  return new Request(
+    `https://nudecosmetica.com/.netlify/functions/mp-webhook?data.id=${paymentId}&type=payment`,
     {
       method: 'POST',
       headers: { 'x-signature': `ts=${ts},v1=${v1}`, 'x-request-id': requestId },
-      body: JSON.stringify({ type: 'payment', data: { id: dataId } }),
+      body: JSON.stringify({ action: 'payment.updated', type: 'payment', data: { id: paymentId } }),
     },
   );
 }

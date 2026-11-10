@@ -464,8 +464,12 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
           npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/pedido-whatsapp.spec.ts tests/e2e/checkout-local.spec.ts --project=desktop || rc=$?
         E2E_BASE_URL="http://127.0.0.1:4127" \
           npx playwright test --grep "home \+ ficha" --project=desktop || rc=$?
+        # Mercado Pago encendido (out-mp/): medios de pago y compra con la API de Orders mockeada
+        # (carrito → checkout_url → webhook firmado → /pedido/ pagado / cancelado / pendiente).
         E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 E2E_MODO=checkout \
-          npx playwright test tests/e2e/medios-pago.spec.ts --project=desktop || rc=$?
+          npx playwright test tests/e2e/medios-pago.spec.ts tests/e2e/checkout-mp-local.spec.ts --project=desktop || rc=$?
+        E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 E2E_MODO=checkout \
+          npx playwright test tests/e2e/checkout-mp-local.spec.ts --project=mobile || rc=$?
         kill $pid3 $pid4 >/dev/null 2>&1 || true
         # GA4 (out-ga/, ID de prueba): view_item, add_to_cart con tono, view_cart, click_whatsapp con
         # valor, contacto_whatsapp, purchase sin duplicar; ningún evento con nombre, teléfono ni wa.me.

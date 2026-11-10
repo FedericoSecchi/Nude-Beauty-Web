@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import type { Context } from '@netlify/functions';
 import { loadSnapshot } from './_shared/catalogo';
 import { generarIdPedido } from './_shared/ids';
@@ -5,7 +6,7 @@ import { entornoDe, storePedidos, type PedidoGuardado } from './_shared/blobs';
 import { procesarAviso } from './_shared/avisos';
 import { baseUrlSitio } from './_shared/sitio';
 import { validarPayload } from './_shared/validar';
-import { createPreference } from './_shared/mp';
+import { crearOrder } from './_shared/mp';
 import { calcularTotal, PricingError, type MedioPago } from '../../lib/pricing';
 import { cotizarEnvio, NOMBRE_RETIRO, ShippingError } from '../../lib/shipping';
 import { modoVenta } from '../../lib/modo-venta.mjs';
@@ -187,7 +188,8 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
     notas: payload.notas?.trim() || undefined,
   };
 
-  // Si es MP y hay credenciales, creamos preferencia.
+  // Si es MP y hay credenciales, creamos la order de Checkout Pro (API de Orders) con los totales del
+  // servidor. Las notificaciones no se piden por order: llegan al webhook configurado en el panel de MP.
   const checkoutMode = (process.env.CHECKOUT_MODE || 'propio').toLowerCase();
   if (esMp && checkoutMode === 'propio' && process.env.MP_ACCESS_TOKEN) {
     try {
@@ -197,8 +199,7 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
         DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
         origen: new URL(req.url).origin,
       });
-      const notificationUrl = `${siteUrl}/.netlify/functions/mp-webhook`;
-      const preference = await createPreference(
+      const order = await crearOrder(
         {
           pedidoId: id,
           lineas: totales.lineas.map((l) => ({
@@ -210,18 +211,18 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
           envio: totales.envio,
           total: totales.total,
           siteUrl,
-          notificationUrl,
         },
         process.env.MP_ACCESS_TOKEN,
+        randomUUID(),
       );
-      pedido.pago.mpPreferenceId = preference.id;
-      pedido.pago.mpInitPoint = preference.init_point;
+      pedido.pago.mpOrderId = order.id;
+      pedido.pago.mpCheckoutUrl = order.checkout_url;
     } catch (err) {
       return serverError(`Mercado Pago: ${(err as Error).message}`);
     }
   } else if (esMp && checkoutMode === 'tiendanube') {
     // Plan B: el UI redirige al carrito de Tiendanube; devolvemos la señal.
-    pedido.pago.mpInitPoint =
+    pedido.pago.mpCheckoutUrl =
       'https://nudecosmeticaclean.mitiendanube.com/carrito/';
   } else if (esMp && !process.env.MP_ACCESS_TOKEN) {
     return badRequest('Mercado Pago no está habilitado en este deploy', {
@@ -247,7 +248,7 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
       id: pedido.id,
       estado: pedido.estado,
       medio: pedido.pago.medio,
-      initPoint: pedido.pago.mpInitPoint,
+      checkoutUrl: pedido.pago.mpCheckoutUrl,
       total: pedido.total,
     }),
     { status: 201, headers: { 'content-type': 'application/json' } },

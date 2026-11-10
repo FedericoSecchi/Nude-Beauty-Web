@@ -8,6 +8,7 @@ import {
   ctx,
   fakeFetch,
   ORDER_URL,
+  orderFixture,
   pedidoFixture,
   putBlob,
   resetBlobs,
@@ -19,7 +20,7 @@ let webhook, arrepentimiento, avisos, blobsMod;
 
 test.before(async () => {
   process.env.MP_WEBHOOK_SECRET = SECRET;
-  process.env.MP_ACCESS_TOKEN = 'TEST-token';
+  process.env.MP_ACCESS_TOKEN = 'token-de-mentira'; // nunca se llama a MP: fetch falso
   process.env.ORDER_WEBHOOK_URL = ORDER_URL;
   webhook = (await bundle('netlify/functions/mp-webhook.ts')).default;
   arrepentimiento = (await bundle('netlify/functions/arrepentimiento.ts')).default;
@@ -33,17 +34,18 @@ const ID = 'NUDE-20261026-e2e001';
 const PROD = { produccion: true };
 const enMinutos = (m) => () => Date.now() + m * 60_000;
 
-function pagoAprobado(over = {}) {
-  return { id: 555, status: 'approved', external_reference: ID, transaction_amount: 23300, currency_id: 'ARS', ...over };
+const OID = 'ORD01JQ4S4KY8HWQ6NA5PXB65B3D3';
+function orderPagada(over = {}) {
+  return orderFixture({ id: OID, external_reference: ID, ...over });
 }
 
 test('avisos · webhook de n8n falla y después anda → un solo aviso exitoso', async () => {
   const f = fakeFetch();
-  f.pagos['555'] = pagoAprobado();
+  f.orders[OID] = orderPagada();
   putBlob('pedidos', ID, pedidoFixture());
 
   f.aviso = 500;
-  const res = await webhook(webhookRequest('555', SECRET), ctx());
+  const res = await webhook(webhookRequest(OID, SECRET), ctx());
   assert.equal(res.status, 200);
   let p = blobs('pedidos').get(ID);
   assert.equal(p.estado, 'pagado');
@@ -67,7 +69,7 @@ test('avisos · webhook de n8n falla y después anda → un solo aviso exitoso',
 
   // Ni otra corrida ni otra notificación de MP vuelven a avisar.
   await avisos.reintentarPendientes(PROD, enMinutos(120));
-  await webhook(webhookRequest('555', SECRET), ctx());
+  await webhook(webhookRequest(OID, SECRET), ctx());
   assert.equal(f.avisosOk.length, 1);
   assert.equal(f.avisosOk[0].tipo, 'pedido_pagado');
   assert.equal(f.avisosOk[0].estado, 'pagado');
@@ -75,29 +77,29 @@ test('avisos · webhook de n8n falla y después anda → un solo aviso exitoso',
 
 test('avisos · si el pedido ya estaba pagado pero el aviso no salió, la próxima notificación de MP lo manda', async () => {
   const f = fakeFetch();
-  f.pagos['555'] = pagoAprobado();
+  f.orders[OID] = orderPagada();
   putBlob('pedidos', ID, pedidoFixture({ estado: 'pagado', avisoEnviado: false, intentosAviso: 1 }));
-  await webhook(webhookRequest('555', SECRET), ctx());
+  await webhook(webhookRequest(OID, SECRET), ctx());
   assert.equal(f.avisosOk.length, 1);
   assert.equal(blobs('pedidos').get(ID).avisoEnviado, true);
 });
 
-test('avisos · dos notificaciones de MP del mismo pago → un solo aviso (seguidas y simultáneas)', async () => {
+test('avisos · dos notificaciones de MP de la misma order → un solo aviso (seguidas y simultáneas)', async () => {
   const f = fakeFetch();
-  f.pagos['555'] = pagoAprobado();
+  f.orders[OID] = orderPagada();
 
   putBlob('pedidos', ID, pedidoFixture());
-  await webhook(webhookRequest('555', SECRET, 'a'), ctx());
-  await webhook(webhookRequest('555', SECRET, 'b'), ctx());
+  await webhook(webhookRequest(OID, SECRET, { requestId: 'a' }), ctx());
+  await webhook(webhookRequest(OID, SECRET, { requestId: 'b' }), ctx());
   assert.equal(f.avisos.length, 1);
 
   resetBlobs();
   const g = fakeFetch();
-  g.pagos['555'] = pagoAprobado();
+  g.orders[OID] = orderPagada();
   putBlob('pedidos', ID, pedidoFixture());
   await Promise.all([
-    webhook(webhookRequest('555', SECRET, 'c'), ctx()),
-    webhook(webhookRequest('555', SECRET, 'd'), ctx()),
+    webhook(webhookRequest(OID, SECRET, { requestId: 'c' }), ctx()),
+    webhook(webhookRequest(OID, SECRET, { requestId: 'd' }), ctx()),
     avisos.reintentarPendientes(PROD),
   ]);
   assert.equal(g.avisos.length, 1, 'un solo POST a n8n aunque lleguen en paralelo');
@@ -191,9 +193,9 @@ test('stores · producción usa pedidos/arrepentimientos; preview, branch y dev 
 
 test('stores · un pedido de deploy preview no cae en el store de producción', async () => {
   const f = fakeFetch();
-  f.pagos['555'] = pagoAprobado();
+  f.orders[OID] = orderPagada();
   putBlob('pedidos-preview', ID, pedidoFixture());
-  await webhook(webhookRequest('555', SECRET), ctx('deploy-preview'));
+  await webhook(webhookRequest(OID, SECRET), ctx('deploy-preview'));
   assert.equal(blobs('pedidos-preview').get(ID).estado, 'pagado');
   assert.equal(blobs('pedidos').size, 0);
 });

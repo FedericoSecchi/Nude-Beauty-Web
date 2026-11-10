@@ -62,6 +62,7 @@ export function payloadAviso(r: Registro): Record<string, unknown> {
     total: r.total,
     pago: {
       medio: r.pago.medio,
+      mpOrderId: r.pago.mpOrderId,
       mpPaymentId: r.pago.mpPaymentId,
       mpEstado: r.pago.mpEstado,
       ...(r.estado === 'revisar'

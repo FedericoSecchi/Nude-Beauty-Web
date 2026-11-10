@@ -2,7 +2,7 @@
 
 > Avance por etapa del `seo/PLAN.md`. Si la sesión se corta: **leé este archivo primero** y retomá desde la primera ⬜.
 > Rama: `kosmos/nude-tienda` · PR: borrador hasta E6 · Nunca push a `main`.
-> Último trabajo: eventos de GA4 en `kosmos/ga4`, ver «Reporte · GA4» al final.
+> Último trabajo: Mercado Pago pasó a Checkout Pro con la API de Orders en `kosmos/mp-orders`, ver «Reporte · Mercado Pago con Orders» al final.
 
 ## Resumen por etapa
 | Etapa | Estado | Fecha | Deploy preview |
@@ -281,6 +281,8 @@ Capturas: `docs/capturas/revision-post-e6/`.
 | Términos y privacidad | publicados sin el aviso de borrador. Nota interna en `seo/ESTADO.md`: pendiente revisión de abogado |
 
 #### 3. Cómo prender Mercado Pago
+> **Actualizado el 2026-11-10:** el cobro usa la API de Orders. La configuración vigente (panel de MP y variables) está en «Reporte · Mercado Pago con Orders» › 4 y 5, al final. Lo de abajo queda como historia.
+
 1. En Netlify → Site configuration → Environment variables, cargar `MP_ACCESS_TOKEN` (de producción en el contexto Production, de prueba en Deploy previews) y `MP_WEBHOOK_SECRET`. El scope tiene que incluir **Builds** además de Functions: el flag se calcula en el build.
 2. **Redeployar** (Deploys → Trigger deploy → Deploy site). Sin redeploy el sitio sigue sin MP: el flag `NEXT_PUBLIC_MP_HABILITADO` se fija al buildear.
 3. No hay que tocar código: vuelven el radio de Mercado Pago, «3 cuotas sin interés» (texto en Ajustes → Avanzado → «Texto de cuotas») y las menciones en términos y privacidad. Con MP encendido la puerta ya no exige alias (MP alcanza como medio de pago).
@@ -499,3 +501,81 @@ Con envío económico, la entrega dice «Envío económico · Unquillo, Mendiola
 1. ⬜ Marcar `click_whatsapp` como evento clave (conversión) en GA4 › Administrar › Eventos clave. Si en algún momento se activa el checkout, también `purchase`.
 2. ⬜ Registrar `ubicacion` como dimensión personalizada (ámbito: evento) para ver `contacto_whatsapp` por lugar.
 3. ⬜ Mirar DebugView o Tiempo real: un pedido de prueba por WhatsApp tiene que mostrar view_item → add_to_cart → view_cart → click_whatsapp.
+
+### Reporte · Mercado Pago con Orders (2026-11-10) · rama `kosmos/mp-orders`
+
+Mercado Pago anunció que la API de Preferences «será descontinuada pronto» y Soledad creó su aplicación como **Checkout Pro con API de Orders**. El cobro con MP pasó a Orders y el código de Preferences se sacó (no quedan las dos integraciones). MP sigue **apagado en producción** (sin `MP_ACCESS_TOKEN`): este cambio no se ve en el sitio hasta que se cargan las variables.
+
+#### 1. Qué cambió
+| Archivo | Cambio |
+|---|---|
+| `netlify/functions/_shared/mp.ts` | `armarOrder` / `crearOrder` (`POST /v1/orders`, `X-Idempotency-Key`), `obtenerOrder` (`GET /v1/orders/{id}`), `verifyXSignature` con `data.id` en minúsculas, `esUrlDeMercadoPago`. Sin `createPreference` ni `fetchPayment` |
+| `netlify/functions/crear-pedido.ts` | crea la order con los totales del servidor y guarda `pago.mpOrderId` y `pago.mpCheckoutUrl`; responde `checkoutUrl` |
+| `netlify/functions/mp-webhook.ts` | solo procesa `type=order`; firma → GET de la order → escritura condicional e idempotente → aviso a n8n si quedó pagado/revisar |
+| `netlify/functions/_shared/pagos.ts` | `aplicarOrder`: mapeo de estados (tabla del punto 3) y control de monto/moneda |
+| `netlify/functions/_shared/blobs.ts` | estado `reembolsado`; campos `mpOrderId`, `mpCheckoutUrl`, `mpEstadoDetalle` (salen `mpPreferenceId` y `mpInitPoint`) |
+| `netlify/functions/_shared/avisos.ts` | el aviso a n8n suma `pago.mpOrderId` (el resto del contrato §6 no cambia) |
+| `app/carrito/CarritoCliente.tsx` | redirige al `checkoutUrl` que devuelve crear-pedido |
+| `app/pedido/PedidoCliente.tsx` | «Pago devuelto» para `reembolsado`; con MP rechazado, «Mercado Pago no aprobó el pago o la operación venció» |
+| `tests/unit/mp-checkout.test.mjs`, `tests/unit/mp-webhook.test.mjs` (nuevo), `tests/unit/mp-signature.test.mjs`, `tests/unit/avisos.test.mjs`, `tests/unit/_harness.mjs` | ver punto 6 |
+| `tests/e2e/checkout-mp-local.spec.ts` (nuevo) + `scripts/verify.sh` | e2e local con la API de Orders mockeada sobre `out-mp/` |
+
+#### 2. Documentación oficial usada (mercadopago.com.ar/developers, Argentina)
+- Crear la order: https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/create-order
+- Referencia «Create order» (`POST /v1/orders`): https://www.mercadopago.com.ar/developers/es/reference/online-payments/checkout-pro-orders/create-order/post
+- Referencia «Get order by ID» (`GET /v1/orders/{order_id}`): https://www.mercadopago.com.ar/developers/es/reference/online-payments/checkout-pro-orders/get-order/get
+- Varios ítems (`total_amount` = Σ `unit_price` × `quantity`): https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/additional-settings/create-order-for-multiple-items
+- URLs de retorno (`config.online.success_url` / `failure_url` / `pending_url` / `auto_return`): https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/web-integration/configure-back-urls
+- Redirigir al `checkout_url`: https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/web-integration/redirect-buyer-to-checkout
+- Notificaciones (evento del panel, forma de la notificación, `x-signature`, respuesta 200 en 22 s): https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/notifications
+- Estados de la order: https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/payment-management/status/order-status
+- Salir a producción (credenciales de producción): https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-orders/go-to-production
+- Índice para LLMs (de donde salen las versiones `.md` de las páginas): https://www.mercadopago.com.ar/developers/es/docs/llms.txt y https://www.mercadopago.com.ar/developers/es/reference/llms.txt
+
+#### 3. Estados: order (`GET /v1/orders/{id}`) → pedido
+| Order `status` / `status_detail` | Pedido | Aviso a n8n | /pedido/ |
+|---|---|---|---|
+| `processed` / `accredited`, monto y moneda OK | `pagado` | `pedido_pagado` | «¡Pedido pagado!» |
+| `processed` con `total_paid_amount` a más de $1 del total, moneda ≠ ARS o sin monto | `revisar` | `pedido_revisar` | «Estamos revisando el pago» |
+| `processed` / `partially_refunded` (sin pago previo registrado) | `revisar` | `pedido_revisar` | idem |
+| `created`, `processing` (`in_process`, `pending_review_manual`), `action_required` | `pendiente_mp` (sin cambio) | no | «Esperando a Mercado Pago» |
+| `failed` (cualquier detalle), `canceled`, `expired` | `cancelado` | no | «Pedido cancelado» + «Mercado Pago no aprobó el pago…» |
+| `refunded` | `reembolsado` | no | «Pago devuelto» |
+| `charged_back` | `revisar` (motivo «contracargo») | `pedido_revisar` si no había salido aviso | «Estamos revisando el pago» |
+| otro estado | sin cambio (queda en `mpEstado`) | no | según el estado anterior |
+
+Un pedido `pagado`, `revisar` o `reembolsado` no vuelve a `cancelado` ni a `pagado` por una notificación posterior; `refunded` sí lo pasa a `reembolsado`. Un pedido `cancelado` pasa a `pagado` si la API después dice `processed`.
+
+#### 4. Configuración en el panel de Mercado Pago (Integraciones)
+1. Aplicación: **Checkout Pro · API de Orders** (la que creó Soledad).
+2. **Credenciales de producción**: Credenciales → Producción → «Activar entorno de producción» (rubro y sitio web `https://nudecosmetica.com`) → copiar el **Access Token** de producción (`APP_USR-…`).
+3. **Webhooks** (Integraciones → la aplicación → menú lateral «Configuración de Webhooks»): switch **Prueba / Producción** en **Producción**, URL `https://nudecosmetica.com/.netlify/functions/mp-webhook`, evento **«Order (Mercado Pago)»** (único tilde necesario) → Guardar. Copiar la **clave secreta** que genera.
+4. Opcional: «Simular notificación» con el evento de order y un id de prueba: la function responde 401 si la firma no valida y 200 si valida (con un id inexistente responde 500 y MP reintenta, sin tocar ningún pedido).
+
+#### 5. Cómo se activa
+1. Netlify → Site configuration → Environment variables, contexto **Production**, marcadas como secretas: `MP_ACCESS_TOKEN` (el Access Token de producción) y `MP_WEBHOOK_SECRET` (la clave secreta del webhook). Scope con **Builds** y **Functions**: el flag de MP se calcula en el build.
+2. Si todavía no están: `ORDER_WEBHOOK_URL` y `ORDER_WEBHOOK_SECRET` (Production). Sin `ORDER_WEBHOOK_URL` el sitio sigue en modo pedido por WhatsApp y no cobra.
+3. **Redeployar** producción (Deploys → Trigger deploy → Deploy site).
+4. Compra real chica con MP: tiene que terminar en /pedido/ «¡Pedido pagado!» y llegar el aviso a n8n con `pago.mpOrderId`.
+
+#### 6. Tests (en `verify.sh`, nada llama a Mercado Pago)
+- `tests/unit/mp-checkout.test.mjs`: forma de la order (type `online`, processing_mode `manual`, `external_reference` = id del pedido, URLs de retorno a `/pedido/?id=…`, sin `notification_url`); 5% por cantidad y nunca el 20% con MP; tono en el título; 500 carritos al azar con Σ ítems = `total_amount` = total de `lib/pricing` y ningún `unit_price` ≤ 0; `X-Idempotency-Key` (UUID v4, distinta por pedido) y `Authorization`; crear-pedido guarda `mpOrderId` y devuelve el `checkout_url`; si la API falla no se guarda el pedido; `checkout_url` fuera de MP se rechaza.
+- `tests/unit/mp-webhook.test.mjs`: notificaciones con la forma de la doc (`?data.id=ORD…&type=order`, body `order.processed`); firma válida, inválida, sin header, con el id en mayúsculas en el manifest, con `data.id` distinto en el body y sin secreto; los 13 estados de la tabla; la API manda sobre el body; monto distinto / moneda / sin monto → `revisar`; misma notificación dos veces → pedido idéntico y un aviso; dos simultáneas → un aviso; order de otro pedido; API caída → 500; payment viejo, IPN `?topic=…` y tipos desconocidos → 200 sin tocar nada y log del tipo; estado-pedido devuelve el estado sin ids de MP ni datos personales.
+- `tests/e2e/checkout-mp-local.spec.ts` (sobre `out-mp/`, desktop y mobile): carrito → «Ir a pagar con Mercado Pago» → redirección al `checkout_url` devuelto por la API (página simulada en el dominio de MP) → webhook firmado → /pedido/ «¡Pedido pagado!» con un aviso; rechazado → «Pedido cancelado»; pendiente → «Esperando a Mercado Pago».
+- Las credenciales `TEST-…` no se usan en ningún test (el token de los tests es un texto de mentira y el fetch es falso).
+- `verify.sh`: **PASS=28 FAIL=0 SKIP=1** (SKIP = e2e remoto, falta `E2E_TOKEN`). Unit: 125/125.
+- Lighthouse de la home falló en tres corridas (LCP 2,62–2,72 s) mientras otra sesión corría una suite de Playwright de otro proyecto en la misma máquina (load average 17–35). Midiendo alternado los mismos builds, main dio 2,42 / 3,08 / 2,44 s y esta rama 2,72 / 2,51 / 2,45 s (los JS de la home difieren en 69 bytes gzip): es ruido de carga sobre un umbral al borde, no el cambio. Con la máquina libre pasó (2,40 s). No se tocó el check ni el umbral.
+
+#### 7. Decisiones tomadas sin consultar
+- 2026-11-10 · **Notificaciones solo por el panel.** La referencia de `POST /v1/orders` no documenta un `notification_url` por order, así que no se manda: el webhook es el del panel (producción). Consecuencia: en un deploy preview MP no notifica al preview.
+- 2026-11-10 · **Firma**: el `data.id` firmado es el de la query (como dice la doc). Si el body trae otro id, 401. No se agregó tolerancia de tiempo sobre `ts` (la doc la deja opcional y no documenta si los reintentos renuevan `ts`): la idempotencia cubre las repeticiones.
+- 2026-11-10 · **Notificaciones que no son de order** (payment de Preferences, IPN `?topic=`, otros tipos) responden 200 antes de validar la firma: no tocan nada y así MP no las reintenta para siempre. Se loguea solo el tipo, saneado.
+- 2026-11-10 · **Monto**: se compara `total_paid_amount` de la order (suma de lo cobrado) contra el total del pedido, con la misma tolerancia de $1. Sin monto → `revisar`.
+- 2026-11-10 · `auto_return: "approved"`: la clienta vuelve sola a /pedido/ solo si se aprobó; si no, vuelve desde el botón de MP por `failure_url`/`pending_url` (con `&estado=fallo` / `&estado=pendiente`, como antes).
+- 2026-11-10 · `X-Idempotency-Key`: UUID v4 nuevo por pedido (la doc sugiere UUID). Un pedido es un intento: el id del pedido se genera en cada alta.
+- 2026-11-10 · `checkout_url` se valida antes de redirigir: https y dominio de Mercado Pago. Si no, 500 y el pedido no se guarda.
+- 2026-11-10 · Estados no pedidos explícitamente: `expired` → cancelado; `charged_back` → revisar; `partially_refunded` → revisar si no estaba pagado. Nuevo estado de pedido `reembolsado`.
+- 2026-11-10 · La order de un pedido es la que creó crear-pedido (`mpOrderId`): una order con el mismo `external_reference` pero otro id no toca el pedido.
+- 2026-11-10 · `payer` lleva email (obligatorio para Checkout Pro) y `first_name` con el nombre tal como lo escribió la clienta; nada más.
+- 2026-11-10 · `docs/guia-soledad.md` no cambió.
+

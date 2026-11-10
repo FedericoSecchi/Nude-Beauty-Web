@@ -48,7 +48,8 @@ export type EstadoPedido =
   | 'pagado'
   | 'revisar'
   | 'pendiente_transferencia'
-  | 'cancelado';
+  | 'cancelado'
+  | 'reembolsado';
 
 export interface PedidoGuardado extends SeguimientoAviso {
   id: string;
@@ -88,12 +89,17 @@ export interface PedidoGuardado extends SeguimientoAviso {
   total: number;
   pago: {
     medio: 'mercadopago' | 'transferencia';
+    /** Order de Checkout Pro (API de Orders, ORD…): la crea crear-pedido y la consulta mp-webhook. */
+    mpOrderId?: string;
+    /** Link de pago de la order (checkout_url) o, en plan B, el carrito de Tiendanube. */
+    mpCheckoutUrl?: string;
+    /** Id de la transacción de pago dentro de la order (PAY…). */
     mpPaymentId?: string;
+    /** status y status_detail de la order según el último GET. */
     mpEstado?: string;
+    mpEstadoDetalle?: string;
     mpMonto?: number;
     mpMoneda?: string;
-    mpPreferenceId?: string;
-    mpInitPoint?: string;
     reservaHoras?: number;
     alias?: string | null;
     cbu?: string | null;

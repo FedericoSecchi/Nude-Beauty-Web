@@ -1,5 +1,6 @@
-// Tipos mínimos para usar el harness desde los e2e en TypeScript (tests/e2e/checkout-local.spec.ts).
+// Tipos mínimos para usar el harness desde los e2e en TypeScript (tests/e2e/checkout-*-local.spec.ts).
 export const ORDER_URL: string;
+export const CHECKOUT_URL: string;
 export function bundle(rel: string, opts?: { snapshot?: boolean }): Promise<any>;
 export function setSnapshot(snapshot: unknown): void;
 export function resetBlobs(): void;
@@ -7,5 +8,11 @@ export function blobs(store: string): Map<string, any>;
 export function putBlob(store: string, key: string, value: unknown): void;
 export function fakeFetch(): any;
 export function ctx(context?: string): { log: () => void; deploy: { context: string; id: string; published: boolean } };
-export function webhookRequest(dataId: string, secret: string, requestId?: string): Request;
+export function webhookRequest(
+  orderId: string,
+  secret: string,
+  opts?: { requestId?: string; ts?: string; v1?: string; action?: string; bodyId?: string },
+): Request;
+export function webhookPaymentRequest(paymentId: string, secret: string): Request;
+export function orderFixture(over?: Record<string, unknown>): Record<string, unknown>;
 export function pedidoFixture(over?: Record<string, unknown>): any;

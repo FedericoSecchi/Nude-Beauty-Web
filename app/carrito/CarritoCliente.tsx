@@ -340,12 +340,13 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
       const data = (await res.json()) as {
         id: string;
         estado: string;
-        initPoint?: string;
+        /** Link de pago de la order de Mercado Pago (checkout_url). */
+        checkoutUrl?: string;
       };
       // Limpiar carrito local y redirigir.
       writeCart([]);
-      if (data.initPoint) {
-        window.location.href = data.initPoint;
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
       } else {
         window.location.href = `/pedido/?id=${encodeURIComponent(data.id)}`;
       }

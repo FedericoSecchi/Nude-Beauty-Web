@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { urls } from '@/lib/urls';
 import { formatARS } from '@/lib/format';
 import { waLink, waMessages } from '@/lib/whatsapp';
+import { eventoEcommerce, itemGA } from '@/lib/analytics';
 
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
@@ -14,7 +15,7 @@ interface PedidoPublico {
   id: string;
   estado: string;
   medio: 'mercadopago' | 'transferencia';
-  items: { slug: string; nombre: string; cantidad: number; precioUnitario: number }[];
+  items: { slug: string; nombre: string; cantidad: number; precioUnitario: number; variante?: string }[];
   subtotal: number;
   descuentos: { motivo: string; monto: number }[];
   envio: number;
@@ -29,6 +30,22 @@ interface PedidoPublico {
 }
 
 const PURCHASE_KEY = 'nude.purchase.v1';
+
+function yaContado(id: string): boolean {
+  try {
+    return localStorage.getItem(`${PURCHASE_KEY}:${id}`) === '1' || sessionStorage.getItem(`${PURCHASE_KEY}:${id}`) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function marcarContado(id: string) {
+  try {
+    localStorage.setItem(`${PURCHASE_KEY}:${id}`, '1');
+  } catch {
+    /* storage denegado: GA4 igual deduplica por transaction_id */
+  }
+}
 
 export function PedidoCliente() {
   const [id, setId] = useState<string | null>(null);
@@ -53,32 +70,20 @@ export function PedidoCliente() {
         }
         const data = (await res.json()) as PedidoPublico;
         setEstado(data);
-        // GA4 purchase: una sola vez por id, cuando queda pagado o esperando transferencia.
+        // GA4 purchase: una sola vez por pedido, cuando queda pagado o esperando transferencia. La marca
+        // va en localStorage (no sessionStorage): recargar o abrir el link en otra pestaña no lo
+        // vuelve a contar. Sin gtag no se marca, así un build sin GA no "gasta" el evento.
         const esFinal = data.estado === 'pagado' || data.estado === 'pendiente_transferencia';
-        if (esFinal) {
-          const marcado = sessionStorage.getItem(`${PURCHASE_KEY}:${paramId}`);
-          if (!marcado && 'gtag' in window) {
-            try {
-              (window as unknown as { gtag: (...a: unknown[]) => void }).gtag(
-                'event',
-                'purchase',
-                {
-                  transaction_id: paramId,
-                  value: data.total,
-                  currency: 'ARS',
-                  items: data.items.map((it) => ({
-                    item_id: it.slug,
-                    item_name: it.nombre,
-                    price: it.precioUnitario,
-                    quantity: it.cantidad,
-                  })),
-                },
-              );
-              sessionStorage.setItem(`${PURCHASE_KEY}:${paramId}`, '1');
-            } catch {
-              /* medición opcional */
-            }
-          }
+        if (esFinal && 'gtag' in window && !yaContado(paramId)) {
+          eventoEcommerce(
+            'purchase',
+            data.total,
+            data.items.map((it) =>
+              itemGA({ slug: it.slug, nombre: it.nombre, precio: it.precioUnitario, cantidad: it.cantidad, variante: it.variante }),
+            ),
+            { transaction_id: paramId, shipping: data.envio },
+          );
+          marcarContado(paramId);
         }
       } catch (err) {
         setError((err as Error).message);
@@ -108,7 +113,7 @@ export function PedidoCliente() {
         <p className="text-destructive">{error ?? 'No pudimos ver el estado del pedido.'}</p>
         <p className="mt-3 text-ink/80">
           Si acabás de pagar, probá recargar en unos segundos. Si sigue sin aparecer,{' '}
-          <a href={waLink(waMessages.generica)} target="_blank" rel="noopener noreferrer" className="link-ghost">
+          <a data-wa-ubicacion="pedido_error" href={waLink(waMessages.generica)} target="_blank" rel="noopener noreferrer" className="link-ghost">
             escribinos por WhatsApp
           </a>.
         </p>
@@ -159,6 +164,7 @@ export function PedidoCliente() {
             </div>
           </dl>
           <a
+            data-wa-ubicacion="pedido_transferencia"
             href={waLink(waMessages.transferencia(estado.id))}
             target="_blank"
             rel="noopener noreferrer"
@@ -202,7 +208,7 @@ export function PedidoCliente() {
           <h2 className="font-heading text-xl mb-2">Pedido cancelado</h2>
           <p className="text-ink/80">
             Si creés que fue un error,{' '}
-            <a href={waLink(waMessages.generica)} target="_blank" rel="noopener noreferrer" className="link-ghost">
+            <a data-wa-ubicacion="pedido_cancelado" href={waLink(waMessages.generica)} target="_blank" rel="noopener noreferrer" className="link-ghost">
               escribinos por WhatsApp
             </a>.
           </p>

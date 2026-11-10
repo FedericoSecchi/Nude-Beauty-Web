@@ -47,6 +47,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm">
             <li>
               <a
+                data-wa-ubicacion="footer"
                 href={waLink(waMessages.generica)}
                 target="_blank"
                 rel="noopener noreferrer"

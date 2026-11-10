@@ -120,6 +120,7 @@ export default function HomePage() {
               Ver productos
             </Link>
             <a
+              data-wa-ubicacion="home"
               href={waLink(waMessages.generica)}
               target="_blank"
               rel="noopener noreferrer"

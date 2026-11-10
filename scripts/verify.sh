@@ -34,6 +34,11 @@ skip() {
   SKIP=$((SKIP+1))
 }
 
+# GA4 solo donde se pide: los builds de abajo salen sin NEXT_PUBLIC_GA_ID aunque esté en el shell, y
+# out-ga/ se buildea aparte con un ID de prueba.
+unset NEXT_PUBLIC_GA_ID
+GA_PRUEBA="G-TEST0000"
+
 if [ ! -d node_modules ]; then
   step "npm ci" npm ci
 fi
@@ -76,6 +81,13 @@ build_con_webhook() {
     grep -F 'checkout normal' /tmp/nude-build-webhook.log
 }
 step "caso 3 · alias real con ORDER_WEBHOOK_URL de prueba: checkout (out-webhook/)" build_con_webhook
+# Mismo build que producción (caso 2) pero con un ID de GA4 de prueba → out-ga/ (e2e de eventos).
+build_ga() {
+  env -u MP_ACCESS_TOKEN -u ORDER_WEBHOOK_URL CONTEXT=production NEXT_PUBLIC_GA_ID="$GA_PRUEBA" \
+    npm run build >/tmp/nude-build-ga.log 2>&1 &&
+    rm -rf out-ga && mv out out-ga
+}
+step "build con NEXT_PUBLIC_GA_ID=$GA_PRUEBA (out-ga/)" build_ga
 # Caso 2 = el build real, como producción hoy: CONTEXT=production, sin MP y sin ORDER_WEBHOOK_URL.
 # Con alias cargado tiene que salir en modo WhatsApp y decir en el log que espera el webhook.
 ESPERA_LOG=$(node --input-type=module -e '
@@ -212,6 +224,23 @@ if [ -d out ]; then
     grep -q -i 'cuotas' out-mp/index.html && grep -q 'Mercado Pago' out-mp/terminos-y-condiciones/index.html
   }
   step "MP encendido: vuelven cuotas y Mercado Pago (out-mp/)" check_con_mp
+
+  # GA4: con el ID, la home carga gtag con ese ID y privacidad explica Google Analytics; sin el ID,
+  # ningún build tiene un script de googletagmanager ni la sección.
+  check_ga() {
+    [ -d out-ga ] || { echo "falta out-ga/"; return 1; }
+    grep -qF "googletagmanager.com/gtag/js?id=$GA_PRUEBA" out-ga/index.html || { echo "out-ga/index.html sin gtag/js?id=$GA_PRUEBA"; return 1; }
+    grep -qF "gtag('config', \"$GA_PRUEBA\"" out-ga/index.html || { echo "out-ga/index.html sin gtag config"; return 1; }
+    grep -qF 'tools.google.com/dlpage/gaoptout' out-ga/privacidad/index.html || { echo "privacidad sin la sección de GA"; return 1; }
+    local d hits=""
+    for d in out out-sinstock out-mp out-webhook; do
+      hits+=$(grep -rlF --include='*.html' --include='*.js' --include='*.txt' 'googletagmanager' "$d" 2>/dev/null || true)
+      hits+=$(grep -rlF --include='*.html' 'gaoptout' "$d" 2>/dev/null || true)
+    done
+    if [ -n "$hits" ]; then echo "sin NEXT_PUBLIC_GA_ID aparece googletagmanager/gaoptout en:"; echo "$hits" | head; return 1; fi
+    echo "out-ga/ con gtag $GA_PRUEBA · out/, out-sinstock/, out-mp/, out-webhook/ sin googletagmanager"
+  }
+  step "GA4: gtag con $GA_PRUEBA en out-ga/ y ningún googletagmanager sin la variable" check_ga
 
   check_build_id_meta() {
     grep -q '<meta name="build-id"' out/index.html
@@ -402,7 +431,7 @@ fi
 
 # --- E2E local (Playwright contra out/ servido estáticamente) ---
 if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
-  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && [ -d out-webhook ] && command -v npx >/dev/null 2>&1; then
+  if [ -d out ] && [ -d out-sinstock ] && [ -d out-mp ] && [ -d out-webhook ] && [ -d out-ga ] && command -v npx >/dev/null 2>&1; then
     serve_dir() {  # serve_dir <dir> <port> → deja el pid en SERVE_PID
       pkill -f "serve.*$1.*$2" >/dev/null 2>&1 || true
       # serve fijo en devDependencies: con `npx --yes serve` sin instalar, npx resolvía el paquete
@@ -438,6 +467,12 @@ if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then
         E2E_BASE_URL="http://127.0.0.1:4126" E2E_MP=1 E2E_MODO=checkout \
           npx playwright test tests/e2e/medios-pago.spec.ts --project=desktop || rc=$?
         kill $pid3 $pid4 >/dev/null 2>&1 || true
+        # GA4 (out-ga/, ID de prueba): view_item, add_to_cart con tono, view_cart, click_whatsapp con
+        # valor, contacto_whatsapp, purchase sin duplicar; ningún evento con nombre, teléfono ni wa.me.
+        serve_dir out-ga 4128 || rc=1; pid3=$SERVE_PID
+        E2E_BASE_URL="http://127.0.0.1:4128" E2E_GA_ID="$GA_PRUEBA" E2E_MODO="$MODO_REAL" \
+          npx playwright test tests/e2e/ga4.spec.ts --project=desktop || rc=$?
+        kill $pid3 >/dev/null 2>&1 || true
         # Hero de la home visible sin scroll en 390×844 y 1366×850.
         E2E_BASE_URL="http://127.0.0.1:4123" \
           npx playwright test tests/e2e/home-hero.spec.ts --project=desktop || rc=$?

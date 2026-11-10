@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { urls } from '@/lib/urls';
 import { formatARS } from '@/lib/format';
 import { StickyCta } from '@/components/StickyCta';
+import { eventoEcommerce, itemGA } from '@/lib/analytics';
 
 interface Props {
   slug: string;
@@ -81,29 +82,10 @@ export function AddToCart({ slug, nombre, precio, variantes = [] }: Props) {
     }
     writeCart(items);
     setAgregado(true);
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      try {
-        (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
-          'event',
-          'add_to_cart',
-          {
-            currency: 'ARS',
-            value: precio * cantidad,
-            items: [
-              {
-                item_id: slug,
-                item_name: nombre,
-                ...(v ? { item_variant: v } : {}),
-                price: precio,
-                quantity: cantidad,
-              },
-            ],
-          },
-        );
-      } catch {
-        /* medición opcional */
-      }
-    }
+    // add_to_cart: el mismo handler sirve al botón de la ficha y al de la barra fija.
+    eventoEcommerce('add_to_cart', precio * cantidad, [
+      itemGA({ slug, nombre, precio, cantidad, variante: v }),
+    ]);
   };
 
   return (

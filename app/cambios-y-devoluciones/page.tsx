@@ -61,6 +61,7 @@ export default function CambiosPage() {
       <p className="text-ink/80">
         Escribinos por{' '}
         <a
+          data-wa-ubicacion="cambios"
           href={waLink(waMessages.generica)}
           target="_blank"
           rel="noopener noreferrer"

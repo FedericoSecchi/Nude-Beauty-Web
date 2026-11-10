@@ -27,6 +27,7 @@ export function Header() {
             <CartCount />
           </Link>
           <a
+            data-wa-ubicacion="header"
             href={waLink(waMessages.generica)}
             target="_blank"
             rel="noopener noreferrer"

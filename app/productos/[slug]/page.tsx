@@ -10,6 +10,7 @@ import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from '@/lib/jsonld';
 import { urls } from '@/lib/urls';
 import { waLink, waMessages } from '@/lib/whatsapp';
 import { AddToCart } from './AddToCart';
+import { VerItem } from '@/components/VerItem';
 import { Galeria } from '@/components/Galeria';
 
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
@@ -132,6 +133,7 @@ export default async function ProductoPage({
               </p>
             )}
 
+            <VerItem slug={p.slug} nombre={p.nombre} precio={p.precio} />
             {p.disponible ? (
               <div className="mt-3 md:mt-6">
                 <AddToCart slug={p.slug} nombre={p.nombre} precio={p.precio} variantes={p.variantes} />
@@ -141,6 +143,7 @@ export default async function ProductoPage({
                 <p className="mt-2 md:mt-3 text-sm">
                   <a
                     data-testid="wa-ficha"
+                    data-wa-ubicacion="ficha_dudas"
                     href={waLink(waMessages.producto(p.nombre))}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -155,6 +158,7 @@ export default async function ProductoPage({
                 <p data-testid="sin-stock" className="font-medium text-charcoal">Sin stock por ahora.</p>
                 <a
                   data-testid="wa-ficha"
+                  data-wa-ubicacion="ficha_sin_stock"
                   href={waLink(waMessages.sinStock(p.nombre))}
                   target="_blank"
                   rel="noopener noreferrer"

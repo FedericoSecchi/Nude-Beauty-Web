@@ -33,6 +33,7 @@ export default async (req: Request, ctx: Context): Promise<Response> => {
       nombre: i.nombre,
       cantidad: i.cantidad,
       precioUnitario: i.precioUnitario,
+      ...(i.variante ? { variante: i.variante } : {}),
     })),
     subtotal: pedido.subtotal,
     descuentos: pedido.descuentos,

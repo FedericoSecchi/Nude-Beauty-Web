@@ -38,6 +38,7 @@ verify-results.txt
 out-sinstock/
 out-mp/
 out-webhook/
+out-ga/
 out-alias/
 
 # Miniaturas generadas en el build (scripts/miniaturas.mjs)

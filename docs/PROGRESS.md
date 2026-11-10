@@ -2,7 +2,7 @@
 
 > Avance por etapa del `seo/PLAN.md`. Si la sesión se corta: **leé este archivo primero** y retomá desde la primera ⬜.
 > Rama: `kosmos/nude-tienda` · PR: borrador hasta E6 · Nunca push a `main`.
-> Último trabajo: datos de Soledad en `kosmos/datos-soledad` (PR #3), ver «Reporte · datos de Soledad» al final.
+> Último trabajo: eventos de GA4 en `kosmos/ga4`, ver «Reporte · GA4» al final.
 
 ## Resumen por etapa
 | Etapa | Estado | Fecha | Deploy preview |
@@ -233,7 +233,7 @@ Capturas: `docs/capturas/revision-post-e6/`.
 - `E2E_TOKEN` → bloquea e2e remoto contra el preview (SKIP en `verify.sh`). Se cargan en E3.
 - `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET` → bloquean el flujo real de MP (se usa `CHECKOUT_MODE=tiendanube` como plan B hasta cargar).
 - `ORDER_WEBHOOK_URL`, `ORDER_WEBHOOK_SECRET` → bloquean el aviso a n8n (el pedido igual se guarda; se reintenta en la próxima notificación). El flujo de n8n ya está armado y probado con datos de prueba, pero todavía sin publicar ni con las cuentas conectadas: ver `seo/05-n8n-pedidos.md` › Pendiente.
-- `NEXT_PUBLIC_GA_ID` → sin GA no se cargan los scripts, el sitio funciona igual.
+- `NEXT_PUBLIC_GA_ID` → cargada en Netlify solo en Production (`G-VFHCKHBDLH`). Los deploy previews salen sin gtag. Sin la variable no se carga ningún script de Google y el sitio funciona igual.
 
 ## Revisiones manuales para Fede (al cerrar E6)
 - [ ] Mobile 360×740: hero + CTA sin scroll, carrito con contador.
@@ -455,3 +455,35 @@ Con envío económico, la entrega dice «Envío económico · Unquillo, Mendiola
 2. ⬜ CBU (opcional: con el alias alcanza).
 3. ⬜ Códigos postales o barrios de la «zona Norte de Córdoba», si quiere que la zona se ofrezca automáticamente.
 4. ⬜ Siguen los de antes: tamaños, ingredientes del óleo, lista final del Serum Transformación, variantes de color del gloss, respaldo de cualquier claim sobre acné.
+
+### Reporte · GA4 (2026-11-10) · rama `kosmos/ga4`
+
+#### 1. Eventos (todos pasan por `lib/analytics.ts`)
+| Evento | Dónde se dispara | Parámetros |
+|---|---|---|
+| `view_item` | al abrir cada ficha, con o sin stock (`components/VerItem.tsx`) | ARS, value = precio, 1 ítem |
+| `add_to_cart` | botón de la ficha y barra fija mobile (mismo handler, `AddToCart.tsx`) | ARS, value = precio × cantidad, `item_variant` = tono |
+| `view_cart` | al abrir /carrito/ con productos, una vez por visita | ARS, value = subtotal de lista, ítems |
+| `begin_checkout` | «Siguiente: tus datos» (solo en modo checkout) | ARS, value = total, ítems con tono |
+| `click_whatsapp` | «Enviar pedido por WhatsApp», con nombre y teléfono completos. **Conversión principal** | ARS, value = total con transferencia, ítems con tono |
+| `contacto_whatsapp` | los demás links a WhatsApp: un listener único (`components/ContactoWhatsapp.tsx`) sobre `a[data-wa-ubicacion]` | `ubicacion`: header · footer · home · ficha_dudas · ficha_sin_stock · cambios · pedido_transferencia · pedido_error · pedido_cancelado |
+| `purchase` | /pedido/ cuando el pedido queda `pagado` o `pendiente_transferencia` (modo checkout) | transaction_id, value = total, shipping, ítems con tono. Una sola vez por pedido (marca en localStorage) |
+
+Ítems: `item_id` = slug, `item_name`, `item_variant` (si hay tono), `price`, `quantity`. Ningún evento lleva nombre, teléfono, email, dirección ni la URL de wa.me. El helper además descarta `link_url`, `link_text` y similares, y cualquier valor con «wa.me».
+
+#### 2. Privacidad
+`/privacidad/` suma «Google Analytics»: qué se mide (páginas vistas, origen de la visita, botones que se tocan, productos vistos o agregados, en datos agregados), que usa cookies, que no se le pasa a Google ningún dato personal del pedido ni el mensaje de WhatsApp, y el link al complemento de inhabilitación (tools.google.com/dlpage/gaoptout). También hay una línea en «Qué datos recolectamos». La sección sale **solo si el build tiene `NEXT_PUBLIC_GA_ID`**, así que en los previews no se ve y en producción sí.
+
+#### 3. Tests (en `verify.sh`)
+- Build `out-ga/` con `NEXT_PUBLIC_GA_ID=G-TEST0000`: la home tiene `gtag/js?id=G-TEST0000` y `gtag('config', "G-TEST0000")`, y privacidad tiene la sección. `out/`, `out-sinstock/`, `out-mp/` y `out-webhook/` no tienen ningún `googletagmanager` (verify hace `unset NEXT_PUBLIC_GA_ID` al empezar).
+- `tests/e2e/ga4.spec.ts` (sobre out-ga/, sin red a Google, lee `window.dataLayer`): view_item en el gloss, add_to_cart con `item_variant`, view_cart, click_whatsapp con value > 0 después de completar nombre y teléfono de prueba, contacto_whatsapp (ficha y pie), purchase una sola vez aunque se recargue. Al final revisa los parámetros de todos los eventos: ni el nombre, ni el teléfono (tampoco solo los dígitos), ni «wa.me», ni `link_url`/`link_text`.
+- `verify.sh`: **PASS=28 FAIL=0 SKIP=1** (SKIP = e2e remoto, falta `E2E_TOKEN`).
+
+#### 4. Decisiones tomadas sin consultar
+- 2026-11-10 · **El init de gtag pasó a un `<script>` común en el HTML**. Antes iba con `next/script` afterInteractive, que corre después de los `useEffect` de la página: view_item y view_cart se disparaban cuando `window.gtag` todavía no existía y se perdían. gtag.js sigue cargando después, sin bloquear la página.
+- 2026-11-10 · `contacto_whatsapp` usa un listener único y el atributo `data-wa-ubicacion`, en lugar de convertir header, pie y fichas en componentes de cliente. Solo se manda la ubicación.
+- 2026-11-10 · La marca de `purchase` pasó de sessionStorage a localStorage, para que abrir el link del pedido en otra pestaña no lo cuente dos veces. Si el build no tiene GA, no se marca.
+- 2026-11-10 · `estado-pedido` devuelve también el tono de cada ítem, si tiene. No es un dato personal.
+- 2026-11-10 · La sección de GA en privacidad depende de la variable: no se describe una medición que el build no hace.
+- 2026-11-10 · `next/font` falló dos veces seguidas al bajar las fuentes de Google (URL de fuente sin extensión, `TypeError … reading '1'`) y después anduvo sin cambios. Es un problema de red o de Google Fonts, no del código. No se agregó ningún reintento.
+

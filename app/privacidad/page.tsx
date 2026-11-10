@@ -8,6 +8,8 @@ import { site } from '@/lib/site';
 const mpHabilitado = process.env.NEXT_PUBLIC_MP_HABILITADO === '1';
 // Sin medio de pago la tienda toma pedidos por WhatsApp (lib/modo-venta.mjs).
 const modoWhatsapp = process.env.NEXT_PUBLIC_MODO_VENTA === 'whatsapp';
+// La sección de Google Analytics solo aparece si el build carga GA4 (components/GA4.tsx).
+const conGa = Boolean(process.env.NEXT_PUBLIC_GA_ID);
 
 export const metadata: Metadata = {
   title: 'Política de privacidad',
@@ -40,6 +42,11 @@ export default function PrivacidadPage() {
           </li>
         ) : null}
         <li>Datos técnicos (navegador, dispositivo) para que el sitio funcione.</li>
+        {conGa ? (
+          <li>
+            Estadísticas de uso del sitio con Google Analytics (más abajo te contamos cuáles).
+          </li>
+        ) : null}
       </ul>
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Para qué los usamos</h2>
@@ -56,6 +63,36 @@ export default function PrivacidadPage() {
         {modoWhatsapp ? ' WhatsApp (el canal por el que nos mandás el pedido),' : ''} la empresa de envíos y, si
         corresponde, la autoridad fiscal. No vendemos tus datos a terceros.
       </p>
+
+      {conGa ? (
+        <>
+          <h2 id="google-analytics" className="font-heading text-2xl mt-8 mb-3">
+            Google Analytics
+          </h2>
+          <p className="text-ink/80">
+            Usamos Google Analytics 4 para entender cómo se usa el sitio: qué páginas se visitan, de
+            dónde llega la visita (por ejemplo, un buscador o una red social), qué botones se tocan y
+            qué productos se miran o se agregan al carrito. Son datos agregados: no nos dicen quién
+            sos. Para medirlo, Google Analytics usa cookies en tu navegador.
+          </p>
+          <p className="mt-3 text-ink/80">
+            No le pasamos a Google ningún dato personal de tu pedido: ni tu nombre, ni tu teléfono,
+            ni tu email, ni tu dirección, ni el mensaje que nos mandás por WhatsApp.
+          </p>
+          <p className="mt-3 text-ink/80">
+            Si no querés que te midan, podés instalar el{' '}
+            <a
+              href="https://tools.google.com/dlpage/gaoptout"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-ghost"
+            >
+              complemento de inhabilitación de Google Analytics
+            </a>{' '}
+            en tu navegador.
+          </p>
+        </>
+      ) : null}
 
       <h2 className="font-heading text-2xl mt-8 mb-3">Tus derechos</h2>
       <p className="text-ink/80">

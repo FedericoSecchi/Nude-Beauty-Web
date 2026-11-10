@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { urls } from '@/lib/urls';
 import { formatARS } from '@/lib/format';
 import {
@@ -16,6 +16,7 @@ import { calcularEnvio, listarOpciones, ShippingError } from '@/lib/shipping';
 import type { AjustesEnvios, AjustesTienda, Producto } from '@/lib/types';
 import { armarPedidoWhatsapp, type PedidoWhatsapp } from '@/lib/pedido-whatsapp';
 import { waLink } from '@/lib/whatsapp';
+import { eventoEcommerce, itemGA } from '@/lib/analytics';
 
 // Flag de build de Mercado Pago (next.config.mjs). Va en cada archivo, no importado: así el
 // minificador borra del bundle los textos de MP cuando está apagado.
@@ -111,6 +112,24 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
     setItems(readCart());
   }, []);
 
+  // view_cart: una vez por visita, solo con productos. Precio y nombre del catálogo, como abajo.
+  const carritoVisto = useRef(false);
+  useEffect(() => {
+    if (!items || items.length === 0 || carritoVisto.current) return;
+    carritoVisto.current = true;
+    const porSlug = new Map(productos.map((p) => [p.slug, p]));
+    const its = items.map((it) =>
+      itemGA({
+        slug: it.slug,
+        nombre: porSlug.get(it.slug)?.nombre ?? it.nombre,
+        precio: porSlug.get(it.slug)?.precio ?? it.precio,
+        cantidad: it.cantidad,
+        variante: it.variante,
+      }),
+    );
+    eventoEcommerce('view_cart', its.reduce((s, i) => s + i.price * i.quantity, 0), its);
+  }, [items, productos]);
+
   if (items === null) return <p className="text-muted-ink">Cargando…</p>;
 
   if (items.length === 0) {
@@ -138,6 +157,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
   });
 
   const todosDisponibles = itemsNormalizados.every((i) => i.disponible);
+  const itemsGA = itemsNormalizados.map((i) => itemGA(i));
 
   // Cálculo en el navegador (preview); el servidor va a recalcular.
   const esRetiro = opcionId === 'retiro';
@@ -218,23 +238,9 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
       return;
     }
     setError(null);
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      try {
-        (window as unknown as { gtag: (...a: unknown[]) => void }).gtag('event', 'click_whatsapp', {
-          currency: 'ARS',
-          value: pedidoWa.totalTransferencia,
-          items: itemsNormalizados.map((i) => ({
-            item_id: i.slug,
-            item_name: i.nombre,
-            ...(i.variante ? { item_variant: i.variante } : {}),
-            price: i.precio,
-            quantity: i.cantidad,
-          })),
-        });
-      } catch {
-        /* opcional */
-      }
-    }
+    // La conversión principal. Solo montos e ítems: ni el texto ni la URL de wa.me (llevan nombre y
+    // teléfono).
+    eventoEcommerce('click_whatsapp', pedidoWa.totalTransferencia, itemsGA);
     if (esRetiro) {
       // La dirección exacta del retiro no está en el sitio: el mensaje con la dirección lo arma la
       // function pedido-whatsapp. Si no responde, sale el mismo mensaje sin la dirección y Soledad
@@ -290,26 +296,7 @@ export function CarritoCliente({ productos, tienda, envios, textoMp }: Props) {
 
   const empezarCheckout = () => {
     setBegin(true);
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      try {
-        (window as unknown as { gtag: (...a: unknown[]) => void }).gtag(
-          'event',
-          'begin_checkout',
-          {
-            currency: 'ARS',
-            value: total,
-            items: itemsNormalizados.map((i) => ({
-              item_id: i.slug,
-              item_name: i.nombre,
-              price: i.precio,
-              quantity: i.cantidad,
-            })),
-          },
-        );
-      } catch {
-        /* opcional */
-      }
-    }
+    eventoEcommerce('begin_checkout', total, itemsGA);
   };
 
   const confirmar = async (e: React.FormEvent) => {

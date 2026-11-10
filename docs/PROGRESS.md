@@ -487,3 +487,15 @@ Con envío económico, la entrega dice «Envío económico · Unquillo, Mendiola
 - 2026-11-10 · La sección de GA en privacidad depende de la variable: no se describe una medición que el build no hace.
 - 2026-11-10 · `next/font` falló dos veces seguidas al bajar las fuentes de Google (URL de fuente sin extensión, `TypeError … reading '1'`) y después anduvo sin cambios. Es un problema de red o de Google Fonts, no del código. No se agregó ningún reintento.
 
+
+#### 5. Deploy
+| Check | Resultado |
+|---|---|
+| Preview PR #7 | build-id `eced38060b59` (commit pusheado) · 20/20 URLs del sitemap en 200 · 404 real · sin gtag (la variable está solo en Production, como se esperaba) |
+| Merge | PR #7 mergeado (autorizado por Fede) · `89194233df2e` |
+| Producción | build-id `89194233df2e` · la home carga `gtag/js?id=G-VFHCKHBDLH` y `gtag('config', "G-VFHCKHBDLH")` · /privacidad/ con la sección de GA · 20/20 URLs del sitemap en 200 · 404 real |
+
+#### 6. Pendiente (Fede, en GA4)
+1. ⬜ Marcar `click_whatsapp` como evento clave (conversión) en GA4 › Administrar › Eventos clave. Si en algún momento se activa el checkout, también `purchase`.
+2. ⬜ Registrar `ubicacion` como dimensión personalizada (ámbito: evento) para ver `contacto_whatsapp` por lugar.
+3. ⬜ Mirar DebugView o Tiempo real: un pedido de prueba por WhatsApp tiene que mostrar view_item → add_to_cart → view_cart → click_whatsapp.
